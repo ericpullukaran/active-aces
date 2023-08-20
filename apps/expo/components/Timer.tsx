@@ -9,9 +9,12 @@ type Props = {
 
 const getFormattedTime = (startTime: Date) => {
   const elapsedSeconds = (Date.now() - startTime.getTime()) / 1000;
-  const minutes = Math.floor(elapsedSeconds / 60);
+  const hours = Math.floor(elapsedSeconds / 60 / 60);
+  const minutes = Math.floor((elapsedSeconds / 60) % 60);
   const seconds = Math.floor(elapsedSeconds % 60);
-  const formattedTime = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  const formattedTime = `${hours ? `${hours}:` : ""}${minutes}:${
+    seconds < 10 ? "0" : ""
+  }${seconds}`;
   return formattedTime;
 };
 

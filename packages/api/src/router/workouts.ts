@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Context } from "../context";
 import { protectedProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { type Prisma } from "@acme/db";
 
 const getCurrentWorkout = async (ctx: Context) => {
   if (!ctx.user) return null;
@@ -15,6 +16,10 @@ const getCurrentWorkout = async (ctx: Context) => {
 };
 
 const setDetailsUnion = z.union([
+  /**
+   * ! NOTE: ORDER MATTERS HERE
+   * ! Zod will match on the first schema that matches
+   */
   z.object({
     weight: z.number().positive().finite(),
     numReps: z.number().positive().int(),
@@ -24,10 +29,10 @@ const setDetailsUnion = z.union([
   }),
   z.object({
     time: z.number().positive().int(),
+    distance: z.number().positive(),
   }),
   z.object({
     time: z.number().positive().int(),
-    distance: z.number().positive(),
   }),
 ]);
 
@@ -50,6 +55,7 @@ const setArrayUnion = z.union([
   z
     .object({
       time: z.number().nonnegative().int(),
+      distance: z.number().nonnegative(),
       complete: z.boolean().optional(),
     })
     .array(),
@@ -57,7 +63,6 @@ const setArrayUnion = z.union([
   z
     .object({
       time: z.number().nonnegative().int(),
-      distance: z.number().nonnegative(),
       complete: z.boolean().optional(),
     })
     .array(),
@@ -74,30 +79,60 @@ export type EndWorkoutInput = {
 };
 
 export const workoutsRouter = router({
-  history: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.workout.findMany({
-      where: {
-        userId: ctx.user.id,
-      },
-      orderBy: {
-        startTime: "desc",
-      },
-      include: {
-        exercises: {
-          orderBy: {
-            order: "asc",
-          },
-          include: {
-            sets: {
-              orderBy: {
-                order: "asc",
+  history: protectedProcedure
+    .input(
+      z.object({
+        cursor: z.string().optional(),
+        limit: z
+          .number()
+          .refine((n) => Math.max(Math.min(n, 20), 1))
+          .optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input?.limit ?? 20;
+
+      const workouts = await ctx.prisma.workout.findMany({
+        where: {
+          userId: ctx.user.id,
+        },
+        orderBy: {
+          startTime: "desc",
+        },
+        cursor: input.cursor
+          ? {
+              id: input?.cursor,
+            }
+          : undefined,
+        take: limit + 1,
+        include: {
+          exercises: {
+            orderBy: {
+              order: "asc",
+            },
+            include: {
+              sets: {
+                orderBy: {
+                  order: "asc",
+                },
               },
             },
           },
         },
-      },
-    });
-  }),
+      });
+
+      let nextCursor: typeof input.cursor | undefined = undefined;
+
+      if (workouts.length > limit) {
+        const nextItem = workouts.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      return {
+        workouts,
+        nextCursor,
+      };
+    }),
 
   get: protectedProcedure
     .input(
@@ -161,6 +196,7 @@ export const workoutsRouter = router({
   end: protectedProcedure
     .input(
       z.object({
+        name: z.string().optional(),
         exercises: z.array(
           z.object({
             tmpId: z.string(),
@@ -201,6 +237,8 @@ export const workoutsRouter = router({
         });
       }
 
+      console.dir(input.exercises, { depth: Infinity });
+
       const allSetsAreValid = input.exercises.every((e) => {
         const exerciseDetails = allExercisesAsObject[e.exerciseId];
         if (!exerciseDetails) {
@@ -218,6 +256,8 @@ export const workoutsRouter = router({
             time: ["time"],
           }[exerciseDetails.measurementType] || [];
 
+        console.log(requiredFields, e.sets);
+
         return (e.sets as Record<string, unknown>[]).every((set) =>
           requiredFields.every((field) => field in set),
         );
@@ -230,68 +270,46 @@ export const workoutsRouter = router({
         });
       }
 
-      // Start by updating the workout with its end time
-      await ctx.prisma.workout.update({
-        where: {
-          id: current.id,
-        },
-        data: {
-          endTime: new Date().toISOString(),
-        },
-      });
+      const workoutUpdates: Prisma.workoutUpdateInput = {
+        endTime: new Date().toISOString(),
+      };
 
-      // Then, create the exercises
-      await ctx.prisma.workoutExercise.createMany({
-        data: input.exercises.map((e, i) => ({
-          id: e.tmpId,
-          order: i,
-          exerciseId: e.exerciseId,
-          notes: e.notes,
-          workoutId: current.id, // assuming there's a workoutId field in Exercise model
-        })),
-      });
+      if (input.name?.trim()) {
+        workoutUpdates.name = input.name.trim();
+      }
 
-      // Finally, create the sets for each exercise
-      // This assumes that you have a way of associating sets with their respective exercises
-      await ctx.prisma.workoutExerciseSet.createMany({
-        data: input.exercises.flatMap((exercise) =>
-          (exercise.sets as any[]).map((set, idx) => ({
-            ...set,
-            complete: true,
-            order: idx,
-            // FIXME: very sketch,
-            workoutExerciseId: exercise.tmpId,
+      await ctx.prisma.$transaction([
+        // Start by updating the workout with its end time
+        ctx.prisma.workout.update({
+          where: {
+            id: current.id,
+          },
+          data: workoutUpdates,
+        }),
+        // Then, create the exercises
+        ctx.prisma.workoutExercise.createMany({
+          data: input.exercises.map((e, i) => ({
+            id: e.tmpId,
+            order: i,
+            exerciseId: e.exerciseId,
+            notes: e.notes,
+            workoutId: current.id, // assuming there's a workoutId field in Exercise model
           })),
-        ),
-      });
-
-      // await ctx.prisma.workout.update({
-      //   where: {
-      //     id: current.id,
-      //   },
-      //   data: {
-      //     endTime: new Date().toISOString(),
-      //     exercises: {
-      //       createMany: {
-      //         data: input.exercises.map((e, i) => ({
-      //           order: i,
-      //           exerciseId: e.exerciseId,
-      //           notes: e.notes,
-      //           sets: {
-      //             createMany: {
-      //               data: (e.sets as Record<string, unknown>[]).map(
-      //                 (set, i) => ({
-      //                   ...set,
-      //                   order: i,
-      //                 }),
-      //               ),
-      //             },
-      //           },
-      //         })),
-      //       },
-      //     },
-      //   },
-      // });
+        }),
+        // Finally, create the sets for each exercise
+        // This assumes that you have a way of associating sets with their respective exercises
+        ctx.prisma.workoutExerciseSet.createMany({
+          data: input.exercises.flatMap((exercise) =>
+            (exercise.sets as any[]).map((set, idx) => ({
+              ...set,
+              complete: true,
+              order: idx,
+              // FIXME: very sketch,
+              workoutExerciseId: exercise.tmpId,
+            })),
+          ),
+        }),
+      ]);
     }),
 
   delete: protectedProcedure

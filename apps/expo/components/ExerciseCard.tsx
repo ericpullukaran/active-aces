@@ -4,6 +4,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { RouterInputs, trpc } from "~/utils/trpc";
 import { Swipeable } from "react-native-gesture-handler";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
+import { useExercises } from "~/utils/exercises";
 
 const styles = StyleSheet.create({
   shadow: {
@@ -55,12 +56,8 @@ function ExerciseCard({
   onChange: (value: EndWorkoutExercises) => void;
 }) {
   const PrevRef = useRef(null);
-  const exercise = trpc.exercises.all.useQuery(undefined, {
-    select(data) {
-      return Object.fromEntries(data.map((e) => [e.id, e]));
-    },
-  });
-  const curExercise = exercise.data?.[exerciseInfo.exerciseId];
+  const exercises = useExercises();
+  const curExercise = exercises.dataAsMap?.[exerciseInfo.exerciseId];
   const curMesType =
     curExercise?.measurementType as keyof typeof emptySetsByMeasurementType;
 

@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
+import { getFallbackWorkoutName } from "~/utils/workouts";
 
 const SignOut = () => {
   const { signOut } = useAuth();
@@ -64,8 +65,12 @@ const HomeScreen = () => {
         <View className="absolute bottom-9 left-0 right-0">
           <Pressable
             onPress={async () => {
+              if (startWorkout.isLoading) return;
+
               if (!currentWorkout.data) {
-                await startWorkout.mutateAsync();
+                await startWorkout.mutateAsync({
+                  name: getFallbackWorkoutName(),
+                });
               }
               router.push("create_workout");
             }}
@@ -84,7 +89,7 @@ const HomeScreen = () => {
                 </View>
               ) : (
                 <View className="mr-1 rounded-2xl border-2 border-primary p-4">
-                  <Icon name="play" size={20} color={`white`} />
+                  <Icon name="play" size={20} color="white" />
                 </View>
               )}
               <Text className="ml-3 mr-4 text-lg font-medium text-white">

@@ -6,6 +6,7 @@ import {
 } from "react-native-heroicons/solid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik, FormikProps } from "formik";
+import commaNumber from "comma-number";
 
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 import { useRouter, useSearchParams } from "expo-router";
@@ -25,6 +26,7 @@ function CreateWorkoutForm({
   values,
   setFieldValue,
   handleSubmit,
+  isSubmitting,
 }: FormikProps<EndWorkoutInput>) {
   const router = useRouter();
   const params = useSearchParams();
@@ -50,15 +52,17 @@ function CreateWorkoutForm({
   };
 
   const extractVolume = () => {
-    return values.exercises.reduce((acc, e) => {
-      return (e.sets as Set[]).reduce((accSets, s) => {
-        if (!s || !s.complete) return 0;
-        const weight = "weight" in s ? s.weight : 0;
-        const numReps = "numReps" in s ? s.numReps : 0;
+    return commaNumber(
+      values.exercises.reduce((acc, e) => {
+        return (e.sets as Set[]).reduce((accSets, s) => {
+          if (!s || !s.complete) return 0;
+          const weight = "weight" in s ? s.weight : 0;
+          const numReps = "numReps" in s ? s.numReps : 0;
 
-        return accSets + weight * numReps;
-      }, acc);
-    }, 0);
+          return accSets + weight * numReps;
+        }, acc);
+      }, 0),
+    );
   };
 
   return (
@@ -202,37 +206,26 @@ function CreateWorkoutForm({
 function CreateWorkout() {
   const router = useRouter();
 
-  const endWorkout = trpc.workouts.end.useMutation();
   const trpcContext = trpc.useContext();
+  const endWorkout = trpc.workouts.end.useMutation({
+    onSuccess: async () => {
+      await Promise.all([
+        trpcContext.workouts.invalidate(),
+        trpcContext.workouts.history.refetch(),
+      ]);
+      router.push("/");
+    },
+  });
 
   return (
     <SafeAreaView className="h-full justify-center bg-base">
       <Formik
         initialValues={{ exercises: [] } as EndWorkoutInput}
         onSubmit={(values) => {
-          const returnList = values.exercises.map((e) => ({
-            ...e,
-            sets: e.sets.map((s) => {
-              const { complete, ...otherKeys } = s;
-              return {
-                ...otherKeys,
-                weight: "weight" in otherKeys ? otherKeys.weight : 0,
-                numReps: "numReps" in otherKeys ? otherKeys.numReps : 0,
-                time: "time" in otherKeys ? otherKeys.time : 0,
-                distance: "distance" in otherKeys ? otherKeys.distance : 0,
-              };
-            }),
-          }));
-
-          endWorkout.mutate(
-            { exercises: returnList },
-            {
-              onSuccess: () => {
-                trpcContext.workouts.invalidate();
-                router.push("/");
-              },
-            },
-          );
+          console.log(JSON.stringify(values, null, 2));
+          const returnList = values.exercises;
+          console.log(JSON.stringify({ returnList }, null, 2));
+          endWorkout.mutate({ exercises: returnList });
         }}
         component={CreateWorkoutForm}
       />

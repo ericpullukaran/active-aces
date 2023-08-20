@@ -29,4 +29,4 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export type * from "./workouts";
+export * from "./workouts";

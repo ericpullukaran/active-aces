@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Button } from "react-native";
 import React from "react";
 import { useRouter, useSearchParams } from "expo-router";
 import { trpc } from "~/utils/trpc";
@@ -11,12 +11,24 @@ const HistoryWorkoutItem = (props: Props) => {
   const workoutHistory = trpc.workouts.get.useQuery({
     id: params.workoutId as string,
   });
-  console.log(params);
+  const trpcContext = trpc.useContext();
+  const deleteWorkout = trpc.workouts.delete.useMutation({
+    onSuccess: () => {
+      trpcContext.workouts.history.invalidate();
+      router.push("/history");
+    },
+  });
 
   return (
     <View>
       <Text>HistoryWorkoutItem</Text>
       <Text>{workoutHistory.data?.name}</Text>
+
+      <Button
+        title="yeetus deletus"
+        disabled={deleteWorkout.isLoading}
+        onPress={() => deleteWorkout.mutate({ id: params.workoutId as string })}
+      />
     </View>
   );
 };
