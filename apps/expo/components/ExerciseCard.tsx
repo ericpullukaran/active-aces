@@ -1,20 +1,7 @@
-import React, { useRef, useState } from "react";
-import {
-  FlatList,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-} from "react-native";
-import { Button, Checkbox } from "tamagui";
+import React, { useRef } from "react";
+import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { Formik, Form, Field, FieldArray } from "formik";
-import AccordionItem from "./AccordionItem";
-import SetMeasurement from "./SetMeasurement";
 import { RouterInputs, trpc } from "~/utils/trpc";
-import { v4 as uuidv4 } from "uuid";
-import { TypeOf, object } from "zod";
 import { Swipeable } from "react-native-gesture-handler";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 
@@ -37,19 +24,11 @@ const SET_MEASUREMENT_TYPES = [
   "time",
   "distance",
 ] as const;
-const EMPTY_WEIGHT_REPS_SET = { weight: 0, numReps: 0 };
-const EMPTY_REPS_SET = { numReps: 0 };
-const EMPTY_TIME_DIST_SET = { time: 0, distance: 0 };
-const EMPTY_TIME_SET = { time: 0 };
-type SetType = NonNullable<
-  RouterInputs["workouts"]["end"]["exercises"][number]["sets"][number]
->;
-type SetTypeKeys = (typeof SET_MEASUREMENT_TYPES)[number];
 const emptySetsByMeasurementType = {
-  "weight-reps": { complete: false, weight: 0, numReps: 0 },
-  reps: { complete: false, numReps: 0 },
-  "time-distance": { complete: false, time: 0, distance: 0 },
-  time: { complete: false, time: 0 },
+  "weight-reps": { weight: 0, numReps: 0 },
+  reps: { numReps: 0 },
+  "time-distance": { time: 0, distance: 0 },
+  time: { time: 0 },
 };
 
 const requiredFields = {

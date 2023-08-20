@@ -1,8 +1,13 @@
-import { Stack, useNavigation, useRouter, useSearchParams } from "expo-router";
+import { useRouter, useSearchParams } from "expo-router";
 import React, { useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
-import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
-import DividerWithIcon from "~/components/DividerWithIcon";
+import {
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 import { trpc } from "~/utils/trpc";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -11,7 +16,6 @@ function Exercises() {
   const [text, setText] = useState("");
   const sp = useSearchParams();
   const router = useRouter();
-  const routerNav = useNavigation();
 
   const exercisesQuery = trpc.exercises.all.useQuery();
 
@@ -20,9 +24,9 @@ function Exercises() {
       <View className="flex h-full justify-center bg-base">
         <View className="mx-4 mt-8">
           <View className="flex flex-row items-center">
-            <View className="ml-2">
+            <TouchableOpacity className="ml-2" onPress={() => router.back()}>
               <Icon name="angle-double-down" size={40} color={"white"} />
-            </View>
+            </TouchableOpacity>
             <View className="flex flex-1 items-end ">
               <View className="">
                 <Text className="text-center text-5xl font-semibold text-white">

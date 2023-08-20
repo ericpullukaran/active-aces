@@ -1,41 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
+import { FlatList, Keyboard, Text, TouchableOpacity, View } from "react-native";
 import {
-  Alert,
-  Button,
-  FlatList,
-  Keyboard,
-  Pressable,
-  ScrollView,
-  Text,
-  Image,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  ChartBarIcon,
   Square3Stack3DIcon,
   StopCircleIcon,
-  TrophyIcon,
 } from "react-native-heroicons/solid";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Formik, Form, Field, FieldArray, FormikProps } from "formik";
+import { Formik, FormikProps } from "formik";
 
-import DividerWithIcon from "~/components/DividerWithIcon";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
-import { useNavigation, useRouter, useSearchParams } from "expo-router";
-import ExerciseCard, { EndWorkoutExercises } from "~/components/ExerciseCard";
-import { RouterInputs, RouterOutputs, trpc } from "~/utils/trpc";
-import useInterval from "~/utils/useInterval";
+import { useRouter, useSearchParams } from "expo-router";
+import ExerciseCard from "~/components/ExerciseCard";
+import { trpc } from "~/utils/trpc";
 import Timer from "~/components/Timer";
 import { v4 as uuid } from "uuid";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { fonts } from "~/utils/fonts";
-import { Button as Btn } from "tamagui";
 import { FullHeightScrollView } from "~/components/FullHeightScrollView";
+import type { EndWorkoutInput } from "@acme/api";
 
-type Workout = NonNullable<RouterOutputs["workouts"]["current"]>;
-type EndWorkoutInput = RouterInputs["workouts"]["end"];
-type Set = EndWorkoutInput["exercises"][number]["sets"];
+type Set = EndWorkoutInput["exercises"][number]["sets"][number];
 
 function CreateWorkoutForm({
   setValues,
@@ -60,8 +43,6 @@ function CreateWorkoutForm({
         },
       ],
     });
-
-    setTimeout(() => console.log(values), 500);
   }, [params.selectedExerciseId]);
 
   const extractSetCount = () => {
@@ -70,11 +51,12 @@ function CreateWorkoutForm({
 
   const extractVolume = () => {
     return values.exercises.reduce((acc, e) => {
-      return (e.sets as any[]).reduce((accSets, s: Set) => {
-        if (!s || !(s as any).complete) return 0;
-        return "weight" in s && "numReps" in s
-          ? ((accSets + s.weight) as number) * (s.numReps as number)
-          : accSets;
+      return (e.sets as Set[]).reduce((accSets, s) => {
+        if (!s || !s.complete) return 0;
+        const weight = "weight" in s ? s.weight : 0;
+        const numReps = "numReps" in s ? s.numReps : 0;
+
+        return accSets + weight * numReps;
       }, acc);
     }, 0);
   };
@@ -234,12 +216,10 @@ function CreateWorkout() {
               const { complete, ...otherKeys } = s;
               return {
                 ...otherKeys,
-                weight: otherKeys.weight !== undefined ? otherKeys.weight : 0,
-                numReps:
-                  otherKeys.numReps !== undefined ? otherKeys.numReps : 0,
-                time: otherKeys.time !== undefined ? otherKeys.time : 0,
-                distance:
-                  otherKeys.distance !== undefined ? otherKeys.distance : 0,
+                weight: "weight" in otherKeys ? otherKeys.weight : 0,
+                numReps: "numReps" in otherKeys ? otherKeys.numReps : 0,
+                time: "time" in otherKeys ? otherKeys.time : 0,
+                distance: "distance" in otherKeys ? otherKeys.distance : 0,
               };
             }),
           }));
@@ -247,7 +227,6 @@ function CreateWorkout() {
           endWorkout.mutate(
             { exercises: returnList },
             {
-              onSettled: (...args) => console.log(args),
               onSuccess: () => {
                 trpcContext.workouts.invalidate();
                 router.push("/");

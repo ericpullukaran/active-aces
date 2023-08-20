@@ -18,7 +18,6 @@ interface SetMeasurementProps {
 }
 
 function SetMeasurement({ num, value, onChange, remove }: SetMeasurementProps) {
-  console.log(value);
   return (
     <View className="mb-4 justify-center rounded-lg">
       <Text className="text-md mb-1 font-medium">Set {num + 1}</Text>

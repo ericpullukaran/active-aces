@@ -7,10 +7,6 @@ type Props = {
   classes?: string;
 };
 
-const style = {
-  fontVariant: ["tabular-nums"],
-};
-
 const getFormattedTime = (startTime: Date) => {
   const elapsedSeconds = (Date.now() - startTime.getTime()) / 1000;
   const minutes = Math.floor(elapsedSeconds / 60);
@@ -24,9 +20,10 @@ export default function Timer({ fromTime, classes }: Props) {
 
   useInterval(() => {
     setDuration(getFormattedTime(fromTime));
-  }, 1000);
+  }, 100);
+
   return (
-    <Text className={`${classes}`} style={style}>
+    <Text className={classes} style={{ fontVariant: ["tabular-nums"] }}>
       {duration}
     </Text>
   );

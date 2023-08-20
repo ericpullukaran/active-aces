@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Context } from "../context";
 import { protectedProcedure, router } from "../trpc";
-import { ProcedureParams, Simplify, TRPCError } from "@trpc/server";
+import { TRPCError } from "@trpc/server";
 
 const getCurrentWorkout = async (ctx: Context) => {
   if (!ctx.user) return null;
@@ -36,18 +36,21 @@ const setArrayUnion = z.union([
     .object({
       weight: z.number().nonnegative().finite(),
       numReps: z.number().nonnegative().int(),
+      complete: z.boolean().optional(),
     })
     .array(),
 
   z
     .object({
       numReps: z.number().nonnegative().int(),
+      complete: z.boolean().optional(),
     })
     .array(),
 
   z
     .object({
       time: z.number().nonnegative().int(),
+      complete: z.boolean().optional(),
     })
     .array(),
 
@@ -55,17 +58,13 @@ const setArrayUnion = z.union([
     .object({
       time: z.number().nonnegative().int(),
       distance: z.number().nonnegative(),
+      complete: z.boolean().optional(),
     })
     .array(),
 ]);
 
-type SetArrayUnionType =
-  | { weight: number; numReps: number }[]
-  | { numReps: number }[]
-  | { time: number }[]
-  | { time: number; distance: number }[];
-
-type SetArrayInputType = {
+type SetArrayUnionType = z.infer<typeof setArrayUnion>;
+export type EndWorkoutInput = {
   exercises: {
     sets: SetArrayUnionType;
     exerciseId: string;

@@ -1,12 +1,10 @@
-import React, { useLayoutEffect } from "react";
-import { PlusCircleIcon, UserIcon } from "react-native-heroicons/solid";
+import React from "react";
 import { Button, Pressable, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "@clerk/clerk-expo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "react-native";
 import { trpc } from "../utils/trpc";
-import { fonts } from "~/utils/fonts";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 
@@ -16,7 +14,7 @@ const SignOut = () => {
     <View className="mt-4 w-24 rounded-lg border-2 border-gray-500">
       <Button
         title="Sign Out"
-        color={"white"}
+        color={"black"}
         onPress={() => {
           signOut();
         }}
@@ -72,9 +70,12 @@ const HomeScreen = () => {
               router.push("create_workout");
             }}
           >
-            <View className="mx-auto flex flex-row items-center justify-center rounded-2xl bg-base-100 p-2  shadow-lg">
+            <View className="mx-auto flex flex-row items-center justify-center rounded-2xl bg-base-100 p-2 shadow-lg">
               {!currentWorkout.data ? (
-                <View className="mr-1 rounded-2xl bg-primary p-4">
+                <View
+                  className="mr-1 flex items-center justify-center rounded-2xl bg-primary"
+                  style={{ width: 52, height: 52 }}
+                >
                   <Icon
                     name="play"
                     size={20}
@@ -88,20 +89,20 @@ const HomeScreen = () => {
               )}
               <Text className="ml-3 mr-4 text-lg font-medium text-white">
                 {!currentWorkout.data ? "Start Workout" : "Continue"}
-                {!currentWorkout.data && (
-                  <>
-                    <View className={"200 pl-4"}>
-                      <Icon name="chevron-right" size={20} color={`white`} />
-                    </View>
-                    <View className={"200 pl-1 opacity-20"}>
-                      <Icon name="chevron-right" size={20} color={`white`} />
-                    </View>
-                    <View className={"200 pl-1 opacity-5"}>
-                      <Icon name="chevron-right" size={20} color={`white`} />
-                    </View>
-                  </>
-                )}
               </Text>
+              {!currentWorkout.data && (
+                <>
+                  <View className={"200"}>
+                    <Icon name="chevron-right" size={20} color={`white`} />
+                  </View>
+                  <View className={"200 pl-1 opacity-20"}>
+                    <Icon name="chevron-right" size={20} color={`white`} />
+                  </View>
+                  <View className={"200 pl-1 opacity-5"}>
+                    <Icon name="chevron-right" size={20} color={`white`} />
+                  </View>
+                </>
+              )}
             </View>
           </Pressable>
         </View>
