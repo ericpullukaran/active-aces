@@ -2,7 +2,7 @@
 
 ## Development Setup
 
-To run the development environment, you'll need to execute certain commands in separate terminals.
+To run the development environment, you'll need to execute certain commands in separate terminals. Also we will be using `@antfu/ni`, highly recommend.
 
 ### Steps
 
