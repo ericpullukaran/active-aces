@@ -1,9 +1,7 @@
-import { useOAuth } from "@clerk/clerk-expo";
-import { UserIcon } from "react-native-heroicons/outline";
 import React from "react";
+import { useOAuth } from "@clerk/clerk-expo";
 import { Text, Image, TouchableOpacity, View } from "react-native";
 import { useWarmUpBrowser } from "../utils/useWarmUpBrowser";
-import DividerWithIcon from "./DividerWithIcon";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const SignInWithOAuth = () => {
@@ -47,22 +45,14 @@ const SignInWithOAuth = () => {
         Active Aces
       </Text>
 
-      <DividerWithIcon className="opacity-5">
+      {/* <DividerWithIcon className="opacity-5">
         <UserIcon color={"white"} width={20} />
-      </DividerWithIcon>
+      </DividerWithIcon> */}
 
-      <View className="mt-6 flex-row justify-around ">
-        <TouchableOpacity
-          onPress={() => handleSignInWithPress("facebook")}
-          className="relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#1877F2]"
-        >
-          <View className="relative top-2">
-            <Icon name="facebook" size={50} color={"white"} />
-          </View>
-        </TouchableOpacity>
+      <View className="mt-6 flex-row space-x-2">
         <TouchableOpacity
           onPress={() => handleSignInWithPress("google")}
-          className="flex h-16 w-16 items-center justify-center rounded-lg"
+          className="flex h-16 flex-1 items-center justify-center rounded-lg bg-white"
         >
           <Image
             source={require("~/assets/google.png")}
@@ -74,9 +64,9 @@ const SignInWithOAuth = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => handleSignInWithPress("apple")}
-          className="flex h-16 w-16 items-center justify-center rounded-lg"
+          className="flex h-16 flex-1 items-center justify-center rounded-lg bg-white"
         >
-          <Icon name="apple" size={55} color={"white"} />
+          <Icon name="apple" size={55} color={"black"} />
         </TouchableOpacity>
       </View>
     </View>

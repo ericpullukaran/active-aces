@@ -12,9 +12,9 @@ function DividerWithIcon(props: DividerWithIconProps) {
     <View
       className={`mx-auto mb-4 mt-4 w-[75%] flex-row items-center ${className}`}
     >
-      <View className="h-[1px] flex-1 bg-white" />
+      <View className="h-[1px] flex-1 bg-white opacity-40" />
       <View className="mx-3">{children}</View>
-      <View className="h-[1px] flex-1 bg-white" />
+      <View className="h-[1px] flex-1 bg-white opacity-40" />
     </View>
   );
 }

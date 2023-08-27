@@ -79,6 +79,12 @@ const Layout: React.FC = () => {
                   headerShown: false,
                 }}
               />
+              <Stack.Screen
+                name="settings"
+                options={{
+                  headerShown: false,
+                }}
+              />
             </Stack>
             <StatusBar style="dark" />
           </SafeAreaProvider>

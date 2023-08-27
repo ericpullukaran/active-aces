@@ -32,6 +32,7 @@ function CreateWorkoutForm({
   const params = useSearchParams();
 
   const currentWorkout = trpc.workouts.current.useQuery();
+  const deleteWorkout = trpc.workouts.delete.useMutation();
 
   useEffect(() => {
     if (!params.selectedExerciseId) return;
@@ -64,6 +65,7 @@ function CreateWorkoutForm({
       }, 0),
     );
   };
+  const trpcContext = trpc.useContext();
 
   return (
     <FullHeightScrollView onScrollBeginDrag={() => Keyboard.dismiss()}>
@@ -87,7 +89,22 @@ function CreateWorkoutForm({
             </View>
 
             <View>
-              <TouchableOpacity className="flex h-16 w-16 items-center justify-center">
+              <TouchableOpacity
+                onPress={() => {
+                  if (currentWorkout.data) {
+                    deleteWorkout.mutate(
+                      { id: currentWorkout.data.id },
+                      {
+                        onSuccess: () => {
+                          trpcContext.workouts.current.invalidate();
+                          router.push("/");
+                        },
+                      },
+                    );
+                  }
+                }}
+                className="flex h-16 w-16 items-center justify-center"
+              >
                 <Icon
                   name="cog"
                   size={25}
