@@ -18,6 +18,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 import { fonts } from "~/utils/fonts";
 import { FullHeightScrollView } from "~/components/FullHeightScrollView";
 import type { EndWorkoutInput } from "@acme/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Set = EndWorkoutInput["exercises"][number]["sets"][number];
 
@@ -33,6 +34,36 @@ function CreateWorkoutForm({
 
   const currentWorkout = trpc.workouts.current.useQuery();
   const deleteWorkout = trpc.workouts.delete.useMutation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem("workoutState");
+        if (storedData !== null) {
+          const parsedData = JSON.parse(storedData);
+          setFieldValue("exercises", parsedData.exercises);
+        }
+      } catch (error) {
+        // Error retrieving data
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const storeData = async () => {
+      try {
+        await AsyncStorage.setItem("workoutState", JSON.stringify(values));
+      } catch (error) {
+        // Error saving data
+        console.error(error);
+      }
+    };
+
+    storeData();
+  }, [values]);
 
   useEffect(() => {
     if (!params.selectedExerciseId) return;
@@ -96,8 +127,10 @@ function CreateWorkoutForm({
                       { id: currentWorkout.data.id },
                       {
                         onSuccess: () => {
-                          trpcContext.workouts.current.invalidate();
                           router.push("/");
+                          // Clear local storage after workout cancelled
+                          AsyncStorage.setItem("workoutState", "");
+                          trpcContext.workouts.current.invalidate();
                         },
                       },
                     );
@@ -239,8 +272,9 @@ function CreateWorkout() {
       <Formik
         initialValues={{ exercises: [] } as EndWorkoutInput}
         onSubmit={(values) => {
-          console.log(JSON.stringify(values, null, 2));
           const returnList = values.exercises;
+          // Clear local storage after workout ended
+          AsyncStorage.setItem("workoutState", "");
           console.log(JSON.stringify({ returnList }, null, 2));
           endWorkout.mutate({ exercises: returnList });
         }}
