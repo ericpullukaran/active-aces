@@ -1,8 +1,15 @@
 import React, { useRef } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { RouterInputs, trpc } from "~/utils/trpc";
-import { Swipeable } from "react-native-gesture-handler";
+import { ScrollView, Swipeable } from "react-native-gesture-handler";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 import { useExercises } from "~/utils/exercises";
 
@@ -111,8 +118,8 @@ function ExerciseCard({
   }
 
   return (
-    <View>
-      <View className=" mb-8">
+    <View className="">
+      <View className="mb-8">
         <View
           className="h-22 z-20 flex-row items-start rounded-xl bg-[#202224] p-3"
           style={styles.shadow}
@@ -198,7 +205,10 @@ function ExerciseCard({
                         ...exerciseInfo,
                         sets: (exerciseInfo.sets as any[]).map((s, idx) => {
                           if (idx === index) {
-                            return { ...s, [measurement_type]: Number(text) };
+                            return {
+                              ...s,
+                              [measurement_type]: Number(text),
+                            };
                           } else {
                             return s;
                           }
