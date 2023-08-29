@@ -148,7 +148,7 @@ function CreateWorkoutForm({
               className="flex h-16 w-16 items-center justify-center"
             >
               <Icon
-                name="cog"
+                name="trash"
                 size={25}
                 color={`grey`} // TODO: I want to have red-500
               />

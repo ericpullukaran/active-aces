@@ -8,10 +8,11 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { RouterInputs, trpc } from "~/utils/trpc";
+import { RouterInputs, RouterOutputs, trpc } from "~/utils/trpc";
 import { ScrollView, Swipeable } from "react-native-gesture-handler";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 import { useExercises } from "~/utils/exercises";
+import ExerciseCardHeader from "./ExerciseCardHeader";
 
 const styles = StyleSheet.create({
   shadow: {
@@ -65,6 +66,19 @@ function ExerciseCard({
   const PrevRef = useRef(null);
   const exercises = useExercises();
   const curExercise = exercises.dataAsMap?.[exerciseInfo.exerciseId];
+  const lastworkout = trpc.workouts.previousExercise.useQuery(
+    {
+      exerciseId: curExercise?.id || "",
+    },
+    {
+      cacheTime: 1000 * 60 * 10, // ideally unlimited? i know this is not ideal
+    },
+  ).data as RouterOutputs["workouts"]["previousExercise"];
+  const lastWorkoutExerciseDetails = lastworkout?.workout?.exercises.find(
+    (e) => e.exerciseId === curExercise?.id,
+  );
+  console.log("exer list", lastWorkoutExerciseDetails);
+
   const curMesType =
     curExercise?.measurementType as keyof typeof emptySetsByMeasurementType;
 
@@ -98,12 +112,6 @@ function ExerciseCard({
     }
   };
 
-  const getCompletedSets = () =>
-    (exerciseInfo.sets as any[]).reduce(
-      (acc, s) => acc + (s.complete ? 1 : 0),
-      0,
-    );
-
   function renderRightActions(onPress: () => void, index: number) {
     return (
       <Pressable
@@ -120,36 +128,11 @@ function ExerciseCard({
   return (
     <View className="">
       <View className="mb-8">
-        <View
-          className="h-22 z-20 flex-row items-start rounded-xl bg-[#202224] p-3"
-          style={styles.shadow}
-        >
-          <View className="mr-2 h-16 w-20 rounded-md bg-red-300"></View>
-          <View className="flex-1">
-            <Text className="font-extrabold text-base text-white">
-              {curExercise?.name}
-            </Text>
-            <Text className="text-xs text-white">
-              {curExercise?.description}
-            </Text>
-          </View>
-          <View className="mr-2 self-center">
-            <Text className="text-white">
-              {getCompletedSets() !== exerciseInfo.sets.length ? (
-                <>
-                  {getCompletedSets()}/{exerciseInfo.sets.length}
-                </>
-              ) : (
-                <Icon
-                  name="check-circle"
-                  solid={true}
-                  size={20}
-                  color={`${myResolveTWConfig("success")}`} // TODO: I want to have red-500
-                />
-              )}
-            </Text>
-          </View>
-        </View>
+        <ExerciseCardHeader
+          exerciseInfo={exerciseInfo}
+          name={curExercise?.name || ""}
+          description={curExercise?.description || ""}
+        />
         <View
           className={`absolute top-16 z-10 w-full ${
             exerciseInfo.sets.length === 0 ? "" : "bg-base-100"
@@ -190,7 +173,15 @@ function ExerciseCard({
                   ref={PrevRef}
                   className="w-14 whitespace-pre text-sm text-white opacity-40"
                 >
-                  10kgx91
+                  {lastWorkoutExerciseDetails &&
+                  lastWorkoutExerciseDetails.sets[index] ? (
+                    <>
+                      {lastWorkoutExerciseDetails?.sets[index]?.weight}kgx
+                      {lastWorkoutExerciseDetails?.sets[index]?.numReps}
+                    </>
+                  ) : (
+                    "N/A"
+                  )}
                 </Text>
                 {requiredFields[curMesType].map((measurement_type) => (
                   <TextInput
@@ -268,6 +259,24 @@ function ExerciseCard({
         className="mt-2 h-8 items-center justify-center rounded-lg bg-base-100"
       >
         <Text className="text-md font-medium text-white">Add Set</Text>
+      </Pressable>
+      <Pressable
+        onPress={() => {
+          if (!curMesType) {
+            return;
+          }
+
+          onChange({
+            ...exerciseInfo,
+            sets: [
+              ...(exerciseInfo.sets as any[]),
+              emptySetsByMeasurementType[curMesType],
+            ],
+          });
+        }}
+        className="mt-2 h-8 items-center justify-center rounded-lg bg-base-100"
+      >
+        <Text className="text-md font-medium text-white">Remove Exercise</Text>
       </Pressable>
     </View>
   );
