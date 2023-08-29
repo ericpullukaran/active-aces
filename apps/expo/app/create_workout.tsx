@@ -244,8 +244,6 @@ function CreateWorkoutForm({
                       newExercises.splice(index, 1);
                       setFieldValue("exercises", newExercises);
                     } else {
-                      console.log("value on change", value);
-
                       setFieldValue(`exercises[${index}]`, value);
                     }
                   }}
