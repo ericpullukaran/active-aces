@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Keyboard,
   KeyboardAvoidingView,
+  Modal,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -38,6 +39,7 @@ function CreateWorkoutForm({
   handleSubmit,
   isSubmitting,
 }: FormikProps<EndWorkoutInput>) {
+  const [validationModal, setValidationModal] = useState(false);
   const router = useRouter();
   const params = useSearchParams();
 
@@ -106,6 +108,16 @@ function CreateWorkoutForm({
     );
   };
   const trpcContext = trpc.useContext();
+
+  const validate = () => {
+    return values.exercises.reduce((allExercisesCompleted, currentExercise) => {
+      if (!allExercisesCompleted) return false;
+      // Help idk how to fix types here
+      return (currentExercise.sets as any).every(
+        (set: any) => set.complete === true,
+      );
+    }, true);
+  };
 
   return (
     // <KeyboardAvoidingView className="flex-1" behavior="padding">
@@ -226,9 +238,17 @@ function CreateWorkoutForm({
                 <ExerciseCard
                   value={item}
                   index={index}
-                  onChange={(value) =>
-                    setFieldValue(`exercises[${index}]`, value)
-                  }
+                  onChange={(value) => {
+                    if (value === null) {
+                      const newExercises = [...values.exercises];
+                      newExercises.splice(index, 1);
+                      setFieldValue("exercises", newExercises);
+                    } else {
+                      console.log("value on change", value);
+
+                      setFieldValue(`exercises[${index}]`, value);
+                    }
+                  }}
                 />
               </View>
             )}
@@ -238,7 +258,13 @@ function CreateWorkoutForm({
 
       <View className="absolute bottom-0 w-full flex-row px-4 pb-2">
         <TouchableOpacity
-          onPress={() => handleSubmit()}
+          onPress={() => {
+            if (!validate()) {
+              setValidationModal(true);
+            } else {
+              handleSubmit();
+            }
+          }}
           className="mr-4 h-12 flex-1 items-center justify-center rounded-lg bg-red-400"
         >
           <Text className="text-lg font-semibold">End Workout</Text>
@@ -257,6 +283,49 @@ function CreateWorkoutForm({
           <Text className="text-lg font-semibold text-white">Add Exercise</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={validationModal}
+        onRequestClose={() => setValidationModal(false)}
+      >
+        {/* Full screen touchable area */}
+        <TouchableOpacity
+          className="flex-1 justify-end bg-black/40"
+          activeOpacity={1} // Keep it fully opaque
+          onPressOut={() => setValidationModal(false)} // Close when pressed
+        >
+          {/* Modal Content */}
+          <TouchableOpacity activeOpacity={1}>
+            <View className="elevation-5 items-center rounded-xl bg-base-200 pt-6 shadow-xl">
+              <View className="mb-4">
+                <Text className="text-xl font-semibold text-white">
+                  Something doesn't look right
+                </Text>
+              </View>
+              <View className="flex w-full flex-row justify-center border-b-2 border-t-2 border-base-100">
+                <TouchableOpacity
+                  onPress={() => handleSubmit()}
+                  className="flex h-12 w-full items-center justify-center rounded-lg px-4"
+                >
+                  <Text className="text-lg font-semibold text-white">
+                    Complete all and submit
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View className="w-full px-4">
+                <TouchableOpacity
+                  className="mb-8 mt-4 h-12 w-full items-center justify-center rounded-xl bg-red-400 px-4"
+                  onPress={() => setValidationModal(false)}
+                >
+                  <Text className="text-lg font-semibold">Close</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </View>
     // </KeyboardAvoidingView>
   );

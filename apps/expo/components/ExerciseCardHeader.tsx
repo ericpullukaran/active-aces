@@ -29,10 +29,12 @@ export default function ExerciseCardHeader({
   exerciseInfo,
   name,
   description,
+  onChange,
 }: {
   exerciseInfo: EndWorkoutExercises;
   name: string;
   description: string;
+  onChange: (value: EndWorkoutExercises | null) => void;
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -62,7 +64,7 @@ export default function ExerciseCardHeader({
         ]}
       >
         <View
-          className="h-22  flex-row items-start rounded-xl bg-[#202224] p-3"
+          className="flex-row items-start rounded-xl bg-[#202224] p-3"
           style={styles.shadow}
         >
           {/* Existing content */}
@@ -71,21 +73,26 @@ export default function ExerciseCardHeader({
             <Text className="font-extrabold text-base text-white">{name}</Text>
             <Text className="text-xs text-white">{description}</Text>
           </View>
-          <View className="mr-2 self-center">
-            <Text className="text-white">
-              {getCompletedSets() !== exerciseInfo.sets.length ? (
-                <>
-                  {getCompletedSets()}/{exerciseInfo.sets.length}
-                </>
-              ) : (
-                <Icon
-                  name="check-circle"
-                  solid={true}
-                  size={20}
-                  color={`${myResolveTWConfig("success")}`}
-                />
-              )}
-            </Text>
+          <View className="mr-2 h-16 justify-between">
+            <Pressable onPress={handleLongPress}>
+              <Icon name="ellipsis-h" solid={true} size={20} color={`white`} />
+            </Pressable>
+            <View className="pb-2">
+              <Text className="text-white">
+                {getCompletedSets() !== exerciseInfo.sets.length ? (
+                  <>
+                    {getCompletedSets()}/{exerciseInfo.sets.length}
+                  </>
+                ) : (
+                  <Icon
+                    name="check-circle"
+                    solid={true}
+                    size={20}
+                    color={`${myResolveTWConfig("success")}`}
+                  />
+                )}
+              </Text>
+            </View>
           </View>
         </View>
       </Pressable>
@@ -98,25 +105,31 @@ export default function ExerciseCardHeader({
       >
         {/* Full screen touchable area */}
         <TouchableOpacity
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          className="flex-1 justify-end bg-black/40"
           activeOpacity={1} // Keep it fully opaque
           onPressOut={() => setModalVisible(false)} // Close when pressed
         >
           {/* Modal Content */}
           <TouchableOpacity activeOpacity={1} onPress={() => {}}>
-            <View
-              style={{
-                backgroundColor: "white",
-                borderRadius: 20,
-                padding: 35,
-                alignItems: "center",
-                elevation: 5,
-              }}
-            >
-              <Text>Menu Options Here</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Text className="text-black">Close Menu</Text>
-              </TouchableOpacity>
+            <View className="elevation-5 items-center rounded-xl bg-base-200 pt-6 shadow-xl">
+              <View className="flex w-full flex-row justify-center border-b-2 border-t-2 border-base-100">
+                <TouchableOpacity
+                  onPress={() => onChange(null)}
+                  className="flex h-12 w-full items-center justify-center rounded-lg px-4"
+                >
+                  <Text className="text-lg font-semibold text-white">
+                    Remove Exercise
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View className="w-full px-4">
+                <TouchableOpacity
+                  className="mb-8 mt-4 h-12 w-full items-center justify-center rounded-xl bg-red-400 px-4"
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text className="text-lg font-semibold">Close</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
         </TouchableOpacity>

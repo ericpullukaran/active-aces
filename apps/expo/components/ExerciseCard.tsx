@@ -61,7 +61,7 @@ function ExerciseCard({
 }: {
   value: EndWorkoutExercises;
   index: number;
-  onChange: (value: EndWorkoutExercises) => void;
+  onChange: (value: EndWorkoutExercises | null) => void;
 }) {
   const PrevRef = useRef(null);
   const exercises = useExercises();
@@ -77,7 +77,6 @@ function ExerciseCard({
   const lastWorkoutExerciseDetails = lastworkout?.workout?.exercises.find(
     (e) => e.exerciseId === curExercise?.id,
   );
-  console.log("exer list", lastWorkoutExerciseDetails);
 
   const curMesType =
     curExercise?.measurementType as keyof typeof emptySetsByMeasurementType;
@@ -112,6 +111,35 @@ function ExerciseCard({
     }
   };
 
+  const getPreviousData = (index: number) => {
+    if (
+      lastWorkoutExerciseDetails &&
+      lastWorkoutExerciseDetails.sets[index] &&
+      curExercise
+    ) {
+      if (curExercise.measurementType === "reps") {
+        return <>{lastWorkoutExerciseDetails?.sets[index]?.numReps} reps</>;
+      } else if (curExercise.measurementType === "weight-reps") {
+        return (
+          <>
+            {lastWorkoutExerciseDetails?.sets[index]?.weight}kgx
+            {lastWorkoutExerciseDetails?.sets[index]?.numReps}
+          </>
+        );
+      } else if (curExercise.measurementType === "time-distance") {
+        return (
+          <>
+            {lastWorkoutExerciseDetails?.sets[index]?.time} minutes/
+            {lastWorkoutExerciseDetails?.sets[index]?.distance} meters
+          </>
+        );
+      } else if (curExercise.measurementType === "time") {
+        return <>{lastWorkoutExerciseDetails?.sets[index]?.time} minutes</>;
+      }
+    }
+    return "N/A";
+  };
+
   function renderRightActions(onPress: () => void, index: number) {
     return (
       <Pressable
@@ -132,6 +160,7 @@ function ExerciseCard({
           exerciseInfo={exerciseInfo}
           name={curExercise?.name || ""}
           description={curExercise?.description || ""}
+          onChange={onChange}
         />
         <View
           className={`absolute top-16 z-10 w-full ${
@@ -173,15 +202,7 @@ function ExerciseCard({
                   ref={PrevRef}
                   className="w-14 whitespace-pre text-sm text-white opacity-40"
                 >
-                  {lastWorkoutExerciseDetails &&
-                  lastWorkoutExerciseDetails.sets[index] ? (
-                    <>
-                      {lastWorkoutExerciseDetails?.sets[index]?.weight}kgx
-                      {lastWorkoutExerciseDetails?.sets[index]?.numReps}
-                    </>
-                  ) : (
-                    "N/A"
-                  )}
+                  {getPreviousData(index)}
                 </Text>
                 {requiredFields[curMesType].map((measurement_type) => (
                   <TextInput
@@ -259,24 +280,6 @@ function ExerciseCard({
         className="mt-2 h-8 items-center justify-center rounded-lg bg-base-100"
       >
         <Text className="text-md font-medium text-white">Add Set</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          if (!curMesType) {
-            return;
-          }
-
-          onChange({
-            ...exerciseInfo,
-            sets: [
-              ...(exerciseInfo.sets as any[]),
-              emptySetsByMeasurementType[curMesType],
-            ],
-          });
-        }}
-        className="mt-2 h-8 items-center justify-center rounded-lg bg-base-100"
-      >
-        <Text className="text-md font-medium text-white">Remove Exercise</Text>
       </Pressable>
     </View>
   );
