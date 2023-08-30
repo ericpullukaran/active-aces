@@ -76,11 +76,10 @@ const HomeScreen = () => {
                   onPress={() => router.push("history")}
                   className="h-full flex-row items-center space-x-2 rounded-xl bg-base-200 px-3"
                 >
-                  <View>
-                    <Text className="text-lg font-medium text-white/50">
-                      more
-                    </Text>
-                  </View>
+                  <Text className="-translate-y-0.5 text-lg font-medium text-white/50">
+                    more
+                  </Text>
+
                   <View>
                     <Icon
                       name="chevron-right"

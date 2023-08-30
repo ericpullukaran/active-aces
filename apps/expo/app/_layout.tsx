@@ -35,7 +35,10 @@ const Layout: React.FC = () => {
 
   return (
     <ClerkProvider
-      publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
+      publishableKey={
+        "pk_test_ZW1pbmVudC1saW9uZmlzaC04NS5jbGVyay5hY2NvdW50cy5kZXYk" ??
+        Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY
+      }
       tokenCache={tokenCache}
     >
       <SignedIn>

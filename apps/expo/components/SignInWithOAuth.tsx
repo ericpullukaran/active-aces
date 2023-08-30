@@ -1,30 +1,42 @@
 import React from "react";
-import { useOAuth } from "@clerk/clerk-expo";
+import { useOAuth, useUser, useSession } from "@clerk/clerk-expo";
 import { Text, Image, TouchableOpacity, View } from "react-native";
 import { useWarmUpBrowser } from "../utils/useWarmUpBrowser";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Constants from "expo-constants";
 
 const SignInWithOAuth = () => {
   useWarmUpBrowser();
-  const facebookOAuth = useOAuth({ strategy: "oauth_facebook" });
   const googleOAuth = useOAuth({ strategy: "oauth_google" });
   const appleOAuth = useOAuth({ strategy: "oauth_apple" });
 
+  console.log({
+    user: useUser(),
+    session: useSession(),
+    consts: Constants.expoConfig?.extra,
+  });
+
   const handleSignInWithPress = React.useCallback(
-    async (authType: "google" | "facebook" | "apple") => {
+    async (authType: "google" | "apple") => {
       try {
-        let authHandler = facebookOAuth.startOAuthFlow;
-        if (authType === "facebook") {
-          authHandler = facebookOAuth.startOAuthFlow;
-        } else if (authType === "google") {
+        let authHandler: (typeof googleOAuth)["startOAuthFlow"];
+        if (authType === "google") {
           authHandler = googleOAuth.startOAuthFlow;
         } else if (authType === "apple") {
           authHandler = appleOAuth.startOAuthFlow;
+        } else {
+          throw new Error(
+            `invalid authType "${authType}", must be "google" or "apple"`,
+          );
         }
 
-        const { createdSessionId, setActive } = await authHandler();
+        const { createdSessionId, setActive, authSessionResult } =
+          await authHandler();
+        if (authSessionResult?.type === "dismiss") {
+          return;
+        }
         if (createdSessionId) {
-          setActive({ session: createdSessionId });
+          setActive?.({ session: createdSessionId });
         } else {
           // Modify this code to use signIn or signUp to set this missing requirements you set in your dashboard.
           throw new Error(
