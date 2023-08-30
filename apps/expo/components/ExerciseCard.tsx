@@ -71,10 +71,11 @@ function ExerciseCard({
       exerciseId: curExercise?.id || "",
     },
     {
-      cacheTime: 1000 * 60 * 10, // ideally unlimited? i know this is not ideal
+      staleTime: Infinity,
     },
-  ).data as RouterOutputs["workouts"]["previousExercise"];
-  const lastWorkoutExerciseDetails = lastworkout?.workout?.exercises.find(
+  );
+
+  const lastWorkoutExerciseDetails = lastworkout?.data?.workout?.exercises.find(
     (e) => e.exerciseId === curExercise?.id,
   );
 
