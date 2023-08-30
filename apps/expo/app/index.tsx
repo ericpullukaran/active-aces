@@ -41,10 +41,7 @@ const HomeScreen = () => {
           <View className="h-full w-full px-4">
             <View className="mb-8 h-16 flex-row items-center justify-start rounded-xl bg-base-100">
               <View className="m-2 ml-4 flex-1 flex-row items-center">
-                <TouchableOpacity
-                  onPress={() => router.push("history")}
-                  className="flex h-11 w-11 items-center justify-center"
-                >
+                <View className="flex h-11 w-11 items-center justify-center">
                   <Image
                     source={require("../assets/logo_dark.png")}
                     style={{
@@ -53,7 +50,7 @@ const HomeScreen = () => {
                     }}
                     className="w-full"
                   />
-                </TouchableOpacity>
+                </View>
                 <Text className="ml-4 text-2xl font-bold text-zinc-500">
                   Active Aces
                 </Text>
@@ -71,18 +68,31 @@ const HomeScreen = () => {
             </Text>
 
             <View className="mt-8 rounded-lg pb-3">
-              <View className="m-2 h-8 flex-row items-center">
+              <View className="mb-4 h-8 flex-row items-center">
                 <Text className="flex-1 text-lg font-medium text-white/50">
                   Recent Workouts
                 </Text>
-                <Icon
-                  name="chevron-right"
-                  size={15}
-                  color={`white`}
-                  style={{ opacity: 0.5 }}
-                />
+                <TouchableOpacity
+                  onPress={() => router.push("history")}
+                  className="h-full flex-row items-center space-x-2 rounded-xl bg-base-200 px-3"
+                >
+                  <View>
+                    <Text className="text-lg font-medium text-white/50">
+                      more
+                    </Text>
+                  </View>
+                  <View>
+                    <Icon
+                      name="chevron-right"
+                      size={13}
+                      color={`white`}
+                      style={{ opacity: 0.5 }}
+                    />
+                  </View>
+                </TouchableOpacity>
               </View>
               <FlatList
+                className="mb-12"
                 scrollEnabled={false}
                 keyExtractor={(item) => item.id}
                 data={recentWorkoutsQuery.data?.workouts}
