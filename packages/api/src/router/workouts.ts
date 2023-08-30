@@ -79,6 +79,47 @@ export type EndWorkoutInput = {
 };
 
 export const workoutsRouter = router({
+  previousExercise: protectedProcedure
+    .input(
+      z.object({
+        exerciseId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const workout = await ctx.prisma.workout.findFirst({
+        where: {
+          userId: ctx.user.id,
+          exercises: {
+            some: {
+              exerciseId: input.exerciseId,
+            },
+          },
+        },
+        orderBy: {
+          startTime: "desc",
+        },
+        take: 1, // Only take the most recent workout
+        include: {
+          exercises: {
+            orderBy: {
+              order: "asc",
+            },
+            include: {
+              sets: {
+                orderBy: {
+                  order: "asc",
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return {
+        workout,
+      };
+    }),
+
   history: protectedProcedure
     .input(
       z.object({

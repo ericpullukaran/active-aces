@@ -1,10 +1,18 @@
 import React, { useRef } from "react";
-import { Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import {
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { RouterInputs, trpc } from "~/utils/trpc";
-import { Swipeable } from "react-native-gesture-handler";
+import { RouterInputs, RouterOutputs, trpc } from "~/utils/trpc";
+import { ScrollView, Swipeable } from "react-native-gesture-handler";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 import { useExercises } from "~/utils/exercises";
+import ExerciseCardHeader from "./ExerciseCardHeader";
 
 const styles = StyleSheet.create({
   shadow: {
@@ -53,11 +61,24 @@ function ExerciseCard({
 }: {
   value: EndWorkoutExercises;
   index: number;
-  onChange: (value: EndWorkoutExercises) => void;
+  onChange: (value: EndWorkoutExercises | null) => void;
 }) {
   const PrevRef = useRef(null);
   const exercises = useExercises();
   const curExercise = exercises.dataAsMap?.[exerciseInfo.exerciseId];
+  const lastworkout = trpc.workouts.previousExercise.useQuery(
+    {
+      exerciseId: curExercise?.id || "",
+    },
+    {
+      staleTime: Infinity,
+    },
+  );
+
+  const lastWorkoutExerciseDetails = lastworkout?.data?.workout?.exercises.find(
+    (e) => e.exerciseId === curExercise?.id,
+  );
+
   const curMesType =
     curExercise?.measurementType as keyof typeof emptySetsByMeasurementType;
 
@@ -91,11 +112,34 @@ function ExerciseCard({
     }
   };
 
-  const getCompletedSets = () =>
-    (exerciseInfo.sets as any[]).reduce(
-      (acc, s) => acc + (s.complete ? 1 : 0),
-      0,
-    );
+  const getPreviousData = (index: number) => {
+    if (
+      lastWorkoutExerciseDetails &&
+      lastWorkoutExerciseDetails.sets[index] &&
+      curExercise
+    ) {
+      if (curExercise.measurementType === "reps") {
+        return <>{lastWorkoutExerciseDetails?.sets[index]?.numReps} reps</>;
+      } else if (curExercise.measurementType === "weight-reps") {
+        return (
+          <>
+            {lastWorkoutExerciseDetails?.sets[index]?.weight}kgx
+            {lastWorkoutExerciseDetails?.sets[index]?.numReps}
+          </>
+        );
+      } else if (curExercise.measurementType === "time-distance") {
+        return (
+          <>
+            {lastWorkoutExerciseDetails?.sets[index]?.time} minutes/
+            {lastWorkoutExerciseDetails?.sets[index]?.distance} meters
+          </>
+        );
+      } else if (curExercise.measurementType === "time") {
+        return <>{lastWorkoutExerciseDetails?.sets[index]?.time} minutes</>;
+      }
+    }
+    return "N/A";
+  };
 
   function renderRightActions(onPress: () => void, index: number) {
     return (
@@ -111,38 +155,14 @@ function ExerciseCard({
   }
 
   return (
-    <View>
-      <View className=" mb-8">
-        <View
-          className="h-22 z-20 flex-row items-start rounded-xl bg-[#202224] p-3"
-          style={styles.shadow}
-        >
-          <View className="mr-2 h-16 w-20 rounded-md bg-red-300"></View>
-          <View className="flex-1">
-            <Text className="font-extrabold text-base text-white">
-              {curExercise?.name}
-            </Text>
-            <Text className="text-xs text-white">
-              {curExercise?.description}
-            </Text>
-          </View>
-          <View className="mr-2 self-center">
-            <Text className="text-white">
-              {getCompletedSets() !== exerciseInfo.sets.length ? (
-                <>
-                  {getCompletedSets()}/{exerciseInfo.sets.length}
-                </>
-              ) : (
-                <Icon
-                  name="check-circle"
-                  solid={true}
-                  size={20}
-                  color={`${myResolveTWConfig("success")}`} // TODO: I want to have red-500
-                />
-              )}
-            </Text>
-          </View>
-        </View>
+    <View className="">
+      <View className="mb-8">
+        <ExerciseCardHeader
+          exerciseInfo={exerciseInfo}
+          name={curExercise?.name || ""}
+          description={curExercise?.description || ""}
+          onChange={onChange}
+        />
         <View
           className={`absolute top-16 z-10 w-full ${
             exerciseInfo.sets.length === 0 ? "" : "bg-base-100"
@@ -183,7 +203,7 @@ function ExerciseCard({
                   ref={PrevRef}
                   className="w-14 whitespace-pre text-sm text-white opacity-40"
                 >
-                  10kgx91
+                  {getPreviousData(index)}
                 </Text>
                 {requiredFields[curMesType].map((measurement_type) => (
                   <TextInput
@@ -198,7 +218,10 @@ function ExerciseCard({
                         ...exerciseInfo,
                         sets: (exerciseInfo.sets as any[]).map((s, idx) => {
                           if (idx === index) {
-                            return { ...s, [measurement_type]: Number(text) };
+                            return {
+                              ...s,
+                              [measurement_type]: Number(text),
+                            };
                           } else {
                             return s;
                           }
