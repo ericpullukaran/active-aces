@@ -34,9 +34,7 @@ const HomeScreen = () => {
     },
   );
 
-  const getName = () => {
-    return userQuery.data?.firstName !== "" ? userQuery.data?.firstName : "Ace";
-  };
+  const getName = () => userQuery.data?.firstName || "Ace";
 
   return (
     <>
