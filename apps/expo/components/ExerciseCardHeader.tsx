@@ -26,28 +26,29 @@ const styles = StyleSheet.create({
 });
 
 export default function ExerciseCardHeader({
-  exerciseInfo,
+  sets,
   name,
   description,
   onChange,
+  isHistoryView = false,
 }: {
-  exerciseInfo: EndWorkoutExercises;
+  sets: EndWorkoutExercises["sets"];
   name: string;
   description: string;
   onChange: (value: EndWorkoutExercises | null) => void;
+  isHistoryView?: boolean;
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const getCompletedSets = () => {
-    return (exerciseInfo.sets as any[]).reduce(
-      (acc, s) => acc + (s.complete ? 1 : 0),
-      0,
-    );
+    return (sets as any[]).reduce((acc, s) => acc + (s.complete ? 1 : 0), 0);
   };
 
   const handleLongPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setModalVisible(true);
+    if (!isHistoryView) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -68,32 +69,49 @@ export default function ExerciseCardHeader({
           style={styles.shadow}
         >
           {/* Existing content */}
-          <View className="mr-2 h-16 w-20 rounded-md bg-red-300"></View>
+          <View className="mr-2 h-16 w-16 rounded-md bg-red-300"></View>
           <View className="flex-1">
-            <Text className="font-extrabold text-base text-white">{name}</Text>
-            <Text className="text-xs text-white">{description}</Text>
+            <Text
+              numberOfLines={1}
+              className="text-ellipsis font-extrabold text-base text-white"
+            >
+              {name}
+            </Text>
+            <Text
+              numberOfLines={1}
+              className="text-ellipsis text-xs text-white"
+            >
+              {description}
+            </Text>
           </View>
-          <View className="mr-2 h-16 justify-between">
-            <Pressable onPress={handleLongPress}>
-              <Icon name="ellipsis-h" solid={true} size={20} color={`white`} />
-            </Pressable>
-            <View className="pb-2">
-              <Text className="text-white">
-                {getCompletedSets() !== exerciseInfo.sets.length ? (
-                  <>
-                    {getCompletedSets()}/{exerciseInfo.sets.length}
-                  </>
-                ) : (
-                  <Icon
-                    name="check-circle"
-                    solid={true}
-                    size={20}
-                    color={`${myResolveTWConfig("success")}`}
-                  />
-                )}
-              </Text>
+          {!isHistoryView && (
+            <View className="mr-2 h-16 justify-between">
+              <Pressable onPress={handleLongPress}>
+                <Icon
+                  name="ellipsis-h"
+                  solid={true}
+                  size={20}
+                  color={`white`}
+                />
+              </Pressable>
+              <View className="pb-2">
+                <Text className="text-white">
+                  {getCompletedSets() !== sets.length ? (
+                    <>
+                      {getCompletedSets()}/{sets.length}
+                    </>
+                  ) : (
+                    <Icon
+                      name="check-circle"
+                      solid={true}
+                      size={20}
+                      color={`${myResolveTWConfig("success")}`}
+                    />
+                  )}
+                </Text>
+              </View>
             </View>
-          </View>
+          )}
         </View>
       </Pressable>
 
