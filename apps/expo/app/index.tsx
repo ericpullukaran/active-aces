@@ -34,6 +34,10 @@ const HomeScreen = () => {
     },
   );
 
+  const getName = () => {
+    return userQuery.data?.firstName !== "" ? userQuery.data?.firstName : "Ace";
+  };
+
   return (
     <>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -66,7 +70,8 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
             <Text className="text-5xl leading-[55px] text-white">
-              <Text className="font-extrabold text-primary">Ace</Text>, every
+              <Text className="font-extrabold text-primary">{getName()}</Text>,
+              every
               {"\nworkout counts. Let's conquer today!"}
             </Text>
 
