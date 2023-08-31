@@ -10,6 +10,7 @@ import { fonts, useFonts } from "~/utils/fonts";
 import React, { useEffect } from "react";
 import { setCustomText } from "react-native-global-props";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
+import { View } from "react-native";
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -35,17 +36,17 @@ const Layout: React.FC = () => {
 
   return (
     <ClerkProvider
-      publishableKey={
-        "pk_test_ZW1pbmVudC1saW9uZmlzaC04NS5jbGVyay5hY2NvdW50cy5kZXYk" ??
-        Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY
-      }
+      publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
       tokenCache={tokenCache}
     >
       <SignedIn>
         <TRPCProvider>
           <SafeAreaProvider>
-            {/* * To be able to see the status bar on android */}
-            <StatusBar style="dark" />
+            <StatusBar
+              // * NOTE: This is for the style of the TEXT, not the status bar as a whole
+              style="light"
+              backgroundColor="#15171877"
+            />
             {/* ! Don't put any elements around the <Stack /> here. You might lose several hours of your life */}
             <Stack
               screenOptions={{
@@ -89,7 +90,6 @@ const Layout: React.FC = () => {
                 }}
               />
             </Stack>
-            <StatusBar style="dark" />
           </SafeAreaProvider>
         </TRPCProvider>
       </SignedIn>
