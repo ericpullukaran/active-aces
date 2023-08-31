@@ -35,10 +35,9 @@ const History = () => {
 
   const exercises = useExercises();
 
-  const flatWorkoutHistory = workoutHistoryQuery.data?.pages.flatMap(
-    (page) => page.workouts,
-  );
-
+  const flatWorkoutHistory =
+    workoutHistoryQuery.data?.pages.flatMap((page) => page.workouts) ??
+    trpcContext.workouts.history.getData({ limit: 3 })?.workouts;
   return (
     <View className="p-4">
       <FlatList

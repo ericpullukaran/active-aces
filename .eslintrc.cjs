@@ -12,4 +12,10 @@ module.exports = {
   },
   plugins: ["@typescript-eslint"],
   extends: ["plugin:@typescript-eslint/recommended"],
+  rules: {
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+    ],
+  },
 };

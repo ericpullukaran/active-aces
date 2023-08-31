@@ -5,16 +5,17 @@ const CLERK_PUBLISHABLE_KEY =
   "pk_test_ZW1pbmVudC1saW9uZmlzaC04NS5jbGVyay5hY2NvdW50cy5kZXYk";
 
 const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
-  name: "expo",
-  slug: "expo",
-  version: "1.0.0",
+  name: "Active Aces",
+  slug: "active-aces",
+  version: "0.0.1",
+  owner: "chatgph",
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "dark",
   splash: {
     image: "./assets/icon.png",
     resizeMode: "contain",
-    backgroundColor: "#2e026d",
+    backgroundColor: "#151718",
   },
   updates: {
     fallbackToCacheTimeout: 0,
@@ -27,17 +28,24 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
-      backgroundColor: "#2e026d",
+      backgroundColor: "#151718",
     },
+    package: "com.soorria.activeaces",
   },
+  androidStatusBar: {
+    barStyle: "light-content",
+    backgroundColor: "#151718",
+    translucent: false,
+  },
+  backgroundColor: "#151718",
   extra: {
     eas: {
-      projectId: "your-project-id",
+      projectId: "13f40d9c-f52c-459d-83e6-63d220fdf221",
     },
     CLERK_PUBLISHABLE_KEY,
   },
   plugins: ["./expo-plugins/with-modify-gradle.js"],
-  scheme: "myapp",
+  scheme: "actice-aces",
   web: {
     bundler: "metro",
   },
