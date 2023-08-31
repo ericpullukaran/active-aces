@@ -30,6 +30,12 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
       backgroundColor: "#151718",
     },
   },
+  androidStatusBar: {
+    barStyle: "light-content",
+    backgroundColor: "#151718",
+    translucent: false,
+  },
+  backgroundColor: "#151718",
   extra: {
     eas: {
       projectId: "your-project-id",
@@ -37,7 +43,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
     CLERK_PUBLISHABLE_KEY,
   },
   plugins: ["./expo-plugins/with-modify-gradle.js"],
-  scheme: "myapp",
+  scheme: "actice-aces",
   web: {
     bundler: "metro",
   },
