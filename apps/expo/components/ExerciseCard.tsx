@@ -14,25 +14,6 @@ import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
 import { useExercises } from "~/utils/exercises";
 import ExerciseCardHeader from "./ExerciseCardHeader";
 
-const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 4.65,
-    elevation: 6,
-  },
-});
-
-const SET_MEASUREMENT_TYPES = [
-  "weight",
-  "numReps",
-  "time",
-  "distance",
-] as const;
 const emptySetsByMeasurementType = {
   "weight-reps": { weight: 0, numReps: 0 },
   reps: { numReps: 0 },
@@ -158,7 +139,7 @@ function ExerciseCard({
     <View className="">
       <View className="mb-8">
         <ExerciseCardHeader
-          exerciseInfo={exerciseInfo}
+          sets={exerciseInfo.sets}
           name={curExercise?.name || ""}
           description={curExercise?.description || ""}
           onChange={onChange}
