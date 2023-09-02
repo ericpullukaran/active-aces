@@ -10,7 +10,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   version: "0.0.1",
   owner: "chatgph",
   orientation: "portrait",
-  icon: "./assets/icon.png",
+  icon: "./assets/icon_ios.png",
   userInterfaceStyle: "dark",
   splash: {
     image: "./assets/icon.png",
