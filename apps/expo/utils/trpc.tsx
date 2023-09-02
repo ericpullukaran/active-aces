@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import { transformer } from "@acme/api/transformer";
 import { useAuth } from "@clerk/clerk-expo";
+import { shittyLog } from "./logging";
 
 /**
  * A set of typesafe hooks for consuming your API.
@@ -22,11 +23,11 @@ export const trpc = createTRPCReact<AppRouter>();
 
 const getBaseUrl = () => {
   if (!__DEV__) {
-    const publicUrl = process.env.PUBLIC_URL;
-    if (!publicUrl) {
-      throw new Error("PUBLIC_URL is not set in production");
-    }
-    return publicUrl;
+    // const publicUrl = process.env.PUBLIC_URL;
+    // if (!publicUrl) {
+    //   throw new Error("PUBLIC_URL is not set in production");
+    // }
+    return "https://activeaces.com";
   }
 
   /**
@@ -51,7 +52,11 @@ export const TRPCProvider: React.FC<{
         defaultOptions: {
           queries: {
             onError(err) {
-              console.log(err);
+              shittyLog({
+                err,
+                message: (err as any)?.message,
+                stack: (err as any)?.stack,
+              });
             },
           },
         },
@@ -64,6 +69,9 @@ export const TRPCProvider: React.FC<{
         httpBatchLink({
           async headers() {
             const authToken = await getToken();
+            shittyLog({
+              authToken,
+            });
             return {
               Authorization: authToken ?? undefined,
             };
