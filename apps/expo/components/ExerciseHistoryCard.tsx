@@ -7,10 +7,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5";
-import { RouterInputs, RouterOutputs, trpc } from "~/utils/trpc";
-import { ScrollView, Swipeable } from "react-native-gesture-handler";
-import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
+import { RouterOutputs } from "~/utils/trpc";
 import { useExercises } from "~/utils/exercises";
 import ExerciseCardHeader from "./ExerciseCardHeader";
 
@@ -215,8 +212,9 @@ function ExerciseHistoryCard({
               <Text className="w-14 whitespace-pre text-center text-sm text-white opacity-40">
                 {index}
               </Text>
-              {requiredFields[curMesType].map((measurement_type) => (
+              {requiredFields[curMesType].map((measurement_type, index) => (
                 <View
+                  key={index}
                   className={`h-4/6 w-14 items-center justify-center rounded-xl pl-2 text-white`}
                 >
                   <Text className="text-center text-lg text-zinc-300">
