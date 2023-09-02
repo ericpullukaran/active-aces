@@ -5,6 +5,7 @@
   "scripts": {
     "start": "expo start",
     "dev": "expo start",
+    "dev:prod": "expo start --no-dev --minify",
     "clean": "rm -rf .expo .turbo node_modules",
     "android": "expo start --android",
     "ios": "expo start --ios",

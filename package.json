@@ -14,6 +14,7 @@
     "web": "turbo dev --filter=nextjs",
     "postinstall": "pnpm run db-generate",
     "mobile": "cd apps/expo && npm run dev",
+    "mobile:prod": "cd apps/expo && npm run dev:prod",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
     "FIXME:lint": "turbo lint && manypkg check",
