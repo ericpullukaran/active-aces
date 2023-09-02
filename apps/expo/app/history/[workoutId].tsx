@@ -132,7 +132,7 @@ const HistoryWorkoutItem = (props: Props) => {
           showsVerticalScrollIndicator={false}
           keyExtractor={(item, index) => `${index}-${item.exerciseId}`}
           renderItem={({ item, index }) => (
-            <View className="mb-6">
+            <View key={index} className="mb-6">
               <ExerciseHistoryCard value={item} index={index} />
             </View>
           )}
