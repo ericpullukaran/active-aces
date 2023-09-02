@@ -23,7 +23,7 @@ const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "your.bundle.identifier",
+    bundleIdentifier: "me.ericpaul.activeaces",
   },
   android: {
     adaptiveIcon: {

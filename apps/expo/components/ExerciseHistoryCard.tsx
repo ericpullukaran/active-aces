@@ -1,12 +1,5 @@
-import React, { useRef } from "react";
-import {
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-} from "react-native";
+import React from "react";
+import { Text, View } from "react-native";
 import { RouterOutputs } from "~/utils/trpc";
 import { useExercises } from "~/utils/exercises";
 import ExerciseCardHeader from "./ExerciseCardHeader";
