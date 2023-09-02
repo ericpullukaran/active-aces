@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "main": "index.ts",
   "scripts": {
-    "start": "expo start --dev-client",
+    "start": "expo start",
     "dev": "expo start",
     "clean": "rm -rf .expo .turbo node_modules",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "eslint . --ext ts,tsx"
   },
@@ -56,8 +56,7 @@
     "react-native-svg": "13.4.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.10",
-    "zod": "^3.18.0",
-    "expo-splash-screen": "~0.18.2"
+    "zod": "^3.18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
