@@ -10,7 +10,7 @@ import { fonts, useFonts } from "~/utils/fonts";
 import React, { useEffect } from "react";
 import { setCustomText } from "react-native-global-props";
 import { myResolveTWConfig } from "~/utils/myResolveTWConfig";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import { ErrorBoundary } from "react-error-boundary";
 import { shittyLog } from "~/utils/logging";
 
@@ -55,7 +55,7 @@ const Layout: React.FC = () => {
     >
       <ClerkProvider
         publishableKey={Constants.expoConfig?.extra?.CLERK_PUBLISHABLE_KEY}
-        // tokenCache={tokenCache}
+        tokenCache={tokenCache}
       >
         <SignedIn>
           <TRPCProvider>
