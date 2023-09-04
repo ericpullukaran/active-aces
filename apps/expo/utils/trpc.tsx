@@ -22,11 +22,11 @@ export const trpc = createTRPCReact<AppRouter>();
 
 const getBaseUrl = () => {
   if (!__DEV__) {
-    const publicUrl = process.env.EXPO_PUBLIC_API_URL;
-    if (!publicUrl) {
-      throw new Error("PUBLIC_URL is not set in production");
-    }
-    return publicUrl;
+    // const publicUrl = process.env.EXPO_PUBLIC_API_URL;
+    // if (!publicUrl) {
+    //   throw new Error("PUBLIC_URL is not set in production");
+    // }
+    return "https://www.activeaces.com";
   }
 
   /**
