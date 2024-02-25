@@ -422,29 +422,29 @@ export const workoutsRouter = router({
           },
           data: workoutUpdates,
         }),
-        // Then, create the exercises
-        ctx.prisma.workoutExercise.createMany({
-          data: input.exercises.map((e, i) => ({
-            id: e.tmpId,
-            order: i,
-            exerciseId: e.exerciseId,
-            notes: e.notes,
-            workoutId: current.id, // assuming there's a workoutId field in Exercise model
-          })),
-        }),
+
+        ...input.exercises.map((e, i) =>
+          ctx.prisma.workoutExercise.create({
+            data: {
+              id: e.tmpId,
+              order: i,
+              exerciseId: e.exerciseId,
+              notes: e.notes,
+              workoutId: current.id, // assuming there's a workoutId field in Exercise model
+            },
+          }),
+        ),
+
         // Finally, create the sets for each exercise
         // This assumes that you have a way of associating sets with their respective exercises
-        ctx.prisma.workoutExerciseSet.createMany({
-          data: input.exercises.flatMap((exercise) =>
-            (exercise.sets as any[]).map((set, idx) => ({
-              ...set,
-              complete: true,
-              order: idx,
-              // FIXME: very sketch,
-              workoutExerciseId: exercise.tmpId,
-            })),
-          ),
-        }),
+        ...input.exercises.flatMap((exercise) =>
+          (exercise.sets as any[]).map((set, idx) => ({
+            ...set,
+            complete: true,
+            order: idx,
+            workoutExerciseId: exercise.tmpId,
+          })),
+        ),
       ]);
     }),
 

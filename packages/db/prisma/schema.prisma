@@ -1,13 +1,13 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "sqlite"
+  url      = "file:./data.db"
 }
 
 model Post {
@@ -39,8 +39,8 @@ model exercise {
   primaryMuscleGroup      muscleGroup               @relation("PrimaryMuscleGroup", fields: [primaryMuscleGroupId], references: [id])
   primaryMuscleGroupId    String
   secondaryMuscleGroups   muscleGroup[]             @relation("SecondaryMuscleGroup")
-  description             String?                   @db.Text
-  commonPitfalls          String?                   @db.Text
+  description             String?
+  commonPitfalls          String?
   thumbnailUrl            String?
   gifUrl                  String?
   measurementType         String
@@ -64,7 +64,7 @@ model workout {
   endTime   DateTime?
   exercises workoutExercise[]
   timer     Int?
-  notes     String?           @db.Text
+  notes     String?
 
   templateId String?
   template   workoutTemplate? @relation(fields: [templateId], references: [id])
@@ -82,7 +82,7 @@ model workoutExercise {
   exerciseId String
   sets       workoutExerciseSet[]
   timer      Int?
-  notes      String?              @db.Text
+  notes      String?
   Workout    workout?             @relation(fields: [workoutId], references: [id])
   workoutId  String?
 
@@ -110,7 +110,7 @@ model workoutTemplate {
   updatedAt           DateTime                  @updatedAt
   userId              String
   name                String
-  description         String?                   @db.Text
+  description         String?
   exercises           workoutTemplateExercise[]
   workout             workout[]
   workoutPlan         workoutPlan?              @relation(fields: [workoutPlanId], references: [id])
