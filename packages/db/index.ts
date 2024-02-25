@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
+import { getOperators, getOrderByOperators } from "drizzle-orm";
 import * as schema from "./schema";
 
 declare global {
@@ -18,11 +19,14 @@ const createDb = () => {
 
   return Object.assign(db, {
     $schema: schema,
+    $cmp: getOperators(),
+    $order: getOrderByOperators(),
   });
 };
 
 export const db = globalThis.db ?? createDb();
 export { schema };
+export * from "./types";
 
 if (process.env.NODE_ENV !== "production") {
   global.db = db;

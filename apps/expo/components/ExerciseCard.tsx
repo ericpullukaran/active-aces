@@ -32,7 +32,7 @@ export type EndWorkoutExercises = {
   exerciseId: string;
   tmpId: string;
   notes?: string | undefined;
-  sets: RouterInputs["workouts"]["end"]["exercises"][number]["sets"];
+  sets: RouterInputs["workouts"]["put"]["workout"]["exercises"][number]["sets"];
 };
 
 function ExerciseCard({
