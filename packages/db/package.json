@@ -12,10 +12,14 @@
     "db-generate": "pnpm with-env prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.10.2"
+    "@libsql/client": "^0.5.2",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "@prisma/client": "^5.10.2",
+    "drizzle-orm": "^0.29.4"
   },
   "devDependencies": {
     "dotenv-cli": "^7.3.0",
+    "drizzle-kit": "^0.20.14",
     "prisma": "^5.10.2",
     "typescript": "^5.3.3"
   }
