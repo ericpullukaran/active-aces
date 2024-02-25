@@ -78,6 +78,30 @@ export type EndWorkoutInput = {
   }[];
 };
 
+const PutWorkoutSchema = z.object({
+  name: z.string(),
+  startTime: z.date(),
+  endTime: z.date().optional(),
+  exercises: z.array(
+    z.object({
+      exerciseId: z.string(),
+      notes: z.string().optional(),
+      sets: z.array(
+        z.object({
+          weight: z.number().optional(),
+          numReps: z.number().optional(),
+          time: z.number().optional(),
+          distance: z.number().optional(),
+          complete: z.boolean().optional(),
+        }),
+      ),
+    }),
+  ),
+  notes: z.string().optional(),
+
+  templateId: z.string().optional(),
+});
+
 export const workoutsRouter = router({
   previousExercise: protectedProcedure
     .input(
@@ -207,6 +231,77 @@ export const workoutsRouter = router({
   current: protectedProcedure.query(async ({ ctx }) => {
     return getCurrentWorkout(ctx);
   }),
+
+  put: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().optional(),
+        workout: PutWorkoutSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.$transaction(async (db) => {
+        if (input.id) {
+          const workoutExercises = await db.workoutExercise.findMany({
+            where: {
+              workoutId: input.id,
+            },
+          });
+
+          await Promise.all([
+            db.workoutExerciseSet.deleteMany({
+              where: {
+                workoutExerciseId: {
+                  in: workoutExercises.map((e) => e.id),
+                },
+              },
+            }),
+            db.workoutExercise.deleteMany({
+              where: {
+                workoutId: input.id,
+              },
+            }),
+          ]);
+        }
+
+        const workoutData = {
+          name: input.workout.name,
+          userId: ctx.user.id,
+          startTime: input.workout.startTime,
+          endTime: input.workout.endTime,
+          notes: input.workout.notes,
+          templateId: input.workout.templateId,
+          exercises: {
+            create: input.workout.exercises.map((e, i) => ({
+              order: i,
+              exercise: { connect: { id: e.exerciseId } },
+              notes: e.notes,
+              sets: {
+                create: e.sets.map((s, j) => ({
+                  ...s,
+                  order: j,
+                  complete: s.complete || false,
+                })),
+              },
+            })),
+          },
+        } satisfies Parameters<typeof db.workout.create>[0]["data"];
+
+        if (!input.id) {
+          await db.workout.create({
+            data: workoutData,
+          });
+        } else {
+          await db.workout.upsert({
+            where: {
+              id: input.id,
+            },
+            update: workoutData,
+            create: workoutData,
+          });
+        }
+      });
+    }),
 
   start: protectedProcedure
     .input(
