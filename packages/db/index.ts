@@ -1,22 +1,33 @@
-import { PrismaClient } from "@prisma/client";
+import { drizzle } from "drizzle-orm/libsql";
+import { createClient } from "@libsql/client";
+import { getOperators, getOrderByOperators } from "drizzle-orm";
+import * as schema from "./schema";
 
 declare global {
   // allow global `var` declarations
   // eslint-disable-next-line no-var
-  var prisma: PrismaClient | undefined;
+  var db: ReturnType<typeof createDb> | undefined;
 }
 
-export const prisma =
-  global.prisma ||
-  new PrismaClient({
-    log:
-      process.env.NODE_ENV === "development"
-        ? ["query", "error", "warn"]
-        : ["error"],
+const createDb = () => {
+  const client = createClient({
+    url: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
   });
 
-export * from "@prisma/client";
+  const db = drizzle(client, { schema });
+
+  return Object.assign(db, {
+    $schema: schema,
+    $cmp: getOperators(),
+    $order: getOrderByOperators(),
+  });
+};
+
+export const db = globalThis.db ?? createDb();
+export { schema };
+export * from "./types";
 
 if (process.env.NODE_ENV !== "production") {
-  global.prisma = prisma;
+  global.db = db;
 }
