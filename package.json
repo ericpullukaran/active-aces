@@ -1,32 +1,31 @@
 {
-  "name": "t3-turbo-and-clerk",
+  "name": "create-t3-turbo",
   "private": true,
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "packageManager": "pnpm@8.15.4",
   "scripts": {
     "build": "turbo build",
-    "clean": "rm -rf node_modules",
+    "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
-    "db-generate": "turbo db-generate",
-    "db-pull": "turbo db-pull",
-    "db-push": "turbo db-push",
-    "studio": "cd packages/db && npm run studio",
+    "db:push": "pnpm -F db push",
+    "db:studio": "pnpm -F db studio",
     "dev": "turbo dev --parallel",
-    "web": "turbo dev --filter=nextjs",
-    "postinstall": "pnpm run db-generate",
-    "mobile": "cd apps/expo && npm run dev",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "lint": "turbo lint",
-    "FIXME:lint": "turbo lint && manypkg check",
-    "type-check": "turbo type-check"
+    "format": "turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
+    "format:fix": "turbo format --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
+    "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
+    "lint:fix": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
+    "lint:ws": "pnpm dlx sherif@latest",
+    "postinstall": "pnpm lint:ws",
+    "typecheck": "turbo typecheck"
   },
-  "dependencies": {
-    "@manypkg/cli": "^0.19.2",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
-    "eslint": "^8.37.0",
-    "prettier": "^2.8.7",
-    "prettier-plugin-tailwindcss": "^0.1.13",
-    "turbo": "^1.8.8",
-    "typescript": "^4.9.5"
+  "devDependencies": {
+    "@acme/prettier-config": "workspace:^0.1.0",
+    "@turbo/gen": "^1.12.4",
+    "prettier": "^3.2.5",
+    "turbo": "^1.12.4",
+    "typescript": "^5.3.3"
   },
-  "pnpm": {}
+  "prettier": "@acme/prettier-config"
 }

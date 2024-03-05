@@ -1,28 +1,11 @@
-process.env.TAMAGUI_TARGET = "native";
-
-module.exports = function (api) {
+/** @type {import("@babel/core").ConfigFunction} */
+module.exports = (api) => {
   api.cache(true);
   return {
-    plugins: [
+    presets: [
+      ["babel-preset-expo", { jsxImportSource: "nativewind" }],
       "nativewind/babel",
-      [
-        "module-resolver",
-        {
-          alias: {
-            "~": "./",
-          },
-        },
-      ],
-      [
-        "transform-inline-environment-variables",
-        {
-          include: ["TAMAGUI_TARGET"],
-        },
-      ],
-      require.resolve("expo-router/babel"),
-      "react-native-reanimated/plugin",
-      "@babel/plugin-proposal-export-namespace-from",
     ],
-    presets: ["babel-preset-expo"],
+    plugins: ["react-native-reanimated/plugin"],
   };
 };
