@@ -1,6 +1,8 @@
-import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
+
 import * as schema from "./schema/schema";
+
 export * from "drizzle-orm";
 
 const turso = createClient({
@@ -9,3 +11,4 @@ const turso = createClient({
 });
 
 export const db = drizzle(turso, { schema });
+export { schema };

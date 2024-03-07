@@ -1,12 +1,12 @@
 import { relations } from "drizzle-orm";
 import {
-  text,
-  integer,
-  sqliteTable,
-  real,
-  unique,
   index,
+  integer,
+  real,
+  sqliteTable,
+  text,
 } from "drizzle-orm/sqlite-core";
+
 import { createPrimaryKeyId } from "../cuid";
 
 const custom = {
@@ -24,7 +24,7 @@ export const userProfiles = sqliteTable("user_profiles", {
   height: real("height"),
 });
 
-export const usersRelations = relations(userProfiles, ({ one, many }) => ({
+export const usersRelations = relations(userProfiles, ({ many }) => ({
   // measurements: many(measurementEntries), we have to add the other table before we can keep this in
   workouts: many(workouts),
 }));
@@ -40,7 +40,7 @@ export const measurementEntries = sqliteTable(
   },
   (t) => {
     return {
-      userId: index("user_id").on(t.userId),
+      userId: index("measurement_entries_user_id").on(t.userId),
     };
   },
 );
@@ -58,7 +58,7 @@ export const exercises = sqliteTable(
     measurementType: text("measurement_type").notNull(),
   },
   (t) => ({
-    primaryMuscleGroup: index("primary_muscle_group_id").on(
+    primaryMuscleGroup: index("exercises_primary_muscle_group_id").on(
       t.primaryMuscleGroupId,
     ),
   }),
@@ -89,8 +89,12 @@ export const exercisesToSecondaryMuscleGroups = sqliteTable(
     muscleGroupId: text("muscle_group_id").notNull(),
   },
   (t) => ({
-    exerciseId: index("exercise_id").on(t.exerciseId),
-    muscleGroupId: index("muscle_group_id").on(t.muscleGroupId),
+    exerciseId: index("exercises_to_secondary_muscle_groups_exercise_id").on(
+      t.exerciseId,
+    ),
+    muscleGroupId: index(
+      "exercises_to_secondary_muscle_groups_muscle_group_id",
+    ).on(t.muscleGroupId),
   }),
 );
 
@@ -121,8 +125,8 @@ export const workouts = sqliteTable(
     userId: text("user_id").notNull(),
   },
   (t) => ({
-    userId: index("user_id").on(t.userId),
-    templateId: index("template_id").on(t.templateId),
+    userId: index("workouts_user_id").on(t.userId),
+    templateId: index("workouts_template_id").on(t.templateId),
   }),
 );
 
@@ -146,8 +150,8 @@ export const workoutExercises = sqliteTable(
     workoutId: text("workout_id"),
   },
   (t) => ({
-    workoutId: index("workout_id").on(t.workoutId),
-    exerciseId: index("exercise_id").on(t.exerciseId),
+    workoutId: index("workout_exercises_workout_id").on(t.workoutId),
+    exerciseId: index("workout_exercises_exercise_id").on(t.exerciseId),
   }),
 );
 
@@ -180,7 +184,9 @@ export const workoutExerciseSets = sqliteTable(
     workoutExerciseId: text("workout_exercise_id"),
   },
   (t) => ({
-    workoutExerciseId: index("workout_exercise_id").on(t.workoutExerciseId),
+    workoutExerciseId: index("workout_exercise_sets_workout_exercise_id").on(
+      t.workoutExerciseId,
+    ),
   }),
 );
 
