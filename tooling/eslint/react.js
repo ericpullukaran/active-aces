@@ -7,6 +7,9 @@ const config = {
   ],
   rules: {
     "react/prop-types": "off",
+    "no-empty-pattern": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-unused-vars": "off",
   },
   globals: {
     React: "writable",
