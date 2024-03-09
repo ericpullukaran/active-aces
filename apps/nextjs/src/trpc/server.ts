@@ -1,8 +1,9 @@
 import { cache } from "react";
 import { headers } from "next/headers";
+import { NextRequest } from "next/server";
+import { getAuth } from "@clerk/nextjs/server";
 
 import { createCaller, createTRPCContext } from "@acme/api";
-import { auth } from "@acme/auth";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -13,8 +14,10 @@ const createContext = cache(async () => {
   heads.set("x-trpc-source", "rsc");
 
   return createTRPCContext({
-    session: await auth(),
     headers: heads,
+    auth: getAuth(
+      new NextRequest("https://notused.com", { headers: headers() }),
+    ),
   });
 });
 
