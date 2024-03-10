@@ -122,7 +122,7 @@ export const workoutsRouter = router({
 
       const workouts = await ctx.db.query.workouts.findMany({
         where: (f, c) => {
-          const userIdCmp = c.eq(f.userId, ctx.userId);
+          const userIdCmp = c.eq(f.userId, ctx.auth.userId);
           if (input.cursor) {
             return c.and(userIdCmp, c.lt(f.endTime, input.cursor));
           }
@@ -162,7 +162,7 @@ export const workoutsRouter = router({
     .query(({ ctx, input }) => {
       return ctx.db.query.workouts.findFirst({
         where: (f, c) =>
-          c.and(c.eq(f.userId, ctx.userId), c.eq(f.id, input.id)),
+          c.and(c.eq(f.userId, ctx.auth.userId), c.eq(f.id, input.id)),
         with: {
           exercises: {
             orderBy: (f, o) => o.asc(f.order),
@@ -210,7 +210,7 @@ export const workoutsRouter = router({
 
         const workoutData = {
           name: input.workout.name,
-          userId: ctx.userId,
+          userId: ctx.auth.userId,
           startTime: input.workout.startTime,
           endTime: input.workout.endTime,
           notes: input.workout.notes,
@@ -282,7 +282,7 @@ export const workoutsRouter = router({
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db.query.workouts.findFirst({
         where: (f, c) =>
-          c.and(c.eq(f.id, input.id), c.eq(f.userId, ctx.userId)),
+          c.and(c.eq(f.id, input.id), c.eq(f.userId, ctx.auth.userId)),
       });
 
       if (!existing) {
@@ -298,7 +298,7 @@ export const workoutsRouter = router({
           .where(
             ctx.db.$cmp.and(
               ctx.db.$cmp.eq(ctx.db.$schema.workouts.id, input.id),
-              ctx.db.$cmp.eq(ctx.db.$schema.workouts.userId, ctx.userId),
+              ctx.db.$cmp.eq(ctx.db.$schema.workouts.userId, ctx.auth.userId),
             ),
           )
           .returning({

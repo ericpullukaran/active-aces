@@ -33,7 +33,6 @@ export const createTRPCContext = async (opts: {
 }) => {
   return {
     db,
-    userId: opts.auth.userId,
     ...opts,
   };
 };
@@ -92,8 +91,8 @@ export const publicProcedure = t.procedure;
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.userId) {
+  if (!ctx.auth.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-  return next({ ctx: { userId: ctx.userId, } });
+  return next({ ctx: { auth: ctx.auth } });
 });
