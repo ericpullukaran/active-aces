@@ -217,7 +217,7 @@ export const workoutsRouter = router({
           templateId: input.workout.templateId,
         };
 
-        let workoutIdToUse = input.id;
+        let workoutIdToUse: string;
 
         if (!input.id) {
           const inserted = await db
@@ -231,7 +231,8 @@ export const workoutsRouter = router({
             workoutIdToUse = inserted[0].id;
           }
         } else {
-          const inserted = await db
+          // Update existing workout in db
+          const _ = await db
             .insert(ctx.db.$schema.workouts)
             .values(workoutData)
             .onConflictDoUpdate({
@@ -240,9 +241,7 @@ export const workoutsRouter = router({
             })
             .returning({ id: ctx.db.$schema.workouts.id });
 
-          if (inserted?.[0]?.id) {
-            workoutIdToUse = inserted[0].id;
-          }
+          workoutIdToUse = input.id;
         }
 
         const insertedExercises = await db
@@ -265,8 +264,8 @@ export const workoutsRouter = router({
             e.sets.map((s, j) => ({
               ...s,
               order: j,
-              complete: s.complete || false,
-              workoutExerciseId: insertedExercisesByOrder[i].id,
+              complete: s.complete ?? false,
+              workoutExerciseId: insertedExercisesByOrder[i]?.id,
             })),
           ),
         );

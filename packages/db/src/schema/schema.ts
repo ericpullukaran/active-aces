@@ -143,11 +143,11 @@ export const workoutExercises = sqliteTable(
   "workout_exercises",
   {
     id: custom.primaryKey(),
-    order: integer("order"),
-    exerciseId: text("exercise_id"),
+    order: integer("order").notNull(),
+    exerciseId: text("exercise_id").notNull(),
     timer: integer("timer"),
     notes: text("notes"),
-    workoutId: text("workout_id"),
+    workoutId: text("workout_id").notNull(),
   },
   (t) => ({
     workoutId: index("workout_exercises_workout_id").on(t.workoutId),
