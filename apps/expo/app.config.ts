@@ -1,54 +1,42 @@
-import { ExpoConfig, ConfigContext } from "@expo/config";
+import type { ConfigContext, ExpoConfig } from "expo/config";
 
-// TODO: remove this asap
-const CLERK_PUBLISHABLE_KEY =
-  "pk_test_ZW1pbmVudC1saW9uZmlzaC04NS5jbGVyay5hY2NvdW50cy5kZXYk";
-
-const defineConfig = (_ctx: ConfigContext): ExpoConfig => ({
-  name: "Active Aces",
-  slug: "active-aces",
-  version: "0.0.1",
-  owner: "chatgph",
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: "expo",
+  slug: "expo",
+  scheme: "expo",
+  version: "0.1.0",
   orientation: "portrait",
-  icon: "./assets/icon_ios.png",
-  userInterfaceStyle: "dark",
+  icon: "./assets/icon.png",
+  userInterfaceStyle: "automatic",
   splash: {
     image: "./assets/icon.png",
     resizeMode: "contain",
-    backgroundColor: "#151718",
+    backgroundColor: "#1F104A",
   },
   updates: {
     fallbackToCacheTimeout: 0,
   },
   assetBundlePatterns: ["**/*"],
   ios: {
+    bundleIdentifier: "your.bundle.identifier",
     supportsTablet: true,
-    bundleIdentifier: "me.ericpaul.activeaces",
   },
   android: {
+    package: "your.bundle.identifier",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
-      backgroundColor: "#151718",
+      backgroundColor: "#1F104A",
     },
-    package: "com.soorria.activeaces",
   },
-  androidStatusBar: {
-    barStyle: "light-content",
-    backgroundColor: "#151718",
-    translucent: false,
+  // extra: {
+  //   eas: {
+  //     projectId: "your-eas-project-id",
+  //   },
+  // },
+  experiments: {
+    tsconfigPaths: true,
+    typedRoutes: true,
   },
-  backgroundColor: "#151718",
-  extra: {
-    eas: {
-      projectId: "13f40d9c-f52c-459d-83e6-63d220fdf221",
-    },
-    CLERK_PUBLISHABLE_KEY,
-  },
-  plugins: ["./expo-plugins/with-modify-gradle.js"],
-  scheme: "actice-aces",
-  web: {
-    bundler: "metro",
-  },
+  plugins: ["expo-router"],
 });
-
-export default defineConfig;

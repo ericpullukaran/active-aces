@@ -1,6 +1,7 @@
-import { z } from "zod";
-import { protectedProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+import { protectedProcedure, createTRPCRouter as router } from "../trpc";
 
 const setArrayUnion = z.union([
   z
@@ -121,7 +122,7 @@ export const workoutsRouter = router({
 
       const workouts = await ctx.db.query.workouts.findMany({
         where: (f, c) => {
-          const userIdCmp = c.eq(f.userId, ctx.user.id);
+          const userIdCmp = c.eq(f.userId, ctx.auth.userId);
           if (input.cursor) {
             return c.and(userIdCmp, c.lt(f.endTime, input.cursor));
           }
@@ -161,7 +162,7 @@ export const workoutsRouter = router({
     .query(({ ctx, input }) => {
       return ctx.db.query.workouts.findFirst({
         where: (f, c) =>
-          c.and(c.eq(f.userId, ctx.user.id), c.eq(f.id, input.id)),
+          c.and(c.eq(f.userId, ctx.auth.userId), c.eq(f.id, input.id)),
         with: {
           exercises: {
             orderBy: (f, o) => o.asc(f.order),
@@ -209,14 +210,14 @@ export const workoutsRouter = router({
 
         const workoutData = {
           name: input.workout.name,
-          userId: ctx.user.id,
+          userId: ctx.auth.userId,
           startTime: input.workout.startTime,
           endTime: input.workout.endTime,
           notes: input.workout.notes,
           templateId: input.workout.templateId,
         };
 
-        let workoutIdToUse = input.id;
+        let workoutIdToUse: string;
 
         if (!input.id) {
           const inserted = await db
@@ -230,7 +231,8 @@ export const workoutsRouter = router({
             workoutIdToUse = inserted[0].id;
           }
         } else {
-          const inserted = await db
+          // Update existing workout in db
+          const _ = await db
             .insert(ctx.db.$schema.workouts)
             .values(workoutData)
             .onConflictDoUpdate({
@@ -239,9 +241,7 @@ export const workoutsRouter = router({
             })
             .returning({ id: ctx.db.$schema.workouts.id });
 
-          if (inserted?.[0]?.id) {
-            workoutIdToUse = inserted[0].id;
-          }
+          workoutIdToUse = input.id;
         }
 
         const insertedExercises = await db
@@ -264,8 +264,8 @@ export const workoutsRouter = router({
             e.sets.map((s, j) => ({
               ...s,
               order: j,
-              complete: s.complete || false,
-              workoutExerciseId: insertedExercisesByOrder[i].id,
+              complete: s.complete ?? false,
+              workoutExerciseId: insertedExercisesByOrder[i]?.id,
             })),
           ),
         );
@@ -281,7 +281,7 @@ export const workoutsRouter = router({
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db.query.workouts.findFirst({
         where: (f, c) =>
-          c.and(c.eq(f.id, input.id), c.eq(f.userId, ctx.user.id)),
+          c.and(c.eq(f.id, input.id), c.eq(f.userId, ctx.auth.userId)),
       });
 
       if (!existing) {
@@ -297,7 +297,7 @@ export const workoutsRouter = router({
           .where(
             ctx.db.$cmp.and(
               ctx.db.$cmp.eq(ctx.db.$schema.workouts.id, input.id),
-              ctx.db.$cmp.eq(ctx.db.$schema.workouts.userId, ctx.user.id),
+              ctx.db.$cmp.eq(ctx.db.$schema.workouts.userId, ctx.auth.userId),
             ),
           )
           .returning({
