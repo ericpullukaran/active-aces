@@ -1,4 +1,4 @@
-import { fileURLToPath } from "url"
+import { fileURLToPath } from "url";
 
 /** @typedef {import("prettier").Config} PrettierConfig */
 /** @typedef {import("prettier-plugin-tailwindcss").PluginOptions} TailwindConfig */
@@ -38,6 +38,6 @@ const config = {
   semi: true,
   trailingComma: "all",
   tabWidth: 2,
-}
+};
 
-export default config
+export default config;
