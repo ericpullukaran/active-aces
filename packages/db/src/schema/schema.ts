@@ -55,7 +55,9 @@ export const exercises = sqliteTable(
     commonPitfalls: text("common_pitfalls"),
     thumbnailUrl: text("thumbnail_url"),
     gifUrl: text("gif_url"),
-    measurementType: text("measurement_type").notNull(),
+    measurementType: text("measurement_type")
+      .notNull()
+      .$type<"weight-reps" | "reps" | "time-distance" | "time">(),
   },
   (t) => ({
     primaryMuscleGroup: index("exercises_primary_muscle_group_id").on(
