@@ -14,18 +14,22 @@
     "push": "pnpm with-env drizzle-kit push:sqlite",
     "studio": "pnpm with-env drizzle-kit studio",
     "typecheck": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env --",
+    "seed": "pnpm with-env npx tsx src/seed.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@libsql/client": "^0.5.2",
     "@paralleldrive/cuid2": "^2.2.2",
     "@planetscale/database": "^1.16.0",
-    "drizzle-orm": "^0.29.4"
+    "drizzle-orm": "^0.29.4",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "@acme/eslint-config": "workspace:^0.2.0",
     "@acme/prettier-config": "workspace:^0.1.0",
     "@acme/tsconfig": "workspace:^0.1.0",
+    "@types/pg": "^8.11.2",
     "dotenv-cli": "^7.3.0",
     "drizzle-kit": "^0.20.14",
     "eslint": "^8.57.0",

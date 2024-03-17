@@ -9,6 +9,7 @@ import {
 
 import { createPrimaryKeyId } from "../cuid";
 
+export type MeasurementType = "weight-reps" | "reps" | "time-distance" | "time";
 const custom = {
   primaryKey: () =>
     text("id")
