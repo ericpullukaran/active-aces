@@ -8,9 +8,6 @@ import { api } from "~/trpc/server";
 export const runtime = "edge";
 
 export default async function HomePage() {
-  // You can await this here if you don't want to show Suspense fallback below
-  const _ = api.exercises.all();
-
   return (
     <main>
       <div className="absolute h-[400px] w-full">

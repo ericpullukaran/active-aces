@@ -46,8 +46,9 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        style={{ height: "100svh" }}
         className={cn(
-          "flex min-h-screen flex-col bg-background font-sans text-foreground antialiased",
+          "flex flex-col bg-background font-sans text-foreground antialiased",
           GeistSans.variable,
           GeistMono.variable,
         )}
