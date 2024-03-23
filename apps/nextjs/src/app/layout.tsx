@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { ThemeProvider, ThemeToggle } from "@/components/theme";
 import { Button } from "@/components/ui/button";
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
@@ -10,6 +11,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
+import NavBar from "~/components/NavBar";
 import { cn } from "~/utils/cn";
 
 export const metadata: Metadata = {
@@ -45,15 +47,28 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans text-foreground antialiased",
+          "flex min-h-screen flex-col bg-background font-sans text-foreground antialiased",
           GeistSans.variable,
           GeistMono.variable,
         )}
       >
-        <Button>Hey</Button>
-        <ClerkProvider publishableKey={env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+        <ClerkProvider
+          afterSignInUrl="/dashboard"
+          afterSignUpUrl="/dashboard"
+          appearance={{
+            baseTheme: dark,
+            variables: {
+              colorPrimary: "#22c55e",
+              colorTextOnPrimaryBackground: "#054016",
+            },
+          }}
+          publishableKey={env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        >
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <TRPCReactProvider>{props.children}</TRPCReactProvider>
+            <TRPCReactProvider>
+              {/* <NavBar /> */}
+              {props.children}
+            </TRPCReactProvider>
           </ThemeProvider>
         </ClerkProvider>
       </body>

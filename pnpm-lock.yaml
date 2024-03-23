@@ -144,15 +144,15 @@ importers:
       '@acme/db':
         specifier: workspace:^0.1.0
         version: link:../../packages/db
-      '@acme/ui':
-        specifier: workspace:^0.1.0
-        version: link:../../packages/ui
       '@acme/validators':
         specifier: workspace:^0.1.0
         version: link:../../packages/validators
       '@clerk/nextjs':
         specifier: ^4.29.9
         version: 4.29.9(next@14.1.0)(react-dom@18.2.0)(react@18.2.0)
+      '@clerk/themes':
+        specifier: ^1.7.10
+        version: 1.7.10(react@18.2.0)
       '@radix-ui/react-dropdown-menu':
         specifier: ^2.0.6
         version: 2.0.6(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
@@ -2114,6 +2114,17 @@ packages:
       js-cookie: 3.0.1
       react: 18.2.0
       swr: 2.2.0(react@18.2.0)
+    dev: false
+
+  /@clerk/themes@1.7.10(react@18.2.0):
+    resolution: {integrity: sha512-XJS/mA9tcClzYmbVhVUrsyikI6VnxEq180r2dTiHtQNb0UwsvJ0xdW9rMmcrKfmGe28c/CMIuu+jOt28iGOq8g==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      '@clerk/types': 3.62.1
+      react: 18.2.0
+      tslib: 2.4.1
     dev: false
 
   /@clerk/types@3.62.1:
