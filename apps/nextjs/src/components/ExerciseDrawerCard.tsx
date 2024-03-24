@@ -8,12 +8,13 @@ import { DrawerClose } from "./ui/drawer";
 
 type Props = {
   exercise: Doc<"exercises">;
+  onSelect: (exerciseId: string) => void;
 };
 
-export default function ExerciseDrawerCard({ exercise }: Props) {
+export default function ExerciseDrawerCard({ exercise, onSelect }: Props) {
   return (
     <DrawerClose
-      onClick={() => console.log(exercise.id)}
+      onClick={() => onSelect(exercise.id)}
       className="flex items-center space-x-4 rounded-md border p-4 text-left transition-all hover:border-primary"
     >
       <div className="h-10 w-10 rounded-lg bg-red-400"></div>
