@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { ThemeProvider, ThemeToggle } from "@/components/theme";
-import { Button } from "@/components/ui/button";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
+import { ThemeProvider, ThemeToggle } from "~/components/theme";
+import { Button } from "~/components/ui/button";
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
 
