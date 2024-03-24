@@ -176,6 +176,19 @@ export const workoutsRouter = router({
       });
     }),
 
+  getCurrent: protectedProcedure.query(({ ctx }) => {
+    return ctx.db
+      .select()
+      .from(ctx.db.$schema.workouts)
+      .where(
+        ctx.db.$cmp.and(
+          ctx.db.$cmp.eq(ctx.db.$schema.workouts.userId, ctx.auth.userId),
+          ctx.db.$cmp.isNull(ctx.db.$schema.workouts.endTime),
+        ),
+      )
+      .limit(1);
+  }),
+
   put: protectedProcedure
     .input(
       z.object({
@@ -244,31 +257,33 @@ export const workoutsRouter = router({
           workoutIdToUse = input.id;
         }
 
-        const insertedExercises = await db
-          .insert(ctx.db.$schema.workoutExercises)
-          .values(
-            input.workout.exercises.map((e, i) => ({
-              order: i,
-              exerciseId: e.exerciseId,
-              workoutId: workoutIdToUse,
-              notes: e.notes,
-            })),
-          )
-          .returning();
-        const insertedExercisesByOrder = Object.fromEntries(
-          insertedExercises.map((e) => [e.order, e] as const),
-        );
+        if (input.workout.exercises.length > 0) {
+          const insertedExercises = await db
+            .insert(ctx.db.$schema.workoutExercises)
+            .values(
+              input.workout.exercises.map((e, i) => ({
+                order: i,
+                exerciseId: e.exerciseId,
+                workoutId: workoutIdToUse,
+                notes: e.notes,
+              })),
+            )
+            .returning();
+          const insertedExercisesByOrder = Object.fromEntries(
+            insertedExercises.map((e) => [e.order, e] as const),
+          );
 
-        await ctx.db.insert(ctx.db.$schema.workoutExerciseSets).values(
-          input.workout.exercises.flatMap((e, i) =>
-            e.sets.map((s, j) => ({
-              ...s,
-              order: j,
-              complete: s.complete ?? false,
-              workoutExerciseId: insertedExercisesByOrder[i]?.id,
-            })),
-          ),
-        );
+          await ctx.db.insert(ctx.db.$schema.workoutExerciseSets).values(
+            input.workout.exercises.flatMap((e, i) =>
+              e.sets.map((s, j) => ({
+                ...s,
+                order: j,
+                complete: s.complete ?? false,
+                workoutExerciseId: insertedExercisesByOrder[i]?.id,
+              })),
+            ),
+          );
+        }
       });
     }),
 

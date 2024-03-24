@@ -1,25 +1,33 @@
-import React from "react";
-import { BellRing } from "lucide-react";
+"use client";
 
-import { api } from "~/trpc/server";
+import React from "react";
+
+import type { RouterInputs } from "@acme/api";
+import { Doc } from "@acme/db";
+
+import { api } from "~/trpc/react";
 import ExerciseDrawerCard from "./ExerciseDrawerCard";
 import { Button } from "./ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "./ui/drawer";
 
 type Props = {};
+export default function ExercisesDrawer({}: Props) {
+  const {
+    isPending,
+    isError,
+    data: exercises,
+    error,
+  } = api.exercises.all.useQuery();
 
-export default async function ExercisesDrawer({}: Props) {
-  const exercises = await api.exercises.all();
-  console.log(exercises);
+  let aa: RouterInputs["workouts"]["put"]["workout"];
+  // console.log(exercises);
 
   return (
     <Drawer>
@@ -40,7 +48,7 @@ export default async function ExercisesDrawer({}: Props) {
         </DrawerHeader>
         <div className="mx-auto w-full max-w-sm overflow-y-scroll">
           <section className="mx-4 mb-10 flex flex-col gap-3">
-            {exercises.map((e) => (
+            {exercises?.map((e) => (
               <ExerciseDrawerCard key={e.id} exercise={e} />
             ))}
           </section>

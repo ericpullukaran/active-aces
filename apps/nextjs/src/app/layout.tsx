@@ -12,7 +12,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import "~/app/globals.css";
 
 import NavBar from "~/components/NavBar";
-import { cn } from "~/utils/cn";
+import { cn } from "~/lib/cn";
 
 export const metadata: Metadata = {
   metadataBase: new URL(

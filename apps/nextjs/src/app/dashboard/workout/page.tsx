@@ -1,13 +1,22 @@
-import React from "react";
-import { Boxes, Settings, StopCircle, Tally5 } from "lucide-react";
+"use client";
 
-import { Button } from "~/components/ui/button";
+import React from "react";
+import { Settings, StopCircle } from "lucide-react";
+
+import type { RouterInputs } from "@acme/api";
+
 import WorkoutActionButtons from "~/components/WorkoutActionButtons";
 import WorkoutStats from "~/components/WorkoutStats";
+import { api } from "~/trpc/react";
+import { useLocalStorage } from "~/utils/useLocalStorage";
 
 type Props = {};
 
 export default function WorkoutPage({}: Props) {
+  const [workout, setWorkout] = useLocalStorage<
+    RouterInputs["workouts"]["put"]["workout"] | null
+  >("aa_workout", null);
+
   return (
     <div>
       <div className="m-5 mx-6 flex items-center">

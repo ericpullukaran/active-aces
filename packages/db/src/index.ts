@@ -1,6 +1,12 @@
 import { createClient } from "@libsql/client";
-import { getOperators, getOrderByOperators } from "drizzle-orm";
+import {
+  getOperators,
+  getOrderByOperators,
+  InferInsertModel,
+  InferSelectModel,
+} from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
+import { SQLiteTableFn, SQLiteTableWithColumns } from "drizzle-orm/sqlite-core";
 
 import * as schema from "./schema/schema";
 
@@ -24,6 +30,24 @@ const createDb = () => {
     $order: getOrderByOperators(),
   });
 };
+
+export type DBSelectTypes = {
+  [K in keyof typeof schema]: (typeof schema)[K] extends SQLiteTableWithColumns<
+    ReturnType<SQLiteTableFn>
+  >
+    ? InferSelectModel<(typeof schema)[K]>
+    : never;
+};
+export type DBInsertTypes = {
+  [K in keyof typeof schema]: (typeof schema)[K] extends SQLiteTableWithColumns<
+    ReturnType<SQLiteTableFn>
+  >
+    ? InferInsertModel<(typeof schema)[K]>
+    : never;
+};
+
+export type Doc<T extends keyof DBSelectTypes> = DBSelectTypes[T];
+export type DocInsert<T extends keyof DBInsertTypes> = DBInsertTypes[T];
 
 export const db = globalThis.db ?? createDb();
 export { schema };
