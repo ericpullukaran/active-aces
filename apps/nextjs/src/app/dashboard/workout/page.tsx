@@ -5,9 +5,9 @@ import { Settings, StopCircle } from "lucide-react";
 
 import type { RouterInputs } from "@acme/api";
 
-import WorkoutActionButtons from "~/components/WorkoutActionButtons";
+import ExercisesDrawer from "~/components/ExercisesDrawer";
+import { Button } from "~/components/ui/button";
 import WorkoutStats from "~/components/WorkoutStats";
-import { api } from "~/trpc/react";
 import { useLocalStorage } from "~/utils/useLocalStorage";
 
 type Props = {};
@@ -30,7 +30,14 @@ export default function WorkoutPage({}: Props) {
       </div>
 
       <div className="fixed bottom-6 left-1/2 flex w-full max-w-3xl -translate-x-1/2 gap-2 px-4">
-        <WorkoutActionButtons />
+        <Button className="h-16 flex-1" variant="destructive">
+          End Workout
+        </Button>
+        <ExercisesDrawer
+          onExerciseSelect={(exerciseId) => {
+            console.log(`Selected exercise: ${exerciseId}`);
+          }}
+        />
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Loader2, Play } from "lucide-react";
 
@@ -15,7 +14,7 @@ export default function StartWorkoutButton({
   workoutInProgress = false,
 }: Props) {
   const router = useRouter();
-  const mutate = api.workouts.put.useMutation();
+  const putWorkout = api.workouts.put.useMutation();
 
   return (
     <button
@@ -24,7 +23,7 @@ export default function StartWorkoutButton({
           router.push("/dashboard/workout");
           return;
         }
-        mutate.mutate(
+        putWorkout.mutate(
           {
             workout: {
               name: getUsableWorkoutName(),
@@ -37,18 +36,18 @@ export default function StartWorkoutButton({
       }}
       className={cn(
         "absolute bottom-12 left-1/2 flex -translate-x-1/2 items-center rounded-xl bg-card p-2 ring-primary transition-all hover:ring-2",
-        { "w-64": !mutate.isPending },
+        { "w-64": !putWorkout.isPending },
       )}
     >
       <div
         className={cn(
-          "grid h-11 w-11 place-content-center rounded-xl bg-primary pr-0.5",
+          "grid h-11 w-11 place-content-center rounded-lg bg-primary pr-0.5",
           {
             "border-2 border-primary bg-transparent": workoutInProgress,
           },
         )}
       >
-        {mutate.isPending ? (
+        {putWorkout.isPending ? (
           <Loader2 className="h-5 w-5 animate-spin stroke-card" />
         ) : (
           <Play
@@ -60,14 +59,14 @@ export default function StartWorkoutButton({
       </div>
       <div
         className={cn("ml-3 flex-1 font-semibold transition-all", {
-          hidden: mutate.isPending,
+          hidden: putWorkout.isPending,
         })}
       >
-        {workoutInProgress ? <>Continue</> : <>Start workout</>}
+        {workoutInProgress ? "Continue" : "Start workout"}
       </div>
       <div
         className={cn("mr-2 flex transition-all", {
-          hidden: mutate.isPending,
+          hidden: putWorkout.isPending,
         })}
       >
         <ChevronRight className="-m-1.5" />
