@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Plus } from "lucide-react";
 
 import { api } from "~/trpc/react";
 import ExerciseDrawerCard from "./ExerciseDrawerCard";
@@ -24,9 +25,10 @@ export default function ExercisesDrawer(props: Props) {
     <Drawer>
       <DrawerTrigger asChild>
         <Button
-          className="h-16 flex-1 border-dashed border-zinc-200 text-zinc-200"
+          className="gap-1 border-dashed border-zinc-200 text-zinc-200"
           variant="outline"
         >
+          <Plus size="1em" />
           Add Exercises
         </Button>
       </DrawerTrigger>
