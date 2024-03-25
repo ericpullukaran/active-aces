@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from "react";
 import React, { HTMLInputTypeAttribute } from "react";
+import { useRouter } from "next/navigation";
 import { Check, Delete, PlusIcon, Settings, StopCircle } from "lucide-react";
 
 import type { RouterInputs } from "@acme/api";
@@ -11,6 +12,7 @@ import ExercisesDrawer from "~/components/ExercisesDrawer";
 import { Button } from "~/components/ui/button";
 import WorkoutStats from "~/components/WorkoutStats";
 import { api } from "~/trpc/react";
+import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
 import { useLocalStorage } from "~/utils/useLocalStorage";
 
 type Props = {};
@@ -52,10 +54,13 @@ const measurementToDetails: Record<
 };
 
 export default function WorkoutPage({}: Props) {
-  const [workout, setWorkout] = useLocalStorage<
+  const router = useRouter();
+  const [workout, setWorkout, clearWorkout] = useLocalStorage<
     RouterInputs["workouts"]["put"]["workout"] | null
   >("aa_workout", null);
   const exercises = api.exercises.all.useQuery();
+  const currentWorkout = api.workouts.getCurrent.useQuery();
+  const putWorkoutRouter = api.workouts.put.useMutation();
   const exercisesById = Object.fromEntries(
     exercises.data?.map((e) => [e.id, e]) ?? [],
   );
@@ -137,6 +142,27 @@ export default function WorkoutPage({}: Props) {
       exercises:
         workout?.exercises?.filter((_, i) => i !== exerciseIndex) ?? [],
     });
+  };
+
+  const endWorkout = () => {
+    const currentWorkoutId = currentWorkout.data?.[0]?.id;
+    putWorkoutRouter.mutate(
+      {
+        workout: {
+          ...workout!,
+          startTime: currentWorkout.data?.[0]?.startTime ?? new Date(),
+          endTime: new Date(),
+          name: currentWorkout.data?.[0]?.name ?? getUsableWorkoutName(),
+        },
+        id: currentWorkoutId,
+      },
+      {
+        onSuccess: () => {
+          router.push("/dashboard");
+          clearWorkout();
+        },
+      },
+    );
   };
 
   return (
@@ -280,7 +306,9 @@ export default function WorkoutPage({}: Props) {
       </div>
 
       <div className="sticky bottom-0 grid w-full grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur">
-        <Button variant="destructive">End Workout</Button>
+        <Button variant="destructive" onClick={() => endWorkout()}>
+          End Workout
+        </Button>
         <ExercisesDrawer
           onExerciseSelect={(exerciseId) => {
             addExercise(exerciseId);

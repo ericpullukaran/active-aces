@@ -203,22 +203,24 @@ export const workoutsRouter = router({
             where: (f, c) => c.eq(f.workoutId, input.id!),
           });
 
-          await Promise.all([
-            db.delete(ctx.db.$schema.workoutExerciseSets).where(
-              ctx.db.$cmp.inArray(
-                ctx.db.$schema.workoutExerciseSets.workoutExerciseId,
-                workoutExercises.map((e) => e.id),
-              ),
-            ),
-            db
-              .delete(ctx.db.$schema.workoutExercises)
-              .where(
-                ctx.db.$cmp.eq(
-                  ctx.db.$schema.workoutExercises.workoutId,
-                  input.id,
+          if (workoutExercises.length > 0) {
+            await Promise.all([
+              db.delete(ctx.db.$schema.workoutExerciseSets).where(
+                ctx.db.$cmp.inArray(
+                  ctx.db.$schema.workoutExerciseSets.workoutExerciseId,
+                  workoutExercises.map((e) => e.id),
                 ),
               ),
-          ]);
+              db
+                .delete(ctx.db.$schema.workoutExercises)
+                .where(
+                  ctx.db.$cmp.eq(
+                    ctx.db.$schema.workoutExercises.workoutId,
+                    input.id,
+                  ),
+                ),
+            ]);
+          }
         }
 
         const workoutData = {
@@ -246,12 +248,9 @@ export const workoutsRouter = router({
         } else {
           // Update existing workout in db
           const _ = await db
-            .insert(ctx.db.$schema.workouts)
-            .values(workoutData)
-            .onConflictDoUpdate({
-              target: ctx.db.$schema.workouts.id,
-              set: workoutData,
-            })
+            .update(ctx.db.$schema.workouts)
+            .set(workoutData)
+            .where(ctx.db.$cmp.eq(ctx.db.$schema.workouts.id, input.id))
             .returning({ id: ctx.db.$schema.workouts.id });
 
           workoutIdToUse = input.id;
@@ -273,7 +272,7 @@ export const workoutsRouter = router({
             insertedExercises.map((e) => [e.order, e] as const),
           );
 
-          await ctx.db.insert(ctx.db.$schema.workoutExerciseSets).values(
+          await db.insert(ctx.db.$schema.workoutExerciseSets).values(
             input.workout.exercises.flatMap((e, i) =>
               e.sets.map((s, j) => ({
                 ...s,

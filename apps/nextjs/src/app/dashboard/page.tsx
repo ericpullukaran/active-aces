@@ -9,6 +9,7 @@ type Props = {};
 
 export default async function DashboardPage({}: Props) {
   const currentWorkout = await api.workouts.getCurrent();
+
   return (
     <div className="w-full">
       <NavBar />
