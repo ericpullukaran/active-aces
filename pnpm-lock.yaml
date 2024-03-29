@@ -207,6 +207,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-swipeable-list:
+        specifier: ^1.9.3
+        version: 1.9.3
       superjson:
         specifier: 2.2.1
         version: 2.2.1
@@ -11180,6 +11183,10 @@ packages:
       invariant: 2.2.4
       react: 18.2.0
       tslib: 2.6.2
+    dev: false
+
+  /react-swipeable-list@1.9.3:
+    resolution: {integrity: sha512-YinT0+Ww3SNJZaTVBGAN86tNL2cka5s4m8MkQfgp8kdoORuGaPoo+PemFK3kA3mb6vkSZc0IBCp6Ci3y1Er21Q==}
     dev: false
 
   /react@18.2.0:

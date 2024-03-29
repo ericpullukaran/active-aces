@@ -11,6 +11,15 @@ import {
   StopCircle,
   Trash,
 } from "lucide-react";
+import {
+  LeadingActions,
+  SwipeableList,
+  SwipeableListItem,
+  SwipeAction,
+  TrailingActions,
+} from "react-swipeable-list";
+
+import "react-swipeable-list/dist/styles.css";
 
 import type { RouterInputs } from "@acme/api";
 import type { Doc } from "@acme/db";
@@ -172,6 +181,34 @@ export default function WorkoutPage({}: Props) {
     );
   };
 
+  const removeSet = (exerciseIndex: number, setIndex: number) => {
+    const updatedExercises = workout?.exercises.map((exercise, idx) => {
+      if (idx === exerciseIndex) {
+        const updatedSets = exercise.sets.filter(
+          (_, setIdx) => setIdx !== setIndex,
+        );
+        return { ...exercise, sets: updatedSets };
+      }
+      return exercise;
+    });
+    if (updatedExercises) {
+      setWorkout({ ...workout!, exercises: updatedExercises });
+    }
+  };
+
+  const trailingActions = (exerciseIndex: number, setIndex: number) => (
+    <TrailingActions>
+      <SwipeAction
+        destructive={true}
+        onClick={() => removeSet(exerciseIndex, setIndex)}
+      >
+        <div className="grid place-content-center rounded-r-lg bg-destructive pr-4">
+          Delete
+        </div>
+      </SwipeAction>
+    </TrailingActions>
+  );
+
   return (
     <div className="flex min-h-[100svh] flex-col p-5">
       <div className="mb-5 flex items-center px-1">
@@ -238,53 +275,64 @@ export default function WorkoutPage({}: Props) {
                           </span>
                         ))}
                       </div>
-
-                      {exercise.sets.map((set, setIndex) => (
-                        <div
-                          key={setIndex}
-                          className="grid items-center gap-2 tabular-nums"
-                          style={{
-                            gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
-                          }}
-                        >
-                          <div className="text-center font-semibold">
-                            {setIndex + 1}
-                          </div>
-                          {measurements.map((measurement, measurementIndex) => (
-                            <input
-                              key={measurement}
-                              type="number"
-                              inputMode="decimal"
-                              className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary"
-                              step={0.1}
-                              min={0}
-                              {...measurementToDetails[measurement].inputProps}
-                              placeholder={measurement}
-                              value={set[measurement]}
-                              onChange={(e) => {
-                                updateSet(exerciseIndex, setIndex, {
-                                  [measurement]: e.target.valueAsNumber,
-                                  complete: e.target.valueAsNumber
-                                    ? true
-                                    : false,
-                                });
+                      <SwipeableList>
+                        {exercise.sets.map((set, setIndex) => (
+                          <SwipeableListItem
+                            key={setIndex}
+                            trailingActions={trailingActions(
+                              exerciseIndex,
+                              setIndex,
+                            )}
+                          >
+                            <div
+                              className="grid w-full items-center gap-2 tabular-nums"
+                              style={{
+                                gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
                               }}
-                            />
-                          ))}
-                          <div className="text-center">
-                            <input
-                              type="checkbox"
-                              className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
-                              checked={set.complete}
-                              onChange={(e) => {
-                                updateSet(exerciseIndex, setIndex, {
-                                  complete: e.target.checked,
-                                });
-                              }}
-                            />
-                          </div>
-                        </div>
-                      ))}
+                            >
+                              <div className="text-center font-semibold">
+                                {setIndex + 1}
+                              </div>
+                              {measurements.map(
+                                (measurement, measurementIndex) => (
+                                  <input
+                                    key={measurement}
+                                    type="number"
+                                    inputMode="decimal"
+                                    className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary"
+                                    step={0.1}
+                                    min={0}
+                                    {...measurementToDetails[measurement]
+                                      .inputProps}
+                                    placeholder={measurement}
+                                    value={set[measurement]}
+                                    onChange={(e) => {
+                                      updateSet(exerciseIndex, setIndex, {
+                                        [measurement]: e.target.valueAsNumber,
+                                        complete: e.target.valueAsNumber
+                                          ? true
+                                          : false,
+                                      });
+                                    }}
+                                  />
+                                ),
+                              )}
+                              <div className="text-center">
+                                <input
+                                  type="checkbox"
+                                  className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
+                                  checked={set.complete}
+                                  onChange={(e) => {
+                                    updateSet(exerciseIndex, setIndex, {
+                                      complete: e.target.checked,
+                                    });
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </SwipeableListItem>
+                        ))}
+                      </SwipeableList>
 
                       {exercise.sets.length >= 100 && (
                         <p className="text-center text-sm">tf you doing?</p>
