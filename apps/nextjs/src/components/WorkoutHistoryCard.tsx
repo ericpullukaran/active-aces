@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 import type { Doc } from "@acme/db";
 import { RouterOutputs } from "@acme/api";
@@ -30,7 +31,10 @@ export default async function WorkoutHistoryCard({ workout }: Props) {
   }, {});
 
   return (
-    <div className="flex items-center space-x-4 rounded-md border p-4 text-left transition-all hover:border-primary">
+    <Link
+      href={"/dashboard/history/" + workout.id}
+      className="flex items-center space-x-4 rounded-md border p-4 text-left transition-all hover:border-primary"
+    >
       <div className="h-10 w-10 rounded-lg bg-red-400"></div>
       <div className="flex-1">
         <p className="mb-0.5 text-lg font-medium leading-none">
@@ -41,7 +45,8 @@ export default async function WorkoutHistoryCard({ workout }: Props) {
             dateStyle: "medium",
             timeZone: "Australia/Sydney",
           }).format(workout.startTime ?? undefined)}{" "}
-          | Exercises: {workout.exercises.length}
+          | {workout.exercises.length} exercise
+          {workout.exercises.length !== 1 && "s"}
         </p>
         <div className="flex flex-wrap gap-2">
           {workout.exercises.map((e) => {
@@ -53,6 +58,6 @@ export default async function WorkoutHistoryCard({ workout }: Props) {
           })}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -17,7 +17,7 @@ export default function NavBar({}: Props) {
 
   return (
     <nav
-      className={clsx("m-2 flex items-center rounded-xl bg-card p-3 sm:p-5")}
+      className={clsx("m-5 flex items-center rounded-xl bg-card p-3 sm:p-5")}
     >
       <div className="font-display">
         <Link
