@@ -243,6 +243,7 @@ export default function WorkoutPage({}: Props) {
                             <input
                               key={measurement}
                               type="number"
+                              inputMode="decimal"
                               className="no-spin-buttons w-full rounded bg-card p-2 text-center"
                               step={0.1}
                               min={0}
