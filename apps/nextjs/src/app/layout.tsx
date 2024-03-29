@@ -4,14 +4,12 @@ import { dark } from "@clerk/themes";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
-import { ThemeProvider, ThemeToggle } from "~/components/theme";
-import { Button } from "~/components/ui/button";
+import { ThemeProvider } from "~/components/theme";
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
-import NavBar from "~/components/NavBar";
 import { cn } from "~/lib/cn";
 
 export const metadata: Metadata = {
