@@ -3,7 +3,14 @@
 import type { ComponentProps } from "react";
 import React, { HTMLInputTypeAttribute } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Delete, PlusIcon, Settings, StopCircle } from "lucide-react";
+import {
+  Check,
+  Delete,
+  PlusIcon,
+  Settings,
+  StopCircle,
+  Trash,
+} from "lucide-react";
 
 import type { RouterInputs } from "@acme/api";
 import type { Doc } from "@acme/db";
@@ -200,16 +207,20 @@ export default function WorkoutPage({}: Props) {
 
                         <Button
                           size="icon-sm"
-                          variant="destructive"
+                          variant="outline"
+                          className="border-destructive"
                           onClick={() => deleteExercise(exerciseIndex)}
                         >
-                          <Delete size="1em" className="text-sm" />
+                          <Trash
+                            size="1em"
+                            className="text-sm text-destructive-foreground"
+                          />
                         </Button>
                       </div>
                       <div
                         className="grid items-center gap-1 tabular-nums"
                         style={{
-                          gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 2rem`,
+                          gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
                         }}
                       >
                         {[
@@ -221,7 +232,7 @@ export default function WorkoutPage({}: Props) {
                         ].map((label, i) => (
                           <span
                             key={i}
-                            className="text-center text-sm font-semibold capitalize text-muted-foreground"
+                            className="mx-auto text-center text-sm font-semibold capitalize text-muted-foreground"
                           >
                             {label}
                           </span>
@@ -233,7 +244,7 @@ export default function WorkoutPage({}: Props) {
                           key={setIndex}
                           className="grid items-center gap-2 tabular-nums"
                           style={{
-                            gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 2rem`,
+                            gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
                           }}
                         >
                           <div className="text-center font-semibold">
@@ -244,22 +255,26 @@ export default function WorkoutPage({}: Props) {
                               key={measurement}
                               type="number"
                               inputMode="decimal"
-                              className="no-spin-buttons w-full rounded bg-card p-2 text-center"
+                              className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary"
                               step={0.1}
                               min={0}
                               {...measurementToDetails[measurement].inputProps}
                               placeholder={measurement}
                               value={set[measurement]}
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 updateSet(exerciseIndex, setIndex, {
                                   [measurement]: e.target.valueAsNumber,
-                                })
-                              }
+                                  complete: e.target.valueAsNumber
+                                    ? true
+                                    : false,
+                                });
+                              }}
                             />
                           ))}
-                          <div>
+                          <div className="text-center">
                             <input
                               type="checkbox"
+                              className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
                               checked={set.complete}
                               onChange={(e) => {
                                 updateSet(exerciseIndex, setIndex, {
