@@ -174,8 +174,8 @@ export default function WorkoutPage({}: Props) {
       },
       {
         onSuccess: () => {
-          router.push("/dashboard");
           clearWorkout();
+          router.push("/dashboard");
         },
       },
     );

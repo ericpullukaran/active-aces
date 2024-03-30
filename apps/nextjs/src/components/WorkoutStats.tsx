@@ -6,13 +6,12 @@ import type { RouterInputs, RouterOutputs } from "@acme/api";
 import { getUseableDuration } from "~/utils/getUseableDuration";
 
 type Props = {
-  workout: RouterInputs["workouts"]["put"]["workout"];
+  workout: RouterInputs["workouts"]["put"]["workout"] | undefined;
   currentWorkout: RouterOutputs["workouts"]["getCurrent"][number] | undefined;
 };
 
 export default function WorkoutStats({ workout, currentWorkout }: Props) {
   const [refresh, setRefresh] = useState(Date.now());
-
   useEffect(() => {
     const interval = setInterval(() => {
       setRefresh(Date.now());
@@ -23,7 +22,7 @@ export default function WorkoutStats({ workout, currentWorkout }: Props) {
   }, []);
 
   const duration = getUseableDuration(currentWorkout?.startTime);
-  const workoutInfo = workout.exercises.reduce<{
+  const workoutInfo = workout?.exercises.reduce<{
     exercises: Set<string>;
     totalSets: number;
     volume: number;
@@ -51,7 +50,7 @@ export default function WorkoutStats({ workout, currentWorkout }: Props) {
           <div className="text-sm">Sets</div>
         </div>
         <div className="text-3xl font-medium tabular-nums">
-          {workoutInfo.totalSets}
+          {workoutInfo?.totalSets}
         </div>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center">
@@ -60,7 +59,7 @@ export default function WorkoutStats({ workout, currentWorkout }: Props) {
           <div>Volume</div>
         </div>
         <div className="text-3xl font-medium tabular-nums">
-          {workoutInfo.volume}kgs
+          {workoutInfo?.volume}kgs
         </div>
       </div>
     </>
