@@ -24,6 +24,7 @@ import "react-swipeable-list/dist/styles.css";
 import type { RouterInputs } from "@acme/api";
 import type { Doc } from "@acme/db";
 
+import EndWorkoutDrawer from "~/components/EndWorkoutDrawer";
 import ExercisesDrawer from "~/components/ExercisesDrawer";
 import { Button } from "~/components/ui/button";
 import WorkoutStats from "~/components/WorkoutStats";
@@ -160,7 +161,7 @@ export default function WorkoutPage({}: Props) {
     });
   };
 
-  const endWorkout = () => {
+  const endWorkout = (title: string, notes: string | undefined) => {
     const currentWorkoutId = currentWorkout.data?.[0]?.id;
     putWorkoutRouter.mutate(
       {
@@ -168,7 +169,8 @@ export default function WorkoutPage({}: Props) {
           ...workout!,
           startTime: currentWorkout.data?.[0]?.startTime ?? new Date(),
           endTime: new Date(),
-          name: currentWorkout.data?.[0]?.name ?? getUsableWorkoutName(),
+          name: title,
+          notes: notes,
         },
         id: currentWorkoutId,
       },
@@ -219,7 +221,7 @@ export default function WorkoutPage({}: Props) {
 
       <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl bg-card">
         <WorkoutStats
-          workout={workout!}
+          workout={workout}
           currentWorkout={currentWorkout.data?.[0]}
         />
       </div>
@@ -373,9 +375,14 @@ export default function WorkoutPage({}: Props) {
       </div>
 
       <div className="sticky bottom-0 grid w-full grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur">
-        <Button variant="destructive" onClick={() => endWorkout()}>
-          End Workout
-        </Button>
+        {currentWorkout.data ? (
+          <EndWorkoutDrawer
+            onEnd={endWorkout}
+            title={currentWorkout.data[0]?.name}
+          />
+        ) : (
+          <div className="w-full animate-pulse rounded-lg bg-zinc-500"></div>
+        )}
         <ExercisesDrawer
           onExerciseSelect={(exerciseId) => {
             addExercise(exerciseId);

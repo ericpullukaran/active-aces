@@ -6,7 +6,7 @@ import type { RouterInputs, RouterOutputs } from "@acme/api";
 import { getUseableDuration } from "~/utils/getUseableDuration";
 
 type Props = {
-  workout: RouterInputs["workouts"]["put"]["workout"] | undefined;
+  workout: RouterInputs["workouts"]["put"]["workout"] | null;
   currentWorkout: RouterOutputs["workouts"]["getCurrent"][number] | undefined;
 };
 
