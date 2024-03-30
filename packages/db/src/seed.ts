@@ -104,6 +104,15 @@ const exercisesData: {
     measurementType: "reps",
   },
   {
+    name: "Tricep Dips (Weighted)",
+    primaryMuscleGroupId: "triceps",
+    description:
+      "A body weight exercise that targets the triceps by using the arms to lower and raise the body.",
+    commonPitfalls:
+      "Not going low enough, flaring the elbows out, locking the elbows at the top.",
+    measurementType: "weight-reps",
+  },
+  {
     name: "Plank",
     primaryMuscleGroupId: "abdominals",
     description:
@@ -164,6 +173,231 @@ const exercisesData: {
     commonPitfalls:
       "Not landing softly, jumping on a too high platform initially, not using the arms to aid in the jump.",
     measurementType: "reps",
+  },
+  {
+    name: "Squat (Smith Machine)",
+    primaryMuscleGroupId: "quadriceps",
+    description:
+      "A squat variation using the Smith Machine to guide the movement, providing stability and support.",
+    commonPitfalls:
+      "Failing to go low enough, placing feet too far forward, not keeping the back straight.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Leg Curl",
+    primaryMuscleGroupId: "hamstrings",
+    description:
+      "Targets the hamstrings by curling the legs towards the buttocks, typically performed on a leg curl machine.",
+    commonPitfalls:
+      "Using too much weight leading to poor form, not fully extending the legs.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Calf Raise (Smith Machine)",
+    primaryMuscleGroupId: "calves",
+    description:
+      "Strengthens the calf muscles by raising the heels off the ground under the resistance of a Smith Machine.",
+    commonPitfalls:
+      "Not raising the heels high enough, not maintaining a controlled movement.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Shoulder Press (Dumbbell)",
+    primaryMuscleGroupId: "shoulders",
+    description:
+      "Performed with dumbbells, this exercise targets the shoulder muscles through an overhead press motion.",
+    commonPitfalls:
+      "Not pressing the weights fully overhead, arching the back excessively.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Front Raise (Dumbbell)",
+    primaryMuscleGroupId: "shoulders",
+    description:
+      "Isolates the anterior deltoids by lifting the dumbbells in front of the body to shoulder height.",
+    commonPitfalls:
+      "Swinging the dumbbells, lifting beyond shoulder height, using excessive weight.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Deadlift (Barbell)",
+    primaryMuscleGroupId: "lower back",
+    description:
+      "Involves lifting a barbell off the ground to hip level and then lowering it back down, targeting the lower back, glutes, and hamstrings.",
+    commonPitfalls:
+      "Rounding the back, not fully extending the hips, using improper grip.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Bent Over Row (Dumbbell)",
+    primaryMuscleGroupId: "middle back",
+    description:
+      "Targets the middle back muscles by rowing dumbbells while in a bent-over position.",
+    commonPitfalls:
+      "Rounding the back, not bringing the weights all the way to the torso, using momentum.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Bicep Curl (Dumbbell)",
+    primaryMuscleGroupId: "biceps",
+    description:
+      "Targets the biceps by curling dumbbells towards the shoulders in a controlled motion.",
+    commonPitfalls:
+      "Swinging the dumbbells, not using full range of motion, curling wrists at the top.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Cross Body Hammer Curl (Dumbbell)",
+    primaryMuscleGroupId: "biceps",
+    description:
+      "A variation of the hammer curl where dumbbells are curled across the body, targeting the biceps and forearms.",
+    commonPitfalls:
+      "Not maintaining control of the dumbbells, moving the elbows during the curl.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Palms Up Wrist Curl (Dumbbell)",
+    primaryMuscleGroupId: "forearms",
+    description:
+      "Strengthens the forearms by curling the wrists upwards while holding dumbbells.",
+    commonPitfalls:
+      "Using too much weight, causing wrists to hyperextend, not keeping the forearms stationary.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Incline Bench Press (Dumbbell)",
+    primaryMuscleGroupId: "chest",
+    description:
+      "Targets the upper chest by pressing dumbbells upwards from an incline bench.",
+    commonPitfalls:
+      "Not bringing the dumbbells down low enough, arching the back, using weights that are too heavy.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Bench Press (Dumbbell)",
+    primaryMuscleGroupId: "chest",
+    description:
+      "A chest exercise performed by pressing dumbbells up from a flat bench position.",
+    commonPitfalls:
+      "Not pressing the dumbbells straight up, allowing the dumbbells to drift, not using a full range of motion.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Decline Bench Press (Dumbbell)",
+    primaryMuscleGroupId: "chest",
+    description:
+      "Targets the lower chest by pressing dumbbells upwards from a decline bench.",
+    commonPitfalls:
+      "Dropping the dumbbells too low, causing strain on the shoulders, not using a controlled motion.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Close Grip Bench Press (Dumbbell)",
+    primaryMuscleGroupId: "triceps",
+    description:
+      "Strengthens the triceps by pressing dumbbells up from a bench with a closer grip.",
+    commonPitfalls:
+      "Not keeping the dumbbells close together, flaring the elbows, not fully extending the arms.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Skullcrusher (Dumbbell)",
+    primaryMuscleGroupId: "triceps",
+    description:
+      "Targets the triceps by extending the arms to lift dumbbells overhead while lying on a bench.",
+    commonPitfalls:
+      "Dropping the dumbbells too close to the head, not extending the arms fully, using excessive weight.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Tricep Kickback (Dumbbell)",
+    primaryMuscleGroupId: "triceps",
+    description:
+      "Targets the triceps by kicking dumbbells back while in a bent-over position.",
+    commonPitfalls:
+      "Not keeping the upper arm stationary, swinging the dumbbells, not fully extending the arm.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Bench Press (Barbell)",
+    primaryMuscleGroupId: "chest",
+    description:
+      "A fundamental chest exercise involving pressing a barbell upwards from a flat bench.",
+    commonPitfalls:
+      "Arching the back excessively, bouncing the bar off the chest, flaring the elbows.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Shoulder Press (Barbell)",
+    primaryMuscleGroupId: "shoulders",
+    description:
+      "Involves pressing a barbell overhead from the shoulders, targeting the deltoid muscles.",
+    commonPitfalls:
+      "Using excessive weight leading to poor form, not pressing the barbell in a straight line.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Cable Flys (Low to High)",
+    primaryMuscleGroupId: "chest",
+    description:
+      "Targets the upper chest by performing a fly motion with cables from a low to high trajectory.",
+    commonPitfalls:
+      "Not controlling the motion, using too much weight, not keeping a slight bend in the elbows.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Cable Flys (High to Low)",
+    primaryMuscleGroupId: "chest",
+    description:
+      "Targets the lower chest by performing a fly motion with cables from a high to low trajectory.",
+    commonPitfalls:
+      "Using too much weight, causing the form to break down, not focusing on the chest contraction.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Pull-ups (Weighted)",
+    primaryMuscleGroupId: "lats",
+    description:
+      "An advanced variation of pull-ups involving additional weight, increasing the challenge for the lats and upper body.",
+    commonPitfalls:
+      "Not fully extending the arms at the bottom, using momentum instead of controlled muscle movement.",
+    measurementType: "reps",
+  },
+  {
+    name: "Lat Pulldowns",
+    primaryMuscleGroupId: "lats",
+    description:
+      "Targets the latissimus dorsi muscles by pulling a bar down towards the upper chest.",
+    commonPitfalls:
+      "Leaning too far back, not fully extending the arms, pulling the bar behind the neck.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Single Arm Lat Pulldown",
+    primaryMuscleGroupId: "lats",
+    description:
+      "A variation of the lat pulldown performed with one arm at a time, allowing for focused muscle engagement.",
+    commonPitfalls:
+      "Not maintaining a straight posture, pulling the handle too far back, using excessive weight.",
+    measurementType: "weight-reps",
+  },
+  {
+    name: "Chin Up",
+    primaryMuscleGroupId: "biceps",
+    description:
+      "Strengthens the biceps and lats by pulling the body up with palms facing towards the face.",
+    commonPitfalls:
+      "Not pulling up high enough to bring the chin over the bar, kicking or swinging for momentum.",
+    measurementType: "reps",
+  },
+  {
+    name: "Incline Bicep Curl",
+    primaryMuscleGroupId: "biceps",
+    description:
+      "Targets the biceps through a curling motion while seated on an incline bench, providing a unique angle for muscle engagement.",
+    commonPitfalls:
+      "Swinging the dumbbells, not using full range of motion, not keeping the shoulders back.",
+    measurementType: "weight-reps",
   },
 ];
 
