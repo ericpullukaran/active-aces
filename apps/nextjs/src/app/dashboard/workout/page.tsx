@@ -212,7 +212,7 @@ export default function WorkoutPage({}: Props) {
   );
 
   return (
-    <div className="flex min-h-[100svh] flex-col p-5">
+    <div className="relative flex min-h-[100svh] flex-col p-5">
       <div className="mb-5 flex items-center px-1">
         <StopCircle className="animate-pulse stroke-red-500" />
         <h1 className="ml-3 flex-1 text-4xl font-medium">Activity</h1>
@@ -374,7 +374,7 @@ export default function WorkoutPage({}: Props) {
         )}
       </div>
 
-      <div className="sticky bottom-0 grid w-full grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur">
+      <div className="fixed bottom-0 left-4 right-4 grid grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur md:absolute">
         {currentWorkout.data ? (
           <EndWorkoutDrawer
             onEnd={endWorkout}
