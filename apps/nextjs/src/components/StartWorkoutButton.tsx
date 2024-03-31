@@ -19,7 +19,7 @@ export default function StartWorkoutButton() {
     <Link
       href="/dashboard/workout"
       className={cn(
-        "absolute bottom-12 left-1/2 flex -translate-x-1/2 items-center rounded-xl bg-card p-2 pl-4 ring-primary transition-all hover:ring-2",
+        " flex items-center rounded-lg border-2 bg-card p-2 pl-4 ring-primary transition-all hover:ring-2",
       )}
       onClick={() => {
         if (!currentWorkout) {
