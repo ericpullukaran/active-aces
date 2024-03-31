@@ -83,7 +83,15 @@ export default function WorkoutPage({}: Props) {
         ...(workout?.exercises ?? []),
         {
           exerciseId,
-          sets: [],
+          sets: [
+            {
+              numReps: 0,
+              weight: 0,
+              time: 0,
+              distance: 0,
+              complete: false,
+            },
+          ],
         },
       ],
     });
@@ -296,6 +304,7 @@ export default function WorkoutPage({}: Props) {
                                       className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary"
                                       step={0.1}
                                       min={0}
+                                      onFocus={(event) => event.target.select()}
                                       {...measurementToDetails[measurement]
                                         .inputProps}
                                       placeholder={measurement}
