@@ -176,8 +176,8 @@ export const workoutsRouter = router({
       });
     }),
 
-  getCurrent: protectedProcedure.query(({ ctx }) => {
-    return ctx.db
+  getCurrent: protectedProcedure.query(async ({ ctx }) => {
+    const inprogress = await ctx.db
       .select()
       .from(ctx.db.$schema.workouts)
       .where(
@@ -187,6 +187,8 @@ export const workoutsRouter = router({
         ),
       )
       .limit(1);
+
+    return inprogress[0];
   }),
 
   put: protectedProcedure

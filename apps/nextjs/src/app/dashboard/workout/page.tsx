@@ -162,12 +162,12 @@ export default function WorkoutPage({}: Props) {
   };
 
   const endWorkout = (title: string, notes: string | undefined) => {
-    const currentWorkoutId = currentWorkout.data?.[0]?.id;
+    const currentWorkoutId = currentWorkout.data?.id;
     putWorkoutRouter.mutate(
       {
         workout: {
           ...workout!,
-          startTime: currentWorkout.data?.[0]?.startTime ?? new Date(),
+          startTime: currentWorkout.data?.startTime ?? new Date(),
           endTime: new Date(),
           name: title,
           notes: notes,
@@ -220,10 +220,7 @@ export default function WorkoutPage({}: Props) {
       </div>
 
       <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl bg-card">
-        <WorkoutStats
-          workout={workout}
-          currentWorkout={currentWorkout.data?.[0]}
-        />
+        <WorkoutStats workout={workout} currentWorkout={currentWorkout.data} />
       </div>
 
       <div className="flex-1">
@@ -378,7 +375,7 @@ export default function WorkoutPage({}: Props) {
         {currentWorkout.data ? (
           <EndWorkoutDrawer
             onEnd={endWorkout}
-            title={currentWorkout.data[0]?.name}
+            title={currentWorkout.data?.name}
           />
         ) : (
           <div className="w-full animate-pulse rounded-lg bg-zinc-500"></div>
