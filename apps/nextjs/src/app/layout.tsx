@@ -24,6 +24,7 @@ export const metadata: Metadata = {
     title: "Active Aces",
     description: "A fitness and gym tracking platform",
     url: "https://activeaces.com",
+    images: ["/og-image.png"],
     siteName: "Active Aces",
   },
   twitter: {
