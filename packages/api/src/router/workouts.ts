@@ -47,7 +47,7 @@ export type EndWorkoutInput = {
 
 const PutWorkoutSchema = z.object({
   name: z.string(),
-  startTime: z.date(),
+  startTime: z.date().optional(),
   endTime: z.date().optional(),
   exercises: z.array(
     z.object({
@@ -176,8 +176,8 @@ export const workoutsRouter = router({
       });
     }),
 
-  getCurrent: protectedProcedure.query(({ ctx }) => {
-    return ctx.db
+  getCurrent: protectedProcedure.query(async ({ ctx }) => {
+    const inprogress = await ctx.db
       .select()
       .from(ctx.db.$schema.workouts)
       .where(
@@ -187,6 +187,8 @@ export const workoutsRouter = router({
         ),
       )
       .limit(1);
+
+    return inprogress[0];
   }),
 
   put: protectedProcedure

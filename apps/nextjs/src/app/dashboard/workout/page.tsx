@@ -1,18 +1,10 @@
 "use client";
 
 import type { ComponentProps } from "react";
-import React, { HTMLInputTypeAttribute } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
+import { Check, PlusIcon, Settings, StopCircle, Trash } from "lucide-react";
 import {
-  Check,
-  Delete,
-  PlusIcon,
-  Settings,
-  StopCircle,
-  Trash,
-} from "lucide-react";
-import {
-  LeadingActions,
   SwipeableList,
   SwipeableListItem,
   SwipeAction,
@@ -27,10 +19,10 @@ import type { Doc } from "@acme/db";
 import EndWorkoutDrawer from "~/components/EndWorkoutDrawer";
 import ExercisesDrawer from "~/components/ExercisesDrawer";
 import { Button } from "~/components/ui/button";
+import { WhenHydrated } from "~/components/WhenHydrated";
 import WorkoutStats from "~/components/WorkoutStats";
+import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
-import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
-import { useLocalStorage } from "~/utils/useLocalStorage";
 
 type Props = {};
 
@@ -72,11 +64,12 @@ const measurementToDetails: Record<
 
 export default function WorkoutPage({}: Props) {
   const router = useRouter();
-  const [workout, setWorkout, clearWorkout] = useLocalStorage<
-    RouterInputs["workouts"]["put"]["workout"] | null
-  >("aa_workout", null);
+  const {
+    currentWorkout: workout,
+    setCurrentWorkout: setWorkout,
+    clearWorkout,
+  } = useCurrentWorkout();
   const exercises = api.exercises.all.useQuery();
-  const currentWorkout = api.workouts.getCurrent.useQuery();
   const putWorkoutRouter = api.workouts.put.useMutation();
   const exercisesById = Object.fromEntries(
     exercises.data?.map((e) => [e.id, e]) ?? [],
@@ -170,17 +163,15 @@ export default function WorkoutPage({}: Props) {
   };
 
   const endWorkout = (title: string, notes: string | undefined) => {
-    const currentWorkoutId = currentWorkout.data?.[0]?.id;
     putWorkoutRouter.mutate(
       {
         workout: {
           ...workout!,
-          startTime: currentWorkout.data?.[0]?.startTime ?? new Date(),
+          startTime: workout?.startTime ?? new Date(),
           endTime: new Date(),
           name: title,
           notes: notes,
         },
-        id: currentWorkoutId,
       },
       {
         onSuccess: () => {
@@ -220,184 +211,182 @@ export default function WorkoutPage({}: Props) {
   );
 
   return (
-    <div className="relative flex min-h-[100svh] flex-col p-5">
-      <div className="mb-5 flex items-center px-1">
-        <StopCircle className="animate-pulse stroke-red-500" />
-        <h1 className="ml-3 flex-1 text-4xl font-medium">Activity</h1>
-        <Settings className="stroke-zinc-400" />
-      </div>
+    <WhenHydrated>
+      <div className="relative flex min-h-[100svh] flex-col p-5">
+        <div className="mb-5 flex items-center px-1">
+          <StopCircle className="animate-pulse stroke-red-500" />
+          <h1 className="ml-3 flex-1 text-4xl font-medium">Activity</h1>
+          <Settings className="stroke-zinc-400" />
+        </div>
 
-      <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl bg-card">
-        <WorkoutStats
-          workout={workout}
-          currentWorkout={currentWorkout.data?.[0]}
-        />
-      </div>
+        <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl bg-card">
+          <WorkoutStats workout={workout} currentWorkout={workout} />
+        </div>
 
-      <div className="flex-1">
-        {workout?.exercises?.length ? (
-          <div className="space-y-4">
-            {workout.exercises.map((exercise, exerciseIndex) => {
-              const exerciseDetails = exercisesById[exercise.exerciseId];
-              const measurements =
-                exerciseTypeToFields[
-                  exerciseDetails?.measurementType ?? "reps"
-                ];
-              return (
-                <div
-                  key={exerciseIndex}
-                  className="space-y-4 rounded-xl bg-card p-4"
-                >
-                  {exerciseDetails ? (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <p className="text-lg font-semibold">
-                          {exerciseDetails.name}
-                        </p>
+        <div className="flex-1">
+          {workout?.exercises?.length ? (
+            <div className="space-y-4">
+              {workout.exercises.map((exercise, exerciseIndex) => {
+                const exerciseDetails = exercisesById[exercise.exerciseId];
+                const measurements =
+                  exerciseTypeToFields[
+                    exerciseDetails?.measurementType ?? "reps"
+                  ];
+                return (
+                  <div
+                    key={exerciseIndex}
+                    className="space-y-4 rounded-xl bg-card p-4"
+                  >
+                    {exerciseDetails ? (
+                      <>
+                        <div className="flex items-center justify-between">
+                          <p className="text-lg font-semibold">
+                            {exerciseDetails.name}
+                          </p>
 
-                        <Button
-                          size="icon-sm"
-                          variant="outline"
-                          className="border-destructive"
-                          onClick={() => deleteExercise(exerciseIndex)}
+                          <Button
+                            size="icon-sm"
+                            variant="outline"
+                            className="border-destructive"
+                            onClick={() => deleteExercise(exerciseIndex)}
+                          >
+                            <Trash
+                              size="1em"
+                              className="text-sm text-destructive-foreground"
+                            />
+                          </Button>
+                        </div>
+                        <div
+                          className="grid items-center gap-1 tabular-nums"
+                          style={{
+                            gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
+                          }}
                         >
-                          <Trash
-                            size="1em"
-                            className="text-sm text-destructive-foreground"
-                          />
-                        </Button>
-                      </div>
-                      <div
-                        className="grid items-center gap-1 tabular-nums"
-                        style={{
-                          gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
-                        }}
-                      >
-                        {[
-                          "Set",
-                          ...measurements.map(
-                            (m) => measurementToDetails[m].label,
-                          ),
-                          <Check key="check" size="1em" />,
-                        ].map((label, i) => (
-                          <span
-                            key={i}
-                            className="mx-auto text-center text-sm font-semibold capitalize text-muted-foreground"
-                          >
-                            {label}
-                          </span>
-                        ))}
-                      </div>
-                      <SwipeableList>
-                        {exercise.sets.map((set, setIndex) => (
-                          <SwipeableListItem
-                            key={setIndex}
-                            trailingActions={trailingActions(
-                              exerciseIndex,
-                              setIndex,
-                            )}
-                          >
-                            <div
-                              className="grid w-full items-center gap-2 tabular-nums"
-                              style={{
-                                gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
-                              }}
+                          {[
+                            "Set",
+                            ...measurements.map(
+                              (m) => measurementToDetails[m].label,
+                            ),
+                            <Check key="check" size="1em" />,
+                          ].map((label, i) => (
+                            <span
+                              key={i}
+                              className="mx-auto text-center text-sm font-semibold capitalize text-muted-foreground"
                             >
-                              <div className="text-center font-semibold">
-                                {setIndex + 1}
-                              </div>
-                              {measurements.map(
-                                (measurement, measurementIndex) => (
+                              {label}
+                            </span>
+                          ))}
+                        </div>
+                        <SwipeableList>
+                          {exercise.sets.map((set, setIndex) => (
+                            <SwipeableListItem
+                              key={setIndex}
+                              trailingActions={trailingActions(
+                                exerciseIndex,
+                                setIndex,
+                              )}
+                            >
+                              <div
+                                className="grid w-full items-center gap-2 tabular-nums"
+                                style={{
+                                  gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
+                                }}
+                              >
+                                <div className="text-center font-semibold">
+                                  {setIndex + 1}
+                                </div>
+                                {measurements.map(
+                                  (measurement, measurementIndex) => (
+                                    <input
+                                      key={measurement}
+                                      type="number"
+                                      inputMode="decimal"
+                                      className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary"
+                                      step={0.1}
+                                      min={0}
+                                      onFocus={(event) => event.target.select()}
+                                      {...measurementToDetails[measurement]
+                                        .inputProps}
+                                      placeholder={measurement}
+                                      value={set[measurement]}
+                                      onChange={(e) => {
+                                        updateSet(exerciseIndex, setIndex, {
+                                          [measurement]: e.target.valueAsNumber,
+                                          complete: e.target.valueAsNumber
+                                            ? true
+                                            : false,
+                                        });
+                                      }}
+                                    />
+                                  ),
+                                )}
+                                <div className="text-center">
                                   <input
-                                    key={measurement}
-                                    type="number"
-                                    inputMode="decimal"
-                                    className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary"
-                                    step={0.1}
-                                    min={0}
-                                    onFocus={(event) => event.target.select()}
-                                    {...measurementToDetails[measurement]
-                                      .inputProps}
-                                    placeholder={measurement}
-                                    value={set[measurement]}
+                                    type="checkbox"
+                                    className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
+                                    checked={set.complete}
                                     onChange={(e) => {
                                       updateSet(exerciseIndex, setIndex, {
-                                        [measurement]: e.target.valueAsNumber,
-                                        complete: e.target.valueAsNumber
-                                          ? true
-                                          : false,
+                                        complete: e.target.checked,
                                       });
                                     }}
                                   />
-                                ),
-                              )}
-                              <div className="text-center">
-                                <input
-                                  type="checkbox"
-                                  className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
-                                  checked={set.complete}
-                                  onChange={(e) => {
-                                    updateSet(exerciseIndex, setIndex, {
-                                      complete: e.target.checked,
-                                    });
-                                  }}
-                                />
+                                </div>
                               </div>
-                            </div>
-                          </SwipeableListItem>
-                        ))}
-                      </SwipeableList>
+                            </SwipeableListItem>
+                          ))}
+                        </SwipeableList>
 
-                      {exercise.sets.length >= 100 && (
-                        <p className="text-center text-sm">tf you doing?</p>
-                      )}
+                        {exercise.sets.length >= 100 && (
+                          <p className="text-center text-sm">tf you doing?</p>
+                        )}
 
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="w-full gap-1"
-                        // disabled={exercise.sets.length >= 100}
-                        onClick={() => addSet(exerciseIndex)}
-                      >
-                        <PlusIcon size="1em" className="text-sm" />
-                        Add set
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-lg font-semibold">Deleted exercise</p>
-                    </>
-                  )}
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="w-full gap-1"
+                          // disabled={exercise.sets.length >= 100}
+                          onClick={() => addSet(exerciseIndex)}
+                        >
+                          <PlusIcon size="1em" className="text-sm" />
+                          Add set
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-lg font-semibold">
+                          Deleted exercise
+                        </p>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div>
+              <div className="flex h-36 items-center justify-center">
+                <div className="text-sm text-muted-foreground">
+                  No exercises added
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div>
-            <div className="flex h-36 items-center justify-center">
-              <div className="text-sm text-muted-foreground">
-                No exercises added
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      <div className="fixed bottom-0 left-4 right-4 grid grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur md:absolute">
-        {currentWorkout.data ? (
-          <EndWorkoutDrawer
-            onEnd={endWorkout}
-            title={currentWorkout.data[0]?.name}
+        <div className="fixed bottom-0 left-4 right-4 grid grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur md:absolute">
+          {workout ? (
+            <EndWorkoutDrawer onEnd={endWorkout} title={workout?.name} />
+          ) : (
+            <div className="w-full animate-pulse rounded-lg bg-zinc-500"></div>
+          )}
+          <ExercisesDrawer
+            onExerciseSelect={(exerciseId) => {
+              addExercise(exerciseId);
+            }}
           />
-        ) : (
-          <div className="w-full animate-pulse rounded-lg bg-zinc-500"></div>
-        )}
-        <ExercisesDrawer
-          onExerciseSelect={(exerciseId) => {
-            addExercise(exerciseId);
-          }}
-        />
+        </div>
       </div>
-    </div>
+    </WhenHydrated>
   );
 }

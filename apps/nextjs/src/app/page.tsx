@@ -25,7 +25,7 @@ export default async function HomePage() {
             Active <span className="text-primary">Aces</span>
           </h1>
         </div>
-        <div className="hero-content mx-auto max-w-xl">
+        <div className="mx-auto flex max-w-xl flex-col items-center">
           <h2 className="mb-4 max-w-lg text-left text-4xl font-bold sm:text-center">
             Empower Your Journey, Transform Your Body.
           </h2>
@@ -33,7 +33,7 @@ export default async function HomePage() {
             Track your workouts and fitness activities effortlessly with our
             app, designed to keep you motivated and on track towards your goals.
           </p>
-          <div className="fixed bottom-0 left-0 right-0 bg-card p-4 sm:static sm:flex sm:flex-col sm:justify-center sm:bg-transparent">
+          <div className="fixed bottom-0 left-0 right-0 w-full bg-card p-4 sm:static sm:flex sm:flex-col sm:justify-center sm:bg-transparent">
             <SignedIn>
               <Button asChild>
                 <Link href={"/dashboard"} className="mb-2 w-full">

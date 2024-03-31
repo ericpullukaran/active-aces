@@ -1,6 +1,11 @@
-export const getUseableDuration = (startTime: Date | undefined | null) => {
+export const getUseableDuration = (
+  startTime: Date | string | undefined | null,
+) => {
   const currentTime = new Date();
-  const diff = currentTime.valueOf() - (startTime ?? currentTime).valueOf();
+  const parsedStartTime =
+    typeof startTime === "string" ? new Date(startTime) : startTime;
+  const diff =
+    currentTime.valueOf() - (parsedStartTime ?? currentTime).valueOf();
 
   const seconds = Math.floor((diff / 1000) % 60);
   const minutes = Math.floor((diff / (1000 * 60)) % 60);

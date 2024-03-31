@@ -1,78 +1,42 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { ChevronRight, Loader2, Play } from "lucide-react";
+import React, { startTransition } from "react";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import { cn } from "~/lib/cn";
+import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
-import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
 
-type Props = { workoutInProgress: boolean };
+export default function StartWorkoutButton() {
+  const { currentWorkout, startWorkout } = useCurrentWorkout();
+  const workoutInProgress = !!currentWorkout;
 
-export default function StartWorkoutButton({
-  workoutInProgress = false,
-}: Props) {
-  const router = useRouter();
-  const putWorkout = api.workouts.put.useMutation();
+  // prefetch exercises
+  api.exercises.all.useQuery();
 
   return (
-    <button
-      onClick={() => {
-        if (workoutInProgress) {
-          router.push("/dashboard/workout");
-          return;
-        }
-        putWorkout.mutate(
-          {
-            workout: {
-              name: getUsableWorkoutName(),
-              exercises: [],
-              startTime: new Date(),
-            },
-          },
-          { onSuccess: () => router.push("/dashboard/workout") },
-        );
-      }}
+    <Link
+      href="/dashboard/workout"
       className={cn(
-        "absolute bottom-12 left-1/2 flex -translate-x-1/2 items-center rounded-xl bg-card p-2 ring-primary transition-all hover:ring-2",
-        { "w-64": !putWorkout.isPending },
+        "absolute bottom-12 left-1/2 flex -translate-x-1/2 items-center rounded-xl bg-card p-2 pl-4 ring-primary transition-all hover:ring-2",
       )}
+      onClick={() => {
+        if (!currentWorkout) {
+          startTransition(() => {
+            startWorkout();
+          });
+        }
+      }}
     >
-      <div
-        className={cn(
-          "grid h-11 w-11 place-content-center rounded-lg bg-primary pr-0.5",
-          {
-            "border-2 border-primary bg-transparent": workoutInProgress,
-          },
-        )}
-      >
-        {putWorkout.isPending ? (
-          <Loader2 className="h-5 w-5 animate-spin stroke-card" />
-        ) : (
-          <Play
-            className={cn("h-5 w-5 fill-card stroke-card", {
-              "fill-white stroke-white": workoutInProgress,
-            })}
-          />
-        )}
-      </div>
-      <div
-        className={cn("ml-3 flex-1 font-semibold transition-all", {
-          hidden: putWorkout.isPending,
-        })}
-      >
+      <div className="mr-4 flex-1 font-semibold transition-all">
         {workoutInProgress ? "Continue" : "Start workout"}
       </div>
-      <div
-        className={cn("mr-2 flex transition-all", {
-          hidden: putWorkout.isPending,
-        })}
-      >
-        <ChevronRight className="-m-1.5" />
-        <ChevronRight className="-m-1.5 opacity-40" />
-        <ChevronRight className="-m-1.5 opacity-20" />
+      <div className="flex -space-x-3 transition-all [&>*]:animate-pulse">
+        <ChevronRight style={{ animationDelay: "0" }} />
+        <ChevronRight style={{ animationDelay: "250ms" }} />
+        <ChevronRight style={{ animationDelay: "500ms" }} />
       </div>
-    </button>
+    </Link>
   );
 }
