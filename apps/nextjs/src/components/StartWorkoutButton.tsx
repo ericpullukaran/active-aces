@@ -14,6 +14,9 @@ export default function StartWorkoutButton({
 }: Props) {
   const putWorkout = api.workouts.put.useMutation();
 
+  // prefetch exercises
+  api.exercises.all.useQuery();
+
   return (
     <Link
       href="/dashboard/workout"
