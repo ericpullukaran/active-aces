@@ -24,39 +24,13 @@ export default function StartWorkoutButton() {
         { "w-64": !putWorkout.isPending },
       )}
     >
-      <div
-        className={cn(
-          "grid h-11 w-11 place-content-center rounded-lg bg-primary pr-0.5",
-          {
-            "border-2 border-primary bg-transparent": workoutInProgress,
-          },
-        )}
-      >
-        {putWorkout.isPending ? (
-          <Loader2 className="h-5 w-5 animate-spin stroke-card" />
-        ) : (
-          <Play
-            className={cn("h-5 w-5 fill-card stroke-card", {
-              "fill-white stroke-white": workoutInProgress,
-            })}
-          />
-        )}
-      </div>
-      <div
-        className={cn("ml-3 flex-1 font-semibold transition-all", {
-          hidden: putWorkout.isPending,
-        })}
-      >
+      <div className="mr-4 flex-1 font-semibold transition-all">
         {workoutInProgress ? "Continue" : "Start workout"}
       </div>
-      <div
-        className={cn("mr-2 flex transition-all", {
-          hidden: putWorkout.isPending,
-        })}
-      >
-        <ChevronRight className="-m-1.5" />
-        <ChevronRight className="-m-1.5 opacity-40" />
-        <ChevronRight className="-m-1.5 opacity-20" />
+      <div className="flex gap-[-0.375rem] -space-x-3 transition-all [&>*]:animate-pulse">
+        <ChevronRight style={{ animationDelay: "0" }} />
+        <ChevronRight style={{ animationDelay: "250ms" }} />
+        <ChevronRight style={{ animationDelay: "500ms" }} />
       </div>
     </Link>
   );
