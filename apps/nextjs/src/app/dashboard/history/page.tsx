@@ -6,6 +6,7 @@ import NavBar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
 import WorkoutHistoryCard from "~/components/WorkoutHistoryCard";
 import { api } from "~/trpc/server";
+import HistoryLoading from "./loading";
 
 type Props = {};
 
