@@ -23,7 +23,7 @@ export default function NavBar({ title, navigateBack }: Props) {
     <div className="pb-24 md:pb-6">
       <nav
         className={clsx(
-          "fixed left-4 right-4 flex h-20 items-center rounded-b-xl bg-card p-4 ring-2 ring-zinc-700 md:static",
+          "fixed left-4 right-4 flex h-20 items-center rounded-xl bg-card p-4 ring-2 ring-zinc-700 md:static",
         )}
       >
         {navigateBack ? (
