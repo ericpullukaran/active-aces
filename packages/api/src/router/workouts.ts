@@ -47,7 +47,7 @@ export type EndWorkoutInput = {
 
 const PutWorkoutSchema = z.object({
   name: z.string(),
-  startTime: z.date(),
+  startTime: z.date().optional(),
   endTime: z.date().optional(),
   exercises: z.array(
     z.object({

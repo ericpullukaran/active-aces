@@ -7,7 +7,7 @@ import { getUseableDuration } from "~/utils/getUseableDuration";
 
 type Props = {
   workout: RouterInputs["workouts"]["put"]["workout"] | null;
-  currentWorkout: RouterOutputs["workouts"]["getCurrent"][number] | undefined;
+  currentWorkout: RouterOutputs["workouts"]["getCurrent"] | undefined;
 };
 
 export default function WorkoutStats({ workout, currentWorkout }: Props) {

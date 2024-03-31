@@ -33,7 +33,7 @@ export default function EndWorkoutDrawer({
 
   return (
     <Drawer>
-      <DrawerTrigger className="">
+      <DrawerTrigger className="" asChild>
         <Button variant="destructive" className="w-full">
           End Workout
         </Button>

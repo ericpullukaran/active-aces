@@ -5,14 +5,13 @@ import Link from "next/link";
 import { ChevronRight, Loader2, Play } from "lucide-react";
 
 import { cn } from "~/lib/cn";
+import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
 
-type Props = { workoutInProgress: boolean };
-
-export default function StartWorkoutButton({
-  workoutInProgress = false,
-}: Props) {
+export default function StartWorkoutButton() {
   const putWorkout = api.workouts.put.useMutation();
+  const { currentWorkout } = useCurrentWorkout();
+  const workoutInProgress = !!currentWorkout;
 
   // prefetch exercises
   api.exercises.all.useQuery();
