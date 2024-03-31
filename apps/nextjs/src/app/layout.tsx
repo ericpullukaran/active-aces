@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
 
 import { ThemeProvider } from "~/components/theme";
 import { env } from "~/env";
@@ -41,6 +40,12 @@ export const viewport: Viewport = {
   ],
 };
 
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -48,8 +53,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         style={{ height: "100svh" }}
         className={cn(
           "flex flex-col bg-background font-sans text-foreground antialiased",
-          GeistSans.variable,
-          GeistMono.variable,
+          inter.className,
         )}
       >
         <ClerkProvider
