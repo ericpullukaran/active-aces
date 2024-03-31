@@ -8,11 +8,11 @@ export const getUsableWorkoutName = () => {
     timeOfDay = "Afternoon";
   } else if (hours >= 18 && hours < 21) {
     timeOfDay = "Evening";
-  } else if (hours >= 1 && hours < 5) {
-    timeOfDay = "You should really go sleep";
+  } else if (hours >= 2 && hours < 5) {
+    timeOfDay = "Degen Hours";
   } else {
     timeOfDay = "Night";
   }
 
-  return `${timeOfDay} Workout`;
+  return `${timeOfDay}`;
 };

@@ -2,39 +2,32 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import clsx from "clsx";
 import { ArrowLeft } from "lucide-react";
 
 import AuthButton from "./AuthButton";
 import Logo from "./Logo";
+import NavBackButton from "./NavBackButton";
 import { Button } from "./ui/button";
 
 type Props = { title: string; navigateBack?: string };
 
 export default function NavBar({ title, navigateBack }: Props) {
+  const router = useRouter();
   const { isLoaded, isSignedIn, user } = useUser();
   const pathname = usePathname();
 
   return (
-    <div className="pb-24">
+    <div className="pb-24 md:pb-6">
       <nav
         className={clsx(
-          "fixed left-4 right-4 flex h-20 items-center rounded-b-xl bg-card p-4 md:static",
+          "fixed left-4 right-4 flex h-20 items-center rounded-b-xl bg-card p-4 ring-2 ring-zinc-700 md:static",
         )}
       >
         {navigateBack ? (
-          <Button
-            variant="outline"
-            size="icon"
-            asChild
-            className="sq-8 bg-card"
-          >
-            <Link href={navigateBack}>
-              <ArrowLeft className="sq-5" />
-            </Link>
-          </Button>
+          <NavBackButton navigateBack={navigateBack} />
         ) : (
           <div className="font-display">
             <Link
