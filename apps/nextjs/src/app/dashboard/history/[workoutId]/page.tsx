@@ -5,6 +5,7 @@ import { ArrowLeft, Check, Settings } from "lucide-react";
 
 import type { Doc } from "@acme/db";
 
+import NavBar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/server";
 
@@ -55,18 +56,8 @@ export default async function SpecificWorkoutPage({ params }: Props) {
     exercises.map((e) => [e.id, e]) ?? [],
   );
   return (
-    <div className="flex min-h-[100svh] flex-col p-5">
-      <div className="mb-8 mt-2 flex items-center px-1">
-        <Button variant="outline" size="icon" asChild className="sq-8">
-          <Link href={"/dashboard/history"}>
-            <ArrowLeft className="sq-5" />
-          </Link>
-        </Button>
-        <h1 className="flex-1 text-center text-2xl font-semibold">
-          {workout?.name}
-        </h1>
-        <Settings className="stroke-zinc-400" />
-      </div>
+    <div className="flex min-h-[100svh] flex-col px-5">
+      <NavBar title={workout?.name ?? ""} navigateBack="/dashboard/history" />
       <div className="flex-1">
         {workout?.exercises?.length ? (
           <div className="space-y-4">
@@ -79,7 +70,7 @@ export default async function SpecificWorkoutPage({ params }: Props) {
               return (
                 <div
                   key={exerciseIndex}
-                  className="space-y-4 rounded-xl bg-card p-4"
+                  className="space-y-4 rounded-xl p-4 ring-2 ring-card"
                 >
                   {exerciseDetails ? (
                     <>
