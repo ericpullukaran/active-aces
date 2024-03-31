@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 
 import { Button } from "~/components/ui/button";
@@ -34,13 +35,7 @@ export default async function HomePage() {
             app, designed to keep you motivated and on track towards your goals.
           </p>
           <div className="fixed bottom-0 left-0 right-0 w-full bg-card p-4 sm:static sm:flex sm:flex-col sm:justify-center sm:bg-transparent">
-            <SignedIn>
-              <Button asChild>
-                <Link href={"/dashboard"} className="mb-2 w-full">
-                  Go to Dashboard
-                </Link>
-              </Button>
-            </SignedIn>
+            <SignedIn>{redirect("/dashboard")}</SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
                 <Button className="mb-2 w-full">Get Started</Button>
