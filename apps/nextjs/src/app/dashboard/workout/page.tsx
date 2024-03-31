@@ -24,6 +24,7 @@ import { WhenHydrated } from "~/components/WhenHydrated";
 import WorkoutStats from "~/components/WorkoutStats";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
+import { useExercises } from "~/utils/use-search-exercises";
 
 type Props = {};
 
@@ -70,10 +71,10 @@ export default function WorkoutPage({}: Props) {
     setCurrentWorkout: setWorkout,
     clearWorkout,
   } = useCurrentWorkout();
-  const exercises = api.exercises.all.useQuery();
+  const exercises = useExercises();
   const putWorkoutRouter = api.workouts.put.useMutation();
   const exercisesById = Object.fromEntries(
-    exercises.data?.map((e) => [e.id, e]) ?? [],
+    exercises.map((e) => [e.id, e]) ?? [],
   );
 
   const addExercise = (exerciseId: string) => {
@@ -298,7 +299,7 @@ export default function WorkoutPage({}: Props) {
                                       key={measurement}
                                       type="number"
                                       inputMode="decimal"
-                                      className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary focus:ring-transparent"
+                                      className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-transparent"
                                       step={0.1}
                                       min={0}
                                       onFocus={(event) => event.target.select()}

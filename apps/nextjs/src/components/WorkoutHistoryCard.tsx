@@ -33,7 +33,7 @@ export default async function WorkoutHistoryCard({ workout }: Props) {
 
   return (
     <Link
-      href={"/dashboard/history/" + workout.id}
+      href={`/dashboard/history/${workout.id}`}
       className="flex items-center space-x-4 rounded-md border p-4 text-left transition-all hover:border-primary"
     >
       <div className="flex-1">

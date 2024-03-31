@@ -58,7 +58,7 @@ export default function EndWorkoutDrawer({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter workout title"
-              className="mt-1 block w-full focus:border-primary focus:ring-primary"
+              className="mt-1 block w-full"
             />
           </div>
 
