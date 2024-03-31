@@ -1,39 +1,22 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ChevronRight, Loader2, Play } from "lucide-react";
 
 import { cn } from "~/lib/cn";
 import { api } from "~/trpc/react";
-import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
 
 type Props = { workoutInProgress: boolean };
 
 export default function StartWorkoutButton({
   workoutInProgress = false,
 }: Props) {
-  const router = useRouter();
   const putWorkout = api.workouts.put.useMutation();
 
   return (
-    <button
-      onClick={() => {
-        if (workoutInProgress) {
-          router.push("/dashboard/workout");
-          return;
-        }
-        putWorkout.mutate(
-          {
-            workout: {
-              name: getUsableWorkoutName(),
-              exercises: [],
-              startTime: new Date(),
-            },
-          },
-          { onSuccess: () => router.push("/dashboard/workout") },
-        );
-      }}
+    <Link
+      href="/dashboard/workout"
       className={cn(
         "absolute bottom-12 left-1/2 flex -translate-x-1/2 items-center rounded-xl bg-card p-2 ring-primary transition-all hover:ring-2",
         { "w-64": !putWorkout.isPending },
@@ -73,6 +56,6 @@ export default function StartWorkoutButton({
         <ChevronRight className="-m-1.5 opacity-40" />
         <ChevronRight className="-m-1.5 opacity-20" />
       </div>
-    </button>
+    </Link>
   );
 }
