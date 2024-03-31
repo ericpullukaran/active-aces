@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Boxes, StopCircle, Tally5 } from "lucide-react";
 
-import type { RouterInputs, RouterOutputs } from "@acme/api";
+import type { RouterInputs } from "@acme/api";
 
 import { getUseableDuration } from "~/utils/getUseableDuration";
 
 type Props = {
   workout: RouterInputs["workouts"]["put"]["workout"] | null;
-  currentWorkout: RouterOutputs["workouts"]["getCurrent"] | undefined;
+  currentWorkout: RouterInputs["workouts"]["put"]["workout"] | null;
 };
 
 export default function WorkoutStats({ workout, currentWorkout }: Props) {

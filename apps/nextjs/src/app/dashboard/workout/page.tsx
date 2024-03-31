@@ -1,18 +1,10 @@
 "use client";
 
 import type { ComponentProps } from "react";
-import React, { HTMLInputTypeAttribute } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
+import { Check, PlusIcon, Settings, StopCircle, Trash } from "lucide-react";
 import {
-  Check,
-  Delete,
-  PlusIcon,
-  Settings,
-  StopCircle,
-  Trash,
-} from "lucide-react";
-import {
-  LeadingActions,
   SwipeableList,
   SwipeableListItem,
   SwipeAction,
@@ -31,8 +23,6 @@ import { WhenHydrated } from "~/components/WhenHydrated";
 import WorkoutStats from "~/components/WorkoutStats";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
-import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
-import { useLocalStorage } from "~/utils/useLocalStorage";
 
 type Props = {};
 
@@ -80,7 +70,6 @@ export default function WorkoutPage({}: Props) {
     clearWorkout,
   } = useCurrentWorkout();
   const exercises = api.exercises.all.useQuery();
-  const currentWorkout = api.workouts.getCurrent.useQuery();
   const putWorkoutRouter = api.workouts.put.useMutation();
   const exercisesById = Object.fromEntries(
     exercises.data?.map((e) => [e.id, e]) ?? [],
@@ -166,17 +155,15 @@ export default function WorkoutPage({}: Props) {
   };
 
   const endWorkout = (title: string, notes: string | undefined) => {
-    const currentWorkoutId = currentWorkout.data?.id;
     putWorkoutRouter.mutate(
       {
         workout: {
           ...workout!,
-          startTime: currentWorkout.data?.startTime ?? new Date(),
+          startTime: workout?.startTime ?? new Date(),
           endTime: new Date(),
           name: title,
           notes: notes,
         },
-        id: currentWorkoutId,
       },
       {
         onSuccess: () => {
@@ -225,10 +212,7 @@ export default function WorkoutPage({}: Props) {
         </div>
 
         <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl bg-card">
-          <WorkoutStats
-            workout={workout}
-            currentWorkout={currentWorkout.data}
-          />
+          <WorkoutStats workout={workout} currentWorkout={workout} />
         </div>
 
         <div className="flex-1">
@@ -382,11 +366,8 @@ export default function WorkoutPage({}: Props) {
         </div>
 
         <div className="fixed bottom-0 left-4 right-4 grid grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur md:absolute">
-          {currentWorkout.data ? (
-            <EndWorkoutDrawer
-              onEnd={endWorkout}
-              title={currentWorkout.data?.name}
-            />
+          {workout ? (
+            <EndWorkoutDrawer onEnd={endWorkout} title={workout?.name} />
           ) : (
             <div className="w-full animate-pulse rounded-lg bg-zinc-500"></div>
           )}

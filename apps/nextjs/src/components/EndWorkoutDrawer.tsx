@@ -80,7 +80,7 @@ export default function EndWorkoutDrawer({
         </div>
         <DrawerFooter>
           <Button onClick={handleSubmit}>Submit</Button>
-          <DrawerClose>
+          <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>
         </DrawerFooter>

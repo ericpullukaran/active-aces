@@ -1,11 +1,13 @@
 "use client";
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { createContext, use, useEffect } from "react";
+import { createContext, use, useCallback, useEffect } from "react";
 
 import type { RouterInputs } from "@acme/api";
 
+import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
 import { useLocalStorage } from "~/utils/useLocalStorage";
+import { useUpdatedRef } from "~/utils/useUpdatedRef";
 
 type CurrentWorkout = RouterInputs["workouts"]["put"]["workout"] | null;
 
@@ -13,20 +15,26 @@ const CurrentWorkoutContext = createContext<{
   currentWorkout: CurrentWorkout;
   setCurrentWorkout: Dispatch<SetStateAction<CurrentWorkout>>;
   clearWorkout: () => void;
+  startWorkout: () => void;
 } | null>(null);
 
 export const CurrentWorkoutProvider = (props: { children: ReactNode }) => {
   const [currentWorkout, setCurrentWorkout, clearWorkout] =
     useLocalStorage<CurrentWorkout | null>("aa_workout", null);
 
-  useEffect(() => {
-    if (currentWorkout && !currentWorkout.startTime) {
-      setCurrentWorkout({
-        ...currentWorkout,
-        startTime: new Date(),
-      });
+  const currentWorkoutRef = useUpdatedRef(currentWorkout);
+
+  const startWorkout = useCallback(() => {
+    if (currentWorkoutRef.current) {
+      throw new Error("Cannot start a workout since one is already running");
     }
-  }, [currentWorkout, setCurrentWorkout]);
+
+    setCurrentWorkout({
+      name: getUsableWorkoutName(),
+      startTime: new Date(),
+      exercises: [],
+    });
+  }, [currentWorkoutRef, setCurrentWorkout]);
 
   return (
     <CurrentWorkoutContext.Provider
@@ -34,6 +42,7 @@ export const CurrentWorkoutProvider = (props: { children: ReactNode }) => {
         currentWorkout,
         setCurrentWorkout,
         clearWorkout,
+        startWorkout,
       }}
     >
       {props.children}
