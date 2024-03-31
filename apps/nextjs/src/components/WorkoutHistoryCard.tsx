@@ -10,9 +10,13 @@ import WorkoutHistoryCardPopover from "./WorkoutHistoryCardPopover";
 
 type Props = {
   workout: RouterOutputs["workouts"]["history"]["workouts"][number];
+  internalNav?: boolean;
 };
 
-export default async function WorkoutHistoryCard({ workout }: Props) {
+export default async function WorkoutHistoryCard({
+  workout,
+  internalNav,
+}: Props) {
   const workoutInfo = workout.exercises.reduce<{
     exercises: Set<string>;
     totalSets: number;
@@ -33,7 +37,11 @@ export default async function WorkoutHistoryCard({ workout }: Props) {
 
   return (
     <Link
-      href={"/dashboard/history/" + workout.id}
+      href={
+        "/dashboard/history/" +
+        workout.id +
+        (internalNav ? "?internalNav=true" : "")
+      }
       className="flex items-center space-x-4 rounded-md border p-4 text-left transition-all hover:border-primary"
     >
       <div className="flex-1">
@@ -58,7 +66,7 @@ export default async function WorkoutHistoryCard({ workout }: Props) {
           })}
         </div>
       </div>
-      <WorkoutHistoryCardPopover workoutId={workout.id} />
+      {!internalNav && <WorkoutHistoryCardPopover workoutId={workout.id} />}
     </Link>
   );
 }
