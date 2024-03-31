@@ -1,8 +1,6 @@
 import React from "react";
 
 import NavBar from "~/components/NavBar";
-import StartWorkoutButton from "~/components/StartWorkoutButton";
-import { Badge } from "~/components/ui/badge";
 
 type Props = {};
 

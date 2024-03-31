@@ -50,6 +50,7 @@ const measurementToDetails: Record<
 };
 
 export default async function SpecificWorkoutPage({ params }: Props) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   const workout = await api.workouts.get({ id: params.workoutId });
   const exercises = await api.exercises.all();
   const exercisesById = Object.fromEntries(

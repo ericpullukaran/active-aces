@@ -9,6 +9,7 @@ import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
 type Props = {};
 
 export default async function DashboardPage({}: Props) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   return (
     <div className="w-full">
       <NavBar title="Active Aces" />
