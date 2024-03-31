@@ -30,7 +30,7 @@ export const CurrentWorkoutProvider = (props: { children: ReactNode }) => {
     }
 
     setCurrentWorkout({
-      name: getUsableWorkoutName(),
+      name: getUsableWorkoutName() + " Workout",
       startTime: new Date(),
       exercises: [],
     });

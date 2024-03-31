@@ -18,17 +18,16 @@ type Props = {
 export default function WorkoutHistoryCardPopover({ workoutId }: Props) {
   const deleteWorkout = api.workouts.delete.useMutation();
   return (
-    <Button
-      variant={"outline"}
-      size={"icon"}
-      className="rounded-full"
-      onClick={(e) => {
-        e.preventDefault();
-      }}
+    <div
+      className="sq-8 grid place-content-center rounded-full ring-2 ring-card transition-colors hover:bg-zinc-700"
+      onClick={(e) => e.preventDefault()}
+      onKeyDown={(e) => e.preventDefault()}
+      role="button"
+      tabIndex={-1}
     >
       <Popover>
         <PopoverTrigger>
-          <CircleEllipsis />
+          <CircleEllipsis className="sq-6" />
         </PopoverTrigger>
         <PopoverContent className="flex flex-col gap-1 p-1">
           <Button variant={"ghost"} className="w-full">
@@ -45,6 +44,6 @@ export default function WorkoutHistoryCardPopover({ workoutId }: Props) {
           </Button>
         </PopoverContent>
       </Popover>
-    </Button>
+    </div>
   );
 }
