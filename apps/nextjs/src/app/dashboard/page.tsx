@@ -9,7 +9,7 @@ type Props = {};
 export default async function DashboardPage({}: Props) {
   return (
     <div className="w-full">
-      <NavBar />
+      <NavBar title="Active Aces" />
       <WhenHydrated>
         <StartWorkoutButton />
       </WhenHydrated>

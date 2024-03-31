@@ -5,44 +5,58 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import clsx from "clsx";
+import { ArrowLeft } from "lucide-react";
 
 import AuthButton from "./AuthButton";
 import Logo from "./Logo";
+import { Button } from "./ui/button";
 
-type Props = {};
+type Props = { title: string; navigateBack?: string };
 
-export default function NavBar({}: Props) {
+export default function NavBar({ title, navigateBack }: Props) {
   const { isLoaded, isSignedIn, user } = useUser();
   const pathname = usePathname();
 
   return (
-    <nav
-      className={clsx("m-5 flex items-center rounded-xl bg-card p-3 sm:p-5")}
-    >
-      <div className="font-display">
-        <Link
-          className="flex flex-row text-xl font-extrabold tracking-tight"
-          href="/dashboard"
-        >
-          <Logo className="h-10 w-10" />
-        </Link>
-      </div>
-
-      <div className="ml-4 flex-1">
-        <p className="text-sm text-zinc-300">Welcome back! 👋</p>
-        {isLoaded && user ? (
-          <h4 className="font-semibold">{user.firstName}</h4>
+    <div className="pb-24">
+      <nav
+        className={clsx(
+          "fixed left-4 right-4 flex h-20 items-center rounded-b-xl bg-card p-4 md:static",
+        )}
+      >
+        {navigateBack ? (
+          <Button
+            variant="outline"
+            size="icon"
+            asChild
+            className="sq-8 bg-card"
+          >
+            <Link href={navigateBack}>
+              <ArrowLeft className="sq-5" />
+            </Link>
+          </Button>
         ) : (
-          <div className="h-6 w-28 animate-pulse rounded-sm bg-zinc-600"></div>
+          <div className="font-display">
+            <Link
+              className="flex flex-row text-xl font-extrabold tracking-tight"
+              href="/dashboard"
+            >
+              <Logo className="h-10 w-10" />
+            </Link>
+          </div>
         )}
-      </div>
 
-      <div className="flex items-center gap-4 sm:gap-6">
-        <AuthButton />
-        {!isLoaded && (
-          <div className="h-8 w-8 animate-pulse rounded-full bg-zinc-600"></div>
-        )}
-      </div>
-    </nav>
+        <div className="flex-1 truncate px-3 text-xl font-semibold">
+          {title}
+        </div>
+
+        <div className="flex items-center gap-4 sm:gap-6">
+          <AuthButton />
+          {!isLoaded && (
+            <div className="h-8 w-8 animate-pulse rounded-full bg-zinc-600"></div>
+          )}
+        </div>
+      </nav>
+    </div>
   );
 }

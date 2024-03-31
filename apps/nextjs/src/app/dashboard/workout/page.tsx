@@ -18,6 +18,7 @@ import type { Doc } from "@acme/db";
 
 import EndWorkoutDrawer from "~/components/EndWorkoutDrawer";
 import ExercisesDrawer from "~/components/ExercisesDrawer";
+import NavBar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
 import { WhenHydrated } from "~/components/WhenHydrated";
 import WorkoutStats from "~/components/WorkoutStats";
@@ -212,14 +213,10 @@ export default function WorkoutPage({}: Props) {
 
   return (
     <WhenHydrated>
-      <div className="relative flex min-h-[100svh] flex-col p-5">
-        <div className="mb-5 flex items-center px-1">
-          <StopCircle className="animate-pulse stroke-red-500" />
-          <h1 className="ml-3 flex-1 text-4xl font-medium">Activity</h1>
-          <Settings className="stroke-zinc-400" />
-        </div>
+      <div className="relative flex min-h-[100svh] flex-col px-5">
+        <NavBar title="Active Workout" navigateBack="/dashboard" />
 
-        <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl bg-card">
+        <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl ring-4 ring-card">
           <WorkoutStats workout={workout} currentWorkout={workout} />
         </div>
 
@@ -301,7 +298,7 @@ export default function WorkoutPage({}: Props) {
                                       key={measurement}
                                       type="number"
                                       inputMode="decimal"
-                                      className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary"
+                                      className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-primary focus:ring-transparent"
                                       step={0.1}
                                       min={0}
                                       onFocus={(event) => event.target.select()}
