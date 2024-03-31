@@ -90,7 +90,15 @@ export default function WorkoutPage({}: Props) {
         ...(workout?.exercises ?? []),
         {
           exerciseId,
-          sets: [],
+          sets: [
+            {
+              numReps: 0,
+              weight: 0,
+              time: 0,
+              distance: 0,
+              complete: false,
+            },
+          ],
         },
       ],
     });
