@@ -31,6 +31,14 @@ export const metadata: Metadata = {
     site: "@activeaces",
     creator: "@activeaces",
   },
+  appleWebApp: {
+    title: "Active Aces",
+    statusBarStyle: "black-translucent",
+    capable: true,
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport: Viewport = {
