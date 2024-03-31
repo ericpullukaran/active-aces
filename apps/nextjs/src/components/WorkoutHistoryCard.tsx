@@ -1,11 +1,12 @@
 import React from "react";
 import Link from "next/link";
 
+import type { RouterOutputs } from "@acme/api";
 import type { Doc } from "@acme/db";
-import { RouterOutputs } from "@acme/api";
 
 import { api } from "~/trpc/server";
 import { Badge } from "./ui/badge";
+import WorkoutHistoryCardPopover from "./WorkoutHistoryCardPopover";
 
 type Props = {
   workout: RouterOutputs["workouts"]["history"]["workouts"][number];
@@ -57,6 +58,7 @@ export default async function WorkoutHistoryCard({ workout }: Props) {
           })}
         </div>
       </div>
+      <WorkoutHistoryCardPopover workoutId={workout.id} />
     </Link>
   );
 }

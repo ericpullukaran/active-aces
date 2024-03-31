@@ -9,7 +9,7 @@ import { api } from "~/trpc/server";
 type Props = {};
 
 export default async function HistoryPage({}: Props) {
-  const workouts = await api.workouts.history({ limit: 10 });
+  const workoutHistory = await api.workouts.history({ limit: 10 });
   return (
     <div className="flex min-h-[100svh] flex-col p-5">
       <div className="mb-8 mt-2 flex items-center px-1">
@@ -24,7 +24,7 @@ export default async function HistoryPage({}: Props) {
         <Settings className="stroke-zinc-400" />
       </div>
       <div className="flex flex-col gap-4">
-        {workouts.workouts.map((workout) => (
+        {workoutHistory.workouts.map((workout) => (
           <WorkoutHistoryCard key={workout.id} workout={workout} />
         ))}
       </div>
