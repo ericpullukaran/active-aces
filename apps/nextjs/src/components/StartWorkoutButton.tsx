@@ -32,7 +32,7 @@ export default function StartWorkoutButton() {
       <div className="mr-4 flex-1 font-semibold transition-all">
         {workoutInProgress ? "Continue" : "Start workout"}
       </div>
-      <div className="flex gap-[-0.375rem] -space-x-3 transition-all [&>*]:animate-pulse">
+      <div className="flex -space-x-3 transition-all [&>*]:animate-pulse">
         <ChevronRight style={{ animationDelay: "0" }} />
         <ChevronRight style={{ animationDelay: "250ms" }} />
         <ChevronRight style={{ animationDelay: "500ms" }} />
