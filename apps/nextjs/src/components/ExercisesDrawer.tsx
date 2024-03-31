@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Plus } from "lucide-react";
 
-import { api } from "~/trpc/react";
+import { useExercises } from "~/utils/use-search-exercises";
 import ExerciseDrawerCard from "./ExerciseDrawerCard";
 import { Button } from "./ui/button";
 import {
@@ -14,15 +14,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "./ui/drawer";
+import { Input } from "./ui/input";
 
 type Props = {
   onExerciseSelect: (exerciseId: string) => void;
 };
 export default function ExercisesDrawer(props: Props) {
-  const exercises = api.exercises.all.useQuery();
+  const [searchQuery, setSearchQuery] = useState("");
+  const exercises = useExercises(searchQuery);
 
   return (
-    <Drawer>
+    <Drawer onClose={() => setSearchQuery("")}>
       <DrawerTrigger asChild>
         <Button
           className="gap-1 border-dashed border-zinc-200 text-zinc-200"
@@ -32,17 +34,25 @@ export default function ExercisesDrawer(props: Props) {
           Add Exercises
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
+      <DrawerContent className="h-[90vh]">
+        <DrawerHeader className="mx-auto w-full max-w-sm">
           <DrawerTitle>Exercises</DrawerTitle>
           <DrawerDescription>
             Choose an exercise to add to your workout
           </DrawerDescription>
+          <div>
+            <Input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search exercises..."
+            />
+          </div>
         </DrawerHeader>
         <div className="overflow-y-scroll">
           <div className="mx-auto w-full max-w-sm ">
             <section className="mx-4 mb-10 flex flex-col gap-3">
-              {exercises.data?.map((e) => (
+              {exercises.map((e) => (
                 <ExerciseDrawerCard
                   key={e.id}
                   exercise={e}

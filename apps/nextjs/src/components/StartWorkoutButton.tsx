@@ -7,13 +7,14 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "~/lib/cn";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
+import { useExercises } from "~/utils/use-search-exercises";
 
 export default function StartWorkoutButton() {
   const { currentWorkout, startWorkout } = useCurrentWorkout();
   const workoutInProgress = !!currentWorkout;
 
   // prefetch exercises
-  api.exercises.all.useQuery();
+  useExercises();
 
   return (
     <Link

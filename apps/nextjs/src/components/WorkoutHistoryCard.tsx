@@ -37,11 +37,7 @@ export default async function WorkoutHistoryCard({
 
   return (
     <Link
-      href={
-        "/dashboard/history/" +
-        workout.id +
-        (internalNav ? "?internalNav=true" : "")
-      }
+      href={`/dashboard/history/${workout.id}${internalNav ? "?internalNav=true" : ""}`}
       className="flex items-center space-x-4 rounded-md border p-4 text-left transition-all hover:border-primary"
     >
       <div className="flex-1">
