@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -29,10 +28,10 @@ export default function NavBackButton({
       variant="outline"
       size="icon"
       asChild
-      className="sq-8 bg-card"
+      className="sq-8 group bg-card"
     >
       <Link href={navigateBack}>
-        <ArrowLeft className="sq-5" />
+        <ArrowLeft className="sq-5 transition-transform group-hover:-translate-x-0.5" />
       </Link>
     </Button>
   );

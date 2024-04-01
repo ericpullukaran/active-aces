@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentProps } from "react";
-import React from "react";
+import React, { startTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, PlusIcon, Settings, StopCircle, Trash } from "lucide-react";
 import {
@@ -16,15 +16,27 @@ import "react-swipeable-list/dist/styles.css";
 import type { RouterInputs } from "@acme/api";
 import type { Doc } from "@acme/db";
 
+import { Countdown } from "~/components/Countdown";
 import EndWorkoutDrawer from "~/components/EndWorkoutDrawer";
 import ExercisesDrawer from "~/components/ExercisesDrawer";
 import NavBar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
+import { FormControl, FormItem, FormLabel } from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import { WhenHydrated } from "~/components/WhenHydrated";
 import WorkoutStats from "~/components/WorkoutStats";
+import { cn } from "~/lib/cn";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
 import { useExercises } from "~/utils/use-search-exercises";
+import { useLocalStorage } from "~/utils/useLocalStorage";
+import { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 
 type Props = {};
 
@@ -76,6 +88,10 @@ export default function WorkoutPage({}: Props) {
   const exercisesById = Object.fromEntries(
     exercises.map((e) => [e.id, e]) ?? [],
   );
+  const [workoutTimerDuration, setWorkoutTimerDuration] = useLocalStorage<
+    number | null
+  >("aa_workout-timer-duration", null);
+  const workoutTimer = useWorkoutTimer(workoutTimerDuration);
 
   const addExercise = (exerciseId: string) => {
     setWorkout({
@@ -154,6 +170,10 @@ export default function WorkoutPage({}: Props) {
             : exercise,
         ) ?? [],
     });
+
+    if (set.complete) {
+      workoutTimer.resetTimer();
+    }
   };
 
   const deleteExercise = (exerciseIndex: number) => {
@@ -161,6 +181,13 @@ export default function WorkoutPage({}: Props) {
       ...workout!,
       exercises:
         workout?.exercises?.filter((_, i) => i !== exerciseIndex) ?? [],
+    });
+  };
+
+  const cancelWorkout = () => {
+    router.push("/dashboard");
+    startTransition(() => {
+      clearWorkout();
     });
   };
 
@@ -177,8 +204,7 @@ export default function WorkoutPage({}: Props) {
       },
       {
         onSuccess: () => {
-          clearWorkout();
-          router.push("/dashboard");
+          cancelWorkout();
         },
       },
     );
@@ -214,14 +240,55 @@ export default function WorkoutPage({}: Props) {
 
   return (
     <WhenHydrated>
-      <div className="relative flex min-h-[100svh] flex-col px-5">
-        <NavBar title="Active Workout" navigateBack="/dashboard" />
+      <div className="relative flex min-h-[100svh] flex-col px-4">
+        <NavBar
+          title="Active Workout"
+          navigateBack="/dashboard"
+          rightSideContent={
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button size="icon-sm" variant="ghost">
+                  <Settings className="sq-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="flex flex-col gap-4">
+                <FormItem>
+                  <Label htmlFor="workout-rest-timer-duration">
+                    Rest timer duration (seconds)
+                  </Label>
+                  <Input
+                    placeholder="0"
+                    type="number"
+                    id="workout-rest-timer-duration"
+                    value={workoutTimerDuration ?? ""}
+                    onChange={(e) => {
+                      setWorkoutTimerDuration(
+                        Number.isNaN(e.target.valueAsNumber)
+                          ? null
+                          : e.target.valueAsNumber,
+                      );
+                    }}
+                  />
+                </FormItem>
+
+                <Button variant="destructive" size="sm" onClick={cancelWorkout}>
+                  Cancel workout
+                </Button>
+              </PopoverContent>
+            </Popover>
+          }
+        />
 
         <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl ring-4 ring-card">
           <WorkoutStats workout={workout} currentWorkout={workout} />
         </div>
 
-        <div className="flex-1">
+        <div
+          className={cn("flex-1", {
+            "pb-20": !workoutTimer.endTime,
+            "pb-28": workoutTimer.endTime,
+          })}
+        >
           {workout?.exercises?.length ? (
             <div className="space-y-4">
               {workout.exercises.map((exercise, exerciseIndex) => {
@@ -372,7 +439,41 @@ export default function WorkoutPage({}: Props) {
           )}
         </div>
 
+        {workoutTimer.endTime?.toISOString() ?? "null"}
+
         <div className="fixed bottom-0 left-4 right-4 grid grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur md:absolute">
+          {workoutTimer.endTime ? (
+            <div className="col-span-2 flex items-center gap-1">
+              <Countdown to={workoutTimer.endTime}></Countdown>
+
+              <div className="flex-1" />
+
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => workoutTimer.addTime(-15)}
+              >
+                -15
+              </Button>
+
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => workoutTimer.addTime(15)}
+              >
+                +15
+              </Button>
+
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={workoutTimer.stopTimer}
+              >
+                <Settings size="1em" />
+              </Button>
+            </div>
+          ) : null}
+
           {workout ? (
             <EndWorkoutDrawer onEnd={endWorkout} title={workout?.name} />
           ) : (

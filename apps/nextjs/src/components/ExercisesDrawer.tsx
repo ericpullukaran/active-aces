@@ -49,7 +49,7 @@ export default function ExercisesDrawer(props: Props) {
             />
           </div>
         </DrawerHeader>
-        <div className="overflow-y-scroll">
+        <div className="overflow-y-scroll" data-vaul-no-drag>
           <div className="mx-auto w-full max-w-sm ">
             <section className="mx-4 mb-10 flex flex-col gap-3">
               {exercises.map((e) => (

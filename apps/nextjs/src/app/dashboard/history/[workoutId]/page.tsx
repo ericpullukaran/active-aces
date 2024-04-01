@@ -1,12 +1,9 @@
 import type { ComponentProps } from "react";
 import React from "react";
-import Link from "next/link";
-import { ArrowLeft, Check, Settings } from "lucide-react";
 
 import type { Doc } from "@acme/db";
 
 import NavBar from "~/components/NavBar";
-import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/server";
 
 type Props = {
@@ -50,9 +47,10 @@ const measurementToDetails: Record<
 };
 
 export default async function SpecificWorkoutPage({ params }: Props) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  const workout = await api.workouts.get({ id: params.workoutId });
-  const exercises = await api.exercises.all();
+  const [workout, exercises] = await Promise.all([
+    api.workouts.get({ id: params.workoutId }),
+    api.exercises.all(),
+  ]);
   const exercisesById = Object.fromEntries(
     exercises.map((e) => [e.id, e]) ?? [],
   );

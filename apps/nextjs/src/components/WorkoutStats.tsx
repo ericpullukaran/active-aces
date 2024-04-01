@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Boxes, StopCircle, Tally5 } from "lucide-react";
 
 import type { RouterInputs } from "@acme/api";
 
-import { getUseableDuration } from "~/utils/getUseableDuration";
+import { Duration } from "./Duration";
 
 type Props = {
   workout: RouterInputs["workouts"]["put"]["workout"] | null;
@@ -11,17 +11,6 @@ type Props = {
 };
 
 export default function WorkoutStats({ workout, currentWorkout }: Props) {
-  const [refresh, setRefresh] = useState(Date.now());
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRefresh(Date.now());
-    }, 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const duration = getUseableDuration(currentWorkout?.startTime);
   const workoutInfo = workout?.exercises.reduce<{
     exercises: Set<string>;
     totalSets: number;
@@ -42,7 +31,9 @@ export default function WorkoutStats({ workout, currentWorkout }: Props) {
           <StopCircle size="1em" className="animate-pulse text-destructive" />
           <div>Duration</div>
         </div>
-        <div className="text-3xl font-medium tabular-nums">{duration}</div>
+        <div className="text-3xl font-medium tabular-nums">
+          <Duration from={currentWorkout?.startTime}></Duration>
+        </div>
       </div>
       <div className="flex flex-1 flex-col items-center justify-center border-r-4 border-card">
         <div className="flex items-center gap-1 text-sm">

@@ -64,6 +64,7 @@ export const exercises = sqliteTable(
     primaryMuscleGroup: index("exercises_primary_muscle_group_id").on(
       t.primaryMuscleGroupId,
     ),
+    name: index("exercises_name").on(t.name),
   }),
 );
 
@@ -130,6 +131,9 @@ export const workouts = sqliteTable(
   (t) => ({
     userId: index("workouts_user_id").on(t.userId),
     templateId: index("workouts_template_id").on(t.templateId),
+
+    // ideally would be desc, but drizzle doesn't support that yet
+    endTime: index("workouts_start_time").on(t.startTime),
   }),
 );
 

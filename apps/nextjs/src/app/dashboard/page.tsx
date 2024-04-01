@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import NavBar from "~/components/NavBar";
 import RecentWorkoutsCard from "~/components/RecentWorkoutsCard";
@@ -9,21 +9,27 @@ import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
 type Props = {};
 
 export default async function DashboardPage({}: Props) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
   return (
     <div className="w-full">
       <NavBar title="Active Aces" />
-      <WhenHydrated>
-        <div className="pb-40">
-          <h1 className="mx-4 mb-10 mt-6 text-4xl font-bold leading-10 tracking-tight text-white sm:text-6xl">
-            Good {getUsableWorkoutName()}, Eric <br /> Welcome Back 👋
-          </h1>
+      <div className="mx-4 pb-40">
+        <h1 className="mb-10 mt-6 text-4xl font-bold leading-10 tracking-tight text-white sm:text-6xl">
+          Good {getUsableWorkoutName()}
+          , Eric <br /> Welcome Back 👋
+        </h1>
+        <Suspense
+          fallback={
+            <div className="h-96 animate-pulse rounded-lg bg-card"></div>
+          }
+        >
           <RecentWorkoutsCard />
-          <div className="fixed bottom-0 left-0 right-0 grid h-20 place-content-center bg-gradient-to-t from-primary/40">
+        </Suspense>
+        <div className="fixed bottom-0 left-0 right-0 grid h-20 place-content-center bg-gradient-to-t from-primary/40">
+          <WhenHydrated>
             <StartWorkoutButton />
-          </div>
+          </WhenHydrated>
         </div>
-      </WhenHydrated>
+      </div>
     </div>
   );
 }

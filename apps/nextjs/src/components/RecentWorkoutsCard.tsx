@@ -12,7 +12,7 @@ export default async function RecentWorkoutsCard({}: Props) {
   const workoutHistory = await api.workouts.history({ limit: 3 });
 
   return (
-    <div className="mx-4 rounded-lg bg-card p-4">
+    <div className="rounded-lg bg-card p-4">
       <div className="mb-3 flex items-center">
         <h3 className="flex-1 text-lg font-bold">Recent Workouts</h3>
         <Button variant={"ghost"} className="bg-card" asChild>
