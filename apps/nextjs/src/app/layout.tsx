@@ -61,7 +61,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         style={{ height: "100svh" }}
         className={cn(
           "flex flex-col bg-background font-sans text-foreground antialiased",
-          inter.className,
+          inter.variable,
         )}
       >
         <ClerkProvider
