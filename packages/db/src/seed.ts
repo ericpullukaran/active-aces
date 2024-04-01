@@ -1,8 +1,10 @@
+import slugify from "slugify";
+
 import { db } from ".";
 import * as schema from "./schema/schema";
 
 type MeasurementType = "weight-reps" | "reps" | "time-distance" | "time";
-const muscleGroupsData = [
+const _muscleGroupsData = [
   "abdominals",
   "abductors",
   "adductors",
@@ -21,10 +23,16 @@ const muscleGroupsData = [
   "traps",
   "triceps",
 ] as const;
+const muscleGroupsData = validateIdUniqueness(
+  _muscleGroupsData.map((mg) => ({
+    name: mg,
+    id: `mg:${getSlug(mg)}`,
+  })),
+);
 
-type MuscleGroupNames = (typeof muscleGroupsData)[number];
+type MuscleGroupNames = (typeof _muscleGroupsData)[number];
 
-const exercisesData: {
+const _exercisesData: {
   name: string;
   primaryMuscleGroupId: MuscleGroupNames;
   description: string;
@@ -364,15 +372,6 @@ const exercisesData: {
     measurementType: "reps",
   },
   {
-    name: "Lat Pulldowns",
-    primaryMuscleGroupId: "lats",
-    description:
-      "Targets the latissimus dorsi muscles by pulling a bar down towards the upper chest.",
-    commonPitfalls:
-      "Leaning too far back, not fully extending the arms, pulling the bar behind the neck.",
-    measurementType: "weight-reps",
-  },
-  {
     name: "Single Arm Lat Pulldown",
     primaryMuscleGroupId: "lats",
     description:
@@ -400,15 +399,31 @@ const exercisesData: {
     measurementType: "weight-reps",
   },
 ];
+const exercisesData = validateIdUniqueness(
+  _exercisesData.map((data) => ({
+    ...data,
+    id: `ex:${getSlug(data.name)}`,
+  })),
+);
 
 const main = async () => {
-  const muscleGroupIds = await db
-    .insert(schema.muscleGroups)
-    .values(muscleGroupsData.map((mg) => ({ name: mg })))
-    .returning({
-      id: schema.muscleGroups.id,
-      name: schema.muscleGroups.name,
-    });
+  const muscleGroupInserts = requireAtLeastOne(
+    muscleGroupsData.map((mg) =>
+      db
+        .insert(schema.muscleGroups)
+        .values(mg)
+        .onConflictDoUpdate({
+          target: schema.muscleGroups.id,
+          set: mg,
+        })
+        .returning({
+          id: schema.muscleGroups.id,
+          name: schema.muscleGroups.name,
+        }),
+    ),
+  );
+
+  const muscleGroupIds = (await db.batch(muscleGroupInserts)).flat();
 
   const muscleGroupsIdMap = muscleGroupIds.reduce(
     (acc, mg) => {
@@ -419,17 +434,48 @@ const main = async () => {
   );
 
   const exercisesToEnter = exercisesData.map((e) => ({
-    name: e.name,
+    ...e,
     primaryMuscleGroupId: muscleGroupsIdMap[e.primaryMuscleGroupId],
-    description: e.description,
-    commonPitfalls: e.commonPitfalls,
     thumbnailUrl: "",
     gifUrl: "",
-    measurementType: e.measurementType,
   }));
 
-  await db.insert(schema.exercises).values(exercisesToEnter).execute();
+  const exerciseInserts = requireAtLeastOne(
+    exercisesToEnter.map((e) =>
+      db.insert(schema.exercises).values(e).onConflictDoUpdate({
+        target: schema.exercises.id,
+        set: e,
+      }),
+    ),
+  );
+  await db.batch(exerciseInserts);
+
   console.log("Database seeding completed.");
 };
 
 main().catch(console.error);
+
+function validateIdUniqueness<Item extends { id: string }>(data: Item[]) {
+  const ids = new Map<string, number>();
+  data.forEach((d, i) => {
+    if (ids.has(d.id)) {
+      throw new Error(
+        `Duplicate ID found: ${d.id} at indexes ${ids.get(d.id)} and ${i}`,
+      );
+    }
+    ids.set(d.id, i);
+  });
+
+  return data;
+}
+
+function getSlug(name: string) {
+  return slugify(name, { lower: true });
+}
+
+function requireAtLeastOne<T>(arr: T[]): [T, ...T[]] {
+  if (arr.length === 0) {
+    throw new Error("Expected at least one item in array.");
+  }
+  return arr as [T, ...T[]];
+}
