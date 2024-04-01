@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { CircleEllipsis, Trash } from "lucide-react";
 
 import {
@@ -16,7 +17,12 @@ type Props = {
 };
 
 export default function WorkoutHistoryCardPopover({ workoutId }: Props) {
-  const deleteWorkout = api.workouts.delete.useMutation();
+  const router = useRouter();
+  const deleteWorkout = api.workouts.delete.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
   return (
     <div
       className="sq-8 grid place-content-center rounded-full ring-2 ring-card transition-colors hover:bg-zinc-700"
