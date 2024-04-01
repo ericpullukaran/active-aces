@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 
-import { getWorkoutTimerTimeLeft } from "~/utils/dates";
+import { getDurationFrom } from "~/utils/dates";
 import { useIntervalValue } from "~/utils/useIntervalValue";
 
-export const Countdown = (props: {
-  to: Date;
+export const Duration = (props: {
+  from: Date | string | null | undefined;
   children?: (formattedTimeLeft: string) => ReactNode;
 }) => {
   const formattedTimeLeft = useIntervalValue(
-    () => getWorkoutTimerTimeLeft(props.to),
+    () => getDurationFrom(props.from),
     50,
   );
 
