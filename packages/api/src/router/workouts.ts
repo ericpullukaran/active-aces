@@ -340,12 +340,14 @@ export const workoutsRouter = createTRPCRouter({
             id: ctx.db.$schema.workoutExercises.id,
           });
 
-        await db.delete(ctx.db.$schema.workoutExerciseSets).where(
-          ctx.db.$cmp.inArray(
-            ctx.db.$schema.workoutExerciseSets.workoutExerciseId,
-            deletedExercises.map((e) => e.id),
-          ),
-        );
+        if (deletedExercises.length) {
+          await db.delete(ctx.db.$schema.workoutExerciseSets).where(
+            ctx.db.$cmp.inArray(
+              ctx.db.$schema.workoutExerciseSets.workoutExerciseId,
+              deletedExercises.map((e) => e.id),
+            ),
+          );
+        }
       });
     }),
 });
