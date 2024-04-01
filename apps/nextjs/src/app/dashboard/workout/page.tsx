@@ -439,8 +439,6 @@ export default function WorkoutPage({}: Props) {
           )}
         </div>
 
-        {workoutTimer.endTime?.toISOString() ?? "null"}
-
         <div className="fixed bottom-0 left-4 right-4 grid grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur md:absolute">
           {workoutTimer.endTime ? (
             <div className="col-span-2 flex items-center gap-1">
