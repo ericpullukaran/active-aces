@@ -28,5 +28,10 @@
     "turbo": "^1.12.4",
     "typescript": "^5.3.3"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@acme/prettier-config",
+  "pnpm": {
+    "patchedDependencies": {
+      "vaul@0.9.0": "patches/vaul@0.9.0.patch"
+    }
+  }
 }

@@ -63,6 +63,11 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           "flex flex-col bg-background font-sans text-foreground antialiased",
           inter.className,
         )}
+        {
+          ...{
+            // "vaul-drawer-wrapper": "true",
+          }
+        }
       >
         <ClerkProvider
           afterSignInUrl="/dashboard"

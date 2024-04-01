@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  vaul@0.9.0:
+    hash: awbnhsvvumnof43qpvrhs4ulvy
+    path: patches/vaul@0.9.0.patch
+
 importers:
 
   .:
@@ -230,7 +235,7 @@ importers:
         version: 1.0.7(tailwindcss@3.4.1)
       vaul:
         specifier: ^0.9.0
-        version: 0.9.0(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
+        version: 0.9.0(patch_hash=awbnhsvvumnof43qpvrhs4ulvy)(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -12828,7 +12833,7 @@ packages:
     engines: {node: '>= 0.8'}
     dev: false
 
-  /vaul@0.9.0(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
+  /vaul@0.9.0(patch_hash=awbnhsvvumnof43qpvrhs4ulvy)(@types/react-dom@18.2.19)(@types/react@18.2.57)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-bZSySGbAHiTXmZychprnX/dE0EsSige88xtyyL3/MCRbrFotRPQZo7UdydGXZWw+CKbNOw5Ow8gwAo93/nB/Cg==}
     peerDependencies:
       react: ^16.8 || ^17.0 || ^18.0
@@ -12841,6 +12846,7 @@ packages:
       - '@types/react'
       - '@types/react-dom'
     dev: false
+    patched: true
 
   /vlq@1.0.1:
     resolution: {integrity: sha512-gQpnTgkubC6hQgdIcRdYGDSDc+SaujOdyesZQMv6JlfQee/9Mp0Qhnys6WxDWvQnL5WZdT7o2Ul187aSt0Rq+w==}

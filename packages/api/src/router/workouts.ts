@@ -119,7 +119,8 @@ export const workoutsRouter = createTRPCRouter({
         limit: z
           .number()
           .refine((n) => Math.max(Math.min(n, 20), 1))
-          .optional(),
+          .optional()
+          .default(20),
       }),
     )
     .query(async ({ ctx, input }) => {
