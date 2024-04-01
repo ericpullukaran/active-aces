@@ -47,8 +47,10 @@ const measurementToDetails: Record<
 };
 
 export default async function SpecificWorkoutPage({ params }: Props) {
-  const workout = await api.workouts.get({ id: params.workoutId });
-  const exercises = await api.exercises.all();
+  const [workout, exercises] = await Promise.all([
+    api.workouts.get({ id: params.workoutId }),
+    api.exercises.all(),
+  ]);
   const exercisesById = Object.fromEntries(
     exercises.map((e) => [e.id, e]) ?? [],
   );
