@@ -13,7 +13,7 @@ export default async function DashboardPage({}: Props) {
     <div className="w-full">
       <NavBar title="Active Aces" />
       <div className="mx-4 pb-40">
-        <h1 className="mb-10 mt-6 text-4xl font-bold leading-10 tracking-tight text-white sm:text-6xl">
+        <h1 className="mb-10 mt-6 text-4xl font-semibold leading-10 tracking-tight text-white sm:text-6xl">
           Good {getUsableWorkoutName()}
           , Eric <br /> Welcome Back 👋
         </h1>

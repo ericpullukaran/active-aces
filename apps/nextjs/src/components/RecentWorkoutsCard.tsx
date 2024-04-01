@@ -11,10 +11,10 @@ type Props = {};
 export default async function RecentWorkoutsCard({}: Props) {
   const workoutHistory = await api.workouts.history({ limit: 3 });
 
-  return (
+  return workoutHistory.workouts.length ? (
     <div className="rounded-lg bg-card p-4">
       <div className="mb-3 flex items-center">
-        <h3 className="flex-1 text-lg font-bold">Recent Workouts</h3>
+        <h3 className="flex-1 text-lg font-semibold">Recent Workouts</h3>
         <Button variant={"ghost"} className="bg-card" asChild>
           <Link href={"/dashboard/history"} className="flex text-right">
             See More
@@ -28,5 +28,5 @@ export default async function RecentWorkoutsCard({}: Props) {
         ))}
       </div>
     </div>
-  );
+  ) : null;
 }
