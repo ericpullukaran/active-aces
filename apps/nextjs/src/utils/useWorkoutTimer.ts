@@ -1,8 +1,26 @@
-import { useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { useUpdatedRef } from "./useUpdatedRef";
 import { vibrate } from "./vibrate";
+
+let audio: HTMLAudioElement;
+const loadAudio = async () => {
+  if (!audio) {
+    audio = new Audio("/sounds/workout-timer-complete.mp3");
+    audio.volume = 0;
+    await audio.play();
+  }
+  audio.volume = 1;
+  return audio;
+};
+const _playWorkoutCompleteSound = async () => {
+  const audio = await loadAudio();
+  await audio.play();
+};
+const playWorkoutCompleteSound = () => {
+  _playWorkoutCompleteSound().catch(console.error);
+};
 
 export const useWorkoutTimer = (
   durationSeconds?: number | undefined | null,
@@ -12,11 +30,16 @@ export const useWorkoutTimer = (
   const isTimerRunning = !!endTime;
 
   useEffect(() => {
+    loadAudio().catch(console.error);
+  }, []);
+
+  useEffect(() => {
     if (!isTimerRunning) return;
 
     const interval = setInterval(() => {
       if (dayjs().isAfter(endTimeRef.current)) {
         setEndTime(null);
+        playWorkoutCompleteSound();
         vibrate([100, 50, 100, 50, 200]);
       }
     }, 100);
