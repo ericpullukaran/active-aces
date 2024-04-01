@@ -16,15 +16,19 @@ import "react-swipeable-list/dist/styles.css";
 import type { RouterInputs } from "@acme/api";
 import type { Doc } from "@acme/db";
 
+import { Countdown } from "~/components/Countdown";
 import EndWorkoutDrawer from "~/components/EndWorkoutDrawer";
 import ExercisesDrawer from "~/components/ExercisesDrawer";
 import NavBar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
 import { WhenHydrated } from "~/components/WhenHydrated";
 import WorkoutStats from "~/components/WorkoutStats";
+import { cn } from "~/lib/cn";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
 import { useExercises } from "~/utils/use-search-exercises";
+import { useLocalStorage } from "~/utils/useLocalStorage";
+import { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 
 type Props = {};
 
@@ -76,6 +80,10 @@ export default function WorkoutPage({}: Props) {
   const exercisesById = Object.fromEntries(
     exercises.map((e) => [e.id, e]) ?? [],
   );
+  const [workoutTimerDuration, setWorkoutTimerDuration] = useLocalStorage<
+    number | null
+  >("aa_workout-timer-duration", null);
+  const workoutTimer = useWorkoutTimer(90);
 
   const addExercise = (exerciseId: string) => {
     setWorkout({
@@ -154,6 +162,10 @@ export default function WorkoutPage({}: Props) {
             : exercise,
         ) ?? [],
     });
+
+    if (set.complete) {
+      workoutTimer.resetTimer();
+    }
   };
 
   const deleteExercise = (exerciseIndex: number) => {
@@ -214,14 +226,19 @@ export default function WorkoutPage({}: Props) {
 
   return (
     <WhenHydrated>
-      <div className="relative flex min-h-[100svh] flex-col px-5">
+      <div className="relative flex min-h-[100svh] flex-col px-4">
         <NavBar title="Active Workout" navigateBack="/dashboard" />
 
         <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl ring-4 ring-card">
           <WorkoutStats workout={workout} currentWorkout={workout} />
         </div>
 
-        <div className="flex-1">
+        <div
+          className={cn("flex-1", {
+            "pb-20": !workoutTimer.endTime,
+            "pb-28": workoutTimer.endTime,
+          })}
+        >
           {workout?.exercises?.length ? (
             <div className="space-y-4">
               {workout.exercises.map((exercise, exerciseIndex) => {
@@ -372,7 +389,41 @@ export default function WorkoutPage({}: Props) {
           )}
         </div>
 
+        {workoutTimer.endTime?.toISOString() ?? "null"}
+
         <div className="fixed bottom-0 left-4 right-4 grid grid-cols-2 gap-4 bg-transparent py-4 backdrop-blur md:absolute">
+          {workoutTimer.endTime ? (
+            <div className="col-span-2 flex items-center gap-1">
+              <Countdown to={workoutTimer.endTime}></Countdown>
+
+              <div className="flex-1" />
+
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => workoutTimer.addTime(-15)}
+              >
+                -15
+              </Button>
+
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => workoutTimer.addTime(15)}
+              >
+                +15
+              </Button>
+
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={workoutTimer.stopTimer}
+              >
+                <Settings size="1em" />
+              </Button>
+            </div>
+          ) : null}
+
           {workout ? (
             <EndWorkoutDrawer onEnd={endWorkout} title={workout?.name} />
           ) : (
