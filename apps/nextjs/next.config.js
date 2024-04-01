@@ -16,6 +16,20 @@ const config = {
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
+
+  headers: async () => {
+    return [
+      {
+        source: "/sounds/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, s-max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default config;

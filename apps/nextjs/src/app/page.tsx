@@ -17,7 +17,7 @@ export default async function HomePage() {
           src={"/stock_images/AdobeStock_178823736.jpeg"}
           alt="Image of Man and Woman lifting weights"
           fill
-          style={{ objectFit: "cover" }}
+          objectFit="cover"
         />
       </div>
       <div className="container relative z-20 h-screen py-12">
