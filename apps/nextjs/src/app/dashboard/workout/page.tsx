@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentProps } from "react";
-import React from "react";
+import React, { startTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check, PlusIcon, Settings, StopCircle, Trash } from "lucide-react";
 import {
@@ -184,6 +184,13 @@ export default function WorkoutPage({}: Props) {
     });
   };
 
+  const cancelWorkout = () => {
+    router.push("/dashboard");
+    startTransition(() => {
+      clearWorkout();
+    });
+  };
+
   const endWorkout = (title: string, notes: string | undefined) => {
     putWorkoutRouter.mutate(
       {
@@ -197,8 +204,7 @@ export default function WorkoutPage({}: Props) {
       },
       {
         onSuccess: () => {
-          clearWorkout();
-          router.push("/dashboard");
+          cancelWorkout();
         },
       },
     );
@@ -245,7 +251,7 @@ export default function WorkoutPage({}: Props) {
                   <Settings className="sq-4" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent>
+              <PopoverContent className="flex flex-col gap-4">
                 <FormItem>
                   <Label htmlFor="workout-rest-timer-duration">
                     Rest timer duration (seconds)
@@ -264,6 +270,10 @@ export default function WorkoutPage({}: Props) {
                     }}
                   />
                 </FormItem>
+
+                <Button variant="destructive" size="sm" onClick={cancelWorkout}>
+                  Cancel workout
+                </Button>
               </PopoverContent>
             </Popover>
           }
