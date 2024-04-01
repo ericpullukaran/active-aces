@@ -1,4 +1,4 @@
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { useUpdatedRef } from "./useUpdatedRef";
@@ -8,10 +8,9 @@ let audio: HTMLAudioElement;
 const loadAudio = async () => {
   if (!audio) {
     audio = new Audio("/sounds/workout-timer-complete.mp3");
-    audio.volume = 0;
-    await audio.play();
+    await new Promise((resolve) => (audio.onloadeddata = resolve));
+    audio.volume = 1;
   }
-  audio.volume = 1;
   return audio;
 };
 const _playWorkoutCompleteSound = async () => {
