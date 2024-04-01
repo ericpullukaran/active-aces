@@ -32,6 +32,7 @@ export const useWorkoutTimer = (
   }, []);
 
   const resetTimer = useCallback(() => {
+    console.log({ durationSeconds });
     if (!durationSeconds) return;
     setEndTime(dayjs().add(durationSeconds, "seconds").toDate());
   }, [durationSeconds]);

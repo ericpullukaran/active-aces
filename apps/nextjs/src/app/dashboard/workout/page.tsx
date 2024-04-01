@@ -21,6 +21,14 @@ import EndWorkoutDrawer from "~/components/EndWorkoutDrawer";
 import ExercisesDrawer from "~/components/ExercisesDrawer";
 import NavBar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
+import { FormControl, FormItem, FormLabel } from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import { WhenHydrated } from "~/components/WhenHydrated";
 import WorkoutStats from "~/components/WorkoutStats";
 import { cn } from "~/lib/cn";
@@ -83,7 +91,7 @@ export default function WorkoutPage({}: Props) {
   const [workoutTimerDuration, setWorkoutTimerDuration] = useLocalStorage<
     number | null
   >("aa_workout-timer-duration", null);
-  const workoutTimer = useWorkoutTimer(90);
+  const workoutTimer = useWorkoutTimer(workoutTimerDuration);
 
   const addExercise = (exerciseId: string) => {
     setWorkout({
@@ -227,7 +235,39 @@ export default function WorkoutPage({}: Props) {
   return (
     <WhenHydrated>
       <div className="relative flex min-h-[100svh] flex-col px-4">
-        <NavBar title="Active Workout" navigateBack="/dashboard" />
+        <NavBar
+          title="Active Workout"
+          navigateBack="/dashboard"
+          rightSideContent={
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button size="icon-sm" variant="ghost">
+                  <Settings className="sq-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <FormItem>
+                  <Label htmlFor="workout-rest-timer-duration">
+                    Rest timer duration (seconds)
+                  </Label>
+                  <Input
+                    placeholder="0"
+                    type="number"
+                    id="workout-rest-timer-duration"
+                    value={workoutTimerDuration ?? ""}
+                    onChange={(e) => {
+                      setWorkoutTimerDuration(
+                        Number.isNaN(e.target.valueAsNumber)
+                          ? null
+                          : e.target.valueAsNumber,
+                      );
+                    }}
+                  />
+                </FormItem>
+              </PopoverContent>
+            </Popover>
+          }
+        />
 
         <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl ring-4 ring-card">
           <WorkoutStats workout={workout} currentWorkout={workout} />

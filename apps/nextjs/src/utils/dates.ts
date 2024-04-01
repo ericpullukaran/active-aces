@@ -5,6 +5,7 @@ dayjs.extend(duration);
 
 export const getWorkoutTimerTimeLeft = (to: Date) => {
   const now = dayjs();
-  const diff = dayjs(to).diff(now);
-  return dayjs.duration(diff).format("mm:ss");
+  const diffMS = dayjs(to).diff(now, "ms");
+  const diffSeconds = Math.ceil(diffMS / 1000);
+  return dayjs.duration(diffSeconds, "seconds").format("mm:ss");
 };
