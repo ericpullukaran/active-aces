@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { protectedProcedure, createTRPCRouter as router } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const setArrayUnion = z.union([
   z
@@ -74,7 +74,7 @@ const PutWorkoutSchema = z.object({
   templateId: z.string().optional(),
 });
 
-export const workoutsRouter = router({
+export const workoutsRouter = createTRPCRouter({
   previousExercise: protectedProcedure
     .input(
       z.object({
