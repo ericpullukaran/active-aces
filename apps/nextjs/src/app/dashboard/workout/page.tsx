@@ -76,6 +76,15 @@ const measurementToDetails: Record<
   },
 };
 
+const getDefaultSet = () => ({
+  tmpId: Math.random(),
+  numReps: 0,
+  weight: 0,
+  time: 0,
+  distance: 0,
+  complete: false,
+});
+
 export default function WorkoutPage({}: Props) {
   const router = useRouter();
   const {
@@ -101,15 +110,7 @@ export default function WorkoutPage({}: Props) {
         ...(workout?.exercises ?? []),
         {
           exerciseId,
-          sets: [
-            {
-              numReps: 0,
-              weight: 0,
-              time: 0,
-              distance: 0,
-              complete: false,
-            },
-          ],
+          sets: [getDefaultSet()],
         },
       ],
     });
@@ -123,16 +124,7 @@ export default function WorkoutPage({}: Props) {
           i === exerciseIndex
             ? {
                 ...exercise,
-                sets: [
-                  ...exercise.sets,
-                  {
-                    numReps: 0,
-                    weight: 0,
-                    time: 0,
-                    distance: 0,
-                    complete: false,
-                  },
-                ],
+                sets: [...exercise.sets, getDefaultSet()],
               }
             : exercise,
         ) ?? [],
@@ -141,8 +133,8 @@ export default function WorkoutPage({}: Props) {
 
   const updateSet = (
     exerciseIndex: number,
-    setIndex: number,
-    set: Partial<
+    tmpId: number,
+    setUpdate: Partial<
       RouterInputs["workouts"]["put"]["workout"]["exercises"][number]["sets"][number]
     >,
   ) => {
@@ -153,25 +145,27 @@ export default function WorkoutPage({}: Props) {
           i === exerciseIndex
             ? {
                 ...exercise,
-                sets: [
-                  ...exercise.sets.slice(0, setIndex),
-                  {
-                    numReps: 0,
-                    weight: 0,
-                    time: 0,
-                    distance: 0,
-                    complete: false,
-                    ...exercise.sets[setIndex],
-                    ...set,
-                  },
-                  ...exercise.sets.slice(setIndex + 1),
-                ],
+                sets: exercise.sets.map((s) => {
+                  if (s.tmpId === tmpId) {
+                    return {
+                      numReps: 0,
+                      weight: 0,
+                      time: 0,
+                      distance: 0,
+                      complete: false,
+                      ...s,
+                      ...setUpdate,
+                    };
+                  } else {
+                    return s;
+                  }
+                }),
               }
             : exercise,
         ) ?? [],
     });
 
-    if (set.complete) {
+    if (setUpdate.complete) {
       workoutTimer.resetTimer();
     }
   };
@@ -210,26 +204,29 @@ export default function WorkoutPage({}: Props) {
     );
   };
 
-  const removeSet = (exerciseIndex: number, setIndex: number) => {
+  const removeSet = (exerciseIndex: number, tmpId: number) => {
     const updatedExercises = workout?.exercises.map((exercise, idx) => {
       if (idx === exerciseIndex) {
-        const updatedSets = exercise.sets.filter(
-          (_, setIdx) => setIdx !== setIndex,
-        );
+        const updatedSets = exercise.sets.filter((set) => set.tmpId !== tmpId);
         return { ...exercise, sets: updatedSets };
       }
       return exercise;
     });
+    console.log("remove");
+
     if (updatedExercises) {
+      console.log("bb", workout);
+      console.log("yy", { ...workout!, exercises: updatedExercises });
+
       setWorkout({ ...workout!, exercises: updatedExercises });
     }
   };
 
-  const trailingActions = (exerciseIndex: number, setIndex: number) => (
+  const trailingActions = (exerciseIndex: number, tmpId: number) => (
     <TrailingActions>
       <SwipeAction
         destructive={true}
-        onClick={() => removeSet(exerciseIndex, setIndex)}
+        onClick={() => removeSet(exerciseIndex, tmpId)}
       >
         <div className="grid place-content-center rounded-r-lg bg-destructive pr-4">
           Delete
@@ -237,6 +234,8 @@ export default function WorkoutPage({}: Props) {
       </SwipeAction>
     </TrailingActions>
   );
+
+  console.log("xx", workout);
 
   return (
     <WhenHydrated>
@@ -342,13 +341,13 @@ export default function WorkoutPage({}: Props) {
                             </span>
                           ))}
                         </div>
-                        <SwipeableList>
+                        <SwipeableList destructiveCallbackDelay={100}>
                           {exercise.sets.map((set, setIndex) => (
                             <SwipeableListItem
-                              key={setIndex}
+                              key={set.tmpId}
                               trailingActions={trailingActions(
                                 exerciseIndex,
-                                setIndex,
+                                set.tmpId,
                               )}
                             >
                               <div
@@ -375,7 +374,7 @@ export default function WorkoutPage({}: Props) {
                                       placeholder={measurement}
                                       value={set[measurement]}
                                       onChange={(e) => {
-                                        updateSet(exerciseIndex, setIndex, {
+                                        updateSet(exerciseIndex, set.tmpId, {
                                           [measurement]: e.target.valueAsNumber,
                                           complete: e.target.valueAsNumber
                                             ? true

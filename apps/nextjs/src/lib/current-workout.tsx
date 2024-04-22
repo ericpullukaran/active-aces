@@ -1,7 +1,7 @@
 "use client";
 
 import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { createContext, use, useCallback, useEffect } from "react";
+import { createContext, use, useCallback } from "react";
 
 import type { RouterInputs } from "@acme/api";
 
