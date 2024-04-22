@@ -60,6 +60,7 @@ const PutWorkoutSchema = z.object({
       notes: z.string().optional(),
       sets: z.array(
         z.object({
+          tmpId: z.number(),
           weight: z.number().optional(),
           numReps: z.number().optional(),
           time: z.number().optional(),
@@ -282,7 +283,7 @@ export const workoutsRouter = createTRPCRouter({
 
           await db.insert(ctx.db.$schema.workoutExerciseSets).values(
             input.workout.exercises.flatMap((e, i) =>
-              e.sets.map((s, j) => ({
+              e.sets.map(({ tmpId: _, ...s }, j) => ({
                 ...s,
                 order: j,
                 complete: s.complete ?? false,

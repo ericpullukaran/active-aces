@@ -1,10 +1,12 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 
 import type { RouterOutputs } from "@acme/api";
 import type { Doc } from "@acme/db";
 
-import { api } from "~/trpc/server";
+import { api } from "~/trpc/react";
 import { Badge } from "./ui/badge";
 import WorkoutHistoryCardPopover from "./WorkoutHistoryCardPopover";
 
@@ -13,22 +15,14 @@ type Props = {
   internalNav?: boolean;
 };
 
-export default async function WorkoutHistoryCard({
-  workout,
-  internalNav,
-}: Props) {
-  const workoutInfo = workout.exercises.reduce<{
-    exercises: Set<string>;
-    totalSets: number;
-  }>(
-    (acc, e) => {
-      acc.exercises.add(e.exerciseId);
-      acc.totalSets += e.sets.reduce((acc, s) => acc + (s.complete ? 1 : 0), 0);
-      return acc;
-    },
-    { exercises: new Set<string>(), totalSets: 0 },
-  );
-  const exercisesMapById = (await api.exercises.all()).reduce<
+export default function WorkoutHistoryCard({ workout, internalNav }: Props) {
+  const exercises = api.exercises.all.useQuery(undefined, {});
+
+  if (!exercises.data) {
+    return <></>;
+  }
+
+  const exercisesMapById = exercises.data.reduce<
     Record<string, Doc<"exercises">>
   >((acc, e) => {
     acc[e.id] = { ...e };

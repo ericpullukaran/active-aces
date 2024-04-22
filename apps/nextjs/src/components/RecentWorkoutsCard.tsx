@@ -1,17 +1,19 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { api } from "~/trpc/server";
+import { api } from "~/trpc/react";
 import { Button } from "./ui/button";
 import WorkoutHistoryCard from "./WorkoutHistoryCard";
 
 type Props = {};
 
-export default async function RecentWorkoutsCard({}: Props) {
-  const workoutHistory = await api.workouts.history({ limit: 3 });
+export default function RecentWorkoutsCard({}: Props) {
+  const workoutHistory = api.workouts.history.useQuery({ limit: 3 });
 
-  return workoutHistory.workouts.length ? (
+  return workoutHistory.data?.workouts.length ? (
     <div className="rounded-lg bg-card p-4">
       <div className="mb-3 flex items-center">
         <h3 className="flex-1 text-lg font-semibold">Recent Workouts</h3>
@@ -23,10 +25,12 @@ export default async function RecentWorkoutsCard({}: Props) {
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        {workoutHistory.workouts.map((w) => (
+        {workoutHistory.data?.workouts.map((w) => (
           <WorkoutHistoryCard key={w.id} workout={w} internalNav={true} />
         ))}
       </div>
     </div>
-  ) : null;
+  ) : (
+    <div className="h-96 animate-pulse rounded-lg bg-card"></div>
+  );
 }

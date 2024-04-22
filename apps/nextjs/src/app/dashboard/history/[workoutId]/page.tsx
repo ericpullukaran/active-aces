@@ -1,10 +1,13 @@
+"use client";
+
 import type { ComponentProps } from "react";
 import React from "react";
 
 import type { Doc } from "@acme/db";
 
 import NavBar from "~/components/NavBar";
-import { api } from "~/trpc/server";
+import { api } from "~/trpc/react";
+import SpecificHistoryLoading from "./_loading";
 
 type Props = {
   params: { workoutId: string };
@@ -46,16 +49,26 @@ const measurementToDetails: Record<
   },
 };
 
-export default async function SpecificWorkoutPage({ params }: Props) {
-  const [workout, exercises] = await Promise.all([
-    api.workouts.get({ id: params.workoutId }),
-    api.exercises.all(),
-  ]);
+export default function SpecificWorkoutPage({ params }: Props) {
+  const workoutData = api.workouts.get.useQuery({ id: params.workoutId });
+  const exercisesData = api.exercises.all.useQuery();
+
+  if (!workoutData.data || !exercisesData.data) {
+    return <SpecificHistoryLoading />;
+  }
+
+  const exercises = exercisesData.data;
+  const workout = workoutData.data;
+
+  // const [workout, exercises] = await Promise.all([
+  //   api.workouts.get({ id: params.workoutId }),
+  //   api.exercises.all(),
+  // ]);
   const exercisesById = Object.fromEntries(
     exercises.map((e) => [e.id, e]) ?? [],
   );
   return (
-    <div className="flex min-h-[100svh] flex-col px-5">
+    <div className="flex min-h-[100svh] flex-col px-5 pb-14">
       <NavBar title={workout?.name ?? ""} navigateBack="/dashboard/history" />
       <div className="flex-1">
         {workout?.exercises?.length ? (
