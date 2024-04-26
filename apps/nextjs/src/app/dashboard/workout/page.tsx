@@ -241,7 +241,7 @@ export default function WorkoutPage({}: Props) {
     <WhenHydrated>
       <div className="relative flex min-h-[100svh] flex-col px-4">
         <NavBar
-          title="Active Workout"
+          title={workout?.name ?? "Active Workout"}
           navigateBack="/dashboard"
           rightSideContent={
             <Popover>

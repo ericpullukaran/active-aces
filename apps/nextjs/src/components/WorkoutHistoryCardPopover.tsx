@@ -19,8 +19,9 @@ type Props = {
 export default function WorkoutHistoryCardPopover({ workoutId }: Props) {
   const router = useRouter();
   const deleteWorkout = api.workouts.delete.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       router.refresh();
+      await api.useUtils().invalidate(undefined, { queryKey: ["asdfghjkl"] });
     },
   });
   return (
