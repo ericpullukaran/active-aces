@@ -3,6 +3,9 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
 
 const config = {
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -55,6 +58,10 @@ const config = {
         },
         card: {
           DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        "card-darker": {
+          DEFAULT: "hsl(var(--card-darker))",
           foreground: "hsl(var(--card-foreground))",
         },
       },

@@ -28,7 +28,7 @@ export default function NavBackButton({
       variant="outline"
       size="icon"
       asChild
-      className="sq-8 group bg-card"
+      className="sq-7 group bg-card"
     >
       <Link href={navigateBack}>
         <ArrowLeft className="sq-5 transition-transform group-hover:-translate-x-0.5" />
