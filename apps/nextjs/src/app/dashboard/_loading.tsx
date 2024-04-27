@@ -12,7 +12,7 @@ export default function DashboardLoading({}: Props) {
         <h1 className="mx-4 mb-10 mt-4 text-4xl font-semibold leading-10 tracking-tight text-white sm:text-6xl">
           Good{" "}
           <span className="inline-block h-12 w-36 animate-pulse rounded-lg bg-card"></span>
-          , Eric <br /> Welcome Back 👋
+          , <br /> Welcome Back 👋
         </h1>
         <div className="h-96 animate-pulse rounded-lg bg-card"></div>
         <div className="fixed bottom-0 left-0 right-0 grid h-20 place-content-center bg-gradient-to-t from-primary/40">
