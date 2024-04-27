@@ -212,12 +212,8 @@ export default function WorkoutPage({}: Props) {
       }
       return exercise;
     });
-    console.log("remove");
 
     if (updatedExercises) {
-      console.log("bb", workout);
-      console.log("yy", { ...workout!, exercises: updatedExercises });
-
       setWorkout({ ...workout!, exercises: updatedExercises });
     }
   };
@@ -234,8 +230,6 @@ export default function WorkoutPage({}: Props) {
       </SwipeAction>
     </TrailingActions>
   );
-
-  console.log("xx", workout);
 
   return (
     <WhenHydrated>
@@ -376,9 +370,9 @@ export default function WorkoutPage({}: Props) {
                                       onChange={(e) => {
                                         updateSet(exerciseIndex, set.tmpId, {
                                           [measurement]: e.target.valueAsNumber,
-                                          complete: e.target.valueAsNumber
-                                            ? true
-                                            : false,
+                                          // complete: e.target.valueAsNumber
+                                          //   ? true
+                                          //   : false,
                                         });
                                       }}
                                     />
@@ -390,7 +384,7 @@ export default function WorkoutPage({}: Props) {
                                     className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
                                     checked={set.complete}
                                     onChange={(e) => {
-                                      updateSet(exerciseIndex, setIndex, {
+                                      updateSet(exerciseIndex, set.tmpId, {
                                         complete: e.target.checked,
                                       });
                                     }}

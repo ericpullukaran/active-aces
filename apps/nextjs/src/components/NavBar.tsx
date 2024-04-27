@@ -25,7 +25,6 @@ export default function NavBar({
   const { isLoaded, isSignedIn, user } = useUser();
   const pathname = usePathname();
   const isWorkoutPage = "/dashboard/workout" === pathname;
-  console.log("xx", pathname);
 
   return (
     <div className="pb-20 md:pb-6">
