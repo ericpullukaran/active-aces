@@ -3,7 +3,14 @@
 import type { ComponentProps } from "react";
 import React, { startTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, PlusIcon, Settings, StopCircle, Trash } from "lucide-react";
+import {
+  Check,
+  Delete,
+  PlusIcon,
+  Settings,
+  StopCircle,
+  Trash,
+} from "lucide-react";
 import {
   SwipeableList,
   SwipeableListItem,
@@ -198,7 +205,7 @@ export default function WorkoutPage({}: Props) {
                 variant="ghost"
                 onClick={workoutTimer.stopTimer}
               >
-                <Settings size="1em" />
+                <Delete size="1em" />
               </Button>
             </div>
           ) : null}
