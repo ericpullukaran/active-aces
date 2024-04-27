@@ -1,7 +1,7 @@
 import React from "react";
 import { Trash } from "lucide-react";
 
-import { RouterInputs, RouterOutputs } from "@acme/api";
+import type { RouterInputs, RouterOutputs } from "@acme/api";
 import { DocInsert } from "@acme/db";
 
 import { Button } from "./ui/button";
