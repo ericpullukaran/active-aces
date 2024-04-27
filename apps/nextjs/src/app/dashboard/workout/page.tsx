@@ -272,9 +272,7 @@ export default function WorkoutPage({}: Props) {
           }
         />
 
-        <div className="mb-6 flex h-24 overflow-x-scroll rounded-xl ring-4 ring-card">
-          <WorkoutStats workout={workout} currentWorkout={workout} />
-        </div>
+        <WorkoutStats workout={workout} currentWorkout={workout} />
 
         <div
           className={cn("flex-1", {
