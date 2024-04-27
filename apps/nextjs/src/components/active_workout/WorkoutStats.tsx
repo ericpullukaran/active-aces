@@ -3,7 +3,7 @@ import { Boxes, StopCircle, Tally5 } from "lucide-react";
 
 import type { RouterInputs } from "@acme/api";
 
-import { Duration } from "./Duration";
+import { Duration } from "../Duration";
 
 type Props = {
   workout: RouterInputs["workouts"]["put"]["workout"] | null;
@@ -25,8 +25,8 @@ export default function WorkoutStats({ workout, currentWorkout }: Props) {
     { exercises: new Set<string>(), totalSets: 0, volume: 0 },
   );
   return (
-    <div className="mb-6 flex h-16 overflow-x-scroll rounded-xl ring-4 ring-card">
-      <div className="flex flex-1 flex-col items-center justify-center border-r-4 border-card">
+    <div className="mb-6 flex h-16 overflow-x-scroll rounded-xl ring-card">
+      <div className="flex flex-1 flex-col items-center justify-center border-r-2 border-card">
         <div className="flex items-center gap-1 text-sm">
           <StopCircle size="1em" className="animate-pulse text-destructive" />
           <div>Duration</div>
@@ -35,7 +35,7 @@ export default function WorkoutStats({ workout, currentWorkout }: Props) {
           <Duration from={currentWorkout?.startTime}></Duration>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center border-r-4 border-card px-4">
+      <div className="flex flex-col items-center justify-center border-r-2 border-card px-4">
         <div className="flex items-center gap-1 text-sm">
           <Tally5 size="1em" />
           <div className="text-sm">Sets</div>

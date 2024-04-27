@@ -10,9 +10,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 type Props = {
   isLoading: boolean;

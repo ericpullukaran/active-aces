@@ -11,11 +11,11 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
-import { Button } from "./ui/button";
-import { FormItem } from "./ui/form";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Textarea } from "./ui/textarea";
+import { Button } from "../ui/button";
+import { FormItem } from "../ui/form";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
 
 type Props = {
   workoutTimerDuration: number | null;

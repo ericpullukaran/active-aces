@@ -30,7 +30,7 @@ export default function NavBar({
     <div className="pb-20 md:pb-6">
       <nav
         className={clsx(
-          "bg-card-darker fixed left-0 right-0 z-50 flex items-center border-b-2 p-3.5 px-5 ring-zinc-700 md:static",
+          "bg-card-darker border-card-lighter/50 fixed left-0 right-0 z-50 flex items-center border-b-2 p-3.5 px-5 md:static",
         )}
       >
         {navigateBack ? (

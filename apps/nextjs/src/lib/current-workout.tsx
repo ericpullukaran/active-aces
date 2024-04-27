@@ -9,7 +9,7 @@ import { getUsableWorkoutName } from "~/utils/getUseableWorkoutName";
 import { useLocalStorage } from "~/utils/useLocalStorage";
 import { useUpdatedRef } from "~/utils/useUpdatedRef";
 
-type CurrentWorkout = RouterInputs["workouts"]["put"]["workout"] | null;
+export type CurrentWorkout = RouterInputs["workouts"]["put"]["workout"] | null;
 
 const CurrentWorkoutContext = createContext<{
   currentWorkout: CurrentWorkout;
