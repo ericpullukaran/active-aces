@@ -30,6 +30,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { WhenHydrated } from "~/components/WhenHydrated";
+import WorkoutSettingsDrawer from "~/components/WorkoutSettingsDrawer";
 import WorkoutStats from "~/components/WorkoutStats";
 import { cn } from "~/lib/cn";
 import { useCurrentWorkout } from "~/lib/current-workout";
@@ -238,37 +239,11 @@ export default function WorkoutPage({}: Props) {
           title={workout?.name ?? "Active Workout"}
           navigateBack="/dashboard"
           rightSideContent={
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button size="icon-sm" variant="ghost">
-                  <Settings className="sq-4" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="flex flex-col gap-4">
-                <FormItem>
-                  <Label htmlFor="workout-rest-timer-duration">
-                    Rest timer duration (seconds)
-                  </Label>
-                  <Input
-                    placeholder="0"
-                    type="number"
-                    id="workout-rest-timer-duration"
-                    value={workoutTimerDuration ?? ""}
-                    onChange={(e) => {
-                      setWorkoutTimerDuration(
-                        Number.isNaN(e.target.valueAsNumber)
-                          ? null
-                          : e.target.valueAsNumber,
-                      );
-                    }}
-                  />
-                </FormItem>
-
-                <Button variant="destructive" size="sm" onClick={cancelWorkout}>
-                  Cancel workout
-                </Button>
-              </PopoverContent>
-            </Popover>
+            <WorkoutSettingsDrawer
+              workoutTimerDuration={workoutTimerDuration}
+              setWorkoutTimerDuration={setWorkoutTimerDuration}
+              cancelWorkout={cancelWorkout}
+            />
           }
         />
 
