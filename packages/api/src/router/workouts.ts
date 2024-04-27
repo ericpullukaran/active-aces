@@ -56,6 +56,7 @@ const PutWorkoutSchema = z.object({
   endTime: z.date().optional(),
   exercises: z.array(
     z.object({
+      collapsed: z.boolean().default(false),
       exerciseId: z.string(),
       notes: z.string().optional(),
       sets: z.array(

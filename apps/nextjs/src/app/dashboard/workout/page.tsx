@@ -29,7 +29,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { Skeleton } from "~/components/ui/skeleton";
 import { WhenHydrated } from "~/components/WhenHydrated";
+import WorkoutExerciseHeader from "~/components/WorkoutExerciseHeader";
 import WorkoutSettingsDrawer from "~/components/WorkoutSettingsDrawer";
 import WorkoutStats from "~/components/WorkoutStats";
 import { cn } from "~/lib/cn";
@@ -112,6 +114,7 @@ export default function WorkoutPage({}: Props) {
         {
           exerciseId,
           sets: [getDefaultSet()],
+          collapsed: false,
         },
       ],
     });
@@ -232,6 +235,15 @@ export default function WorkoutPage({}: Props) {
     </TrailingActions>
   );
 
+  const collapseExercise = (exerciseIndex: number) => {
+    setWorkout({
+      ...workout!,
+      exercises: workout!.exercises.map((e, idx) =>
+        idx === exerciseIndex ? { ...e, collapsed: !e.collapsed } : e,
+      ),
+    });
+  };
+
   return (
     <WhenHydrated>
       <div className="relative flex min-h-[100svh] flex-col px-4">
@@ -263,132 +275,135 @@ export default function WorkoutPage({}: Props) {
                   exerciseTypeToFields[
                     exerciseDetails?.measurementType ?? "reps"
                   ];
+                console.log(exercise);
+
                 return (
                   <div
                     key={exerciseIndex}
-                    className="space-y-4 rounded-xl bg-card p-4"
+                    className="space-y-4 rounded-xl bg-card"
                   >
                     {exerciseDetails ? (
                       <>
-                        <div className="flex items-center justify-between">
-                          <p className="text-lg font-semibold">
-                            {exerciseDetails.name}
-                          </p>
-
-                          <Button
-                            size="icon-sm"
-                            variant="outline"
-                            className="border-destructive"
-                            onClick={() => deleteExercise(exerciseIndex)}
-                          >
-                            <Trash
-                              size="1em"
-                              className="text-sm text-destructive-foreground"
-                            />
-                          </Button>
-                        </div>
-                        <div
-                          className="grid items-center gap-1 tabular-nums"
-                          style={{
-                            gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
-                          }}
-                        >
-                          {[
-                            "Set",
-                            ...measurements.map(
-                              (m) => measurementToDetails[m].label,
-                            ),
-                            <Check key="check" size="1em" />,
-                          ].map((label, i) => (
-                            <span
-                              key={i}
-                              className="mx-auto text-center text-sm font-semibold capitalize text-muted-foreground"
+                        <WorkoutExerciseHeader
+                          index={exerciseIndex}
+                          exercise={exerciseDetails}
+                          currExercise={exercise}
+                          deleteExercise={deleteExercise}
+                          collapseExercise={collapseExercise}
+                        />
+                        {!exercise.collapsed && (
+                          <div className="p-4 pt-0">
+                            <div
+                              className="grid items-center gap-1 tabular-nums"
+                              style={{
+                                gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
+                              }}
                             >
-                              {label}
-                            </span>
-                          ))}
-                        </div>
-                        <SwipeableList destructiveCallbackDelay={100}>
-                          {exercise.sets.map((set, setIndex) => (
-                            <SwipeableListItem
-                              key={set.tmpId}
-                              trailingActions={trailingActions(
-                                exerciseIndex,
-                                set.tmpId,
-                              )}
-                            >
-                              <div
-                                className="grid w-full items-center gap-2 tabular-nums"
-                                style={{
-                                  gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
-                                }}
-                              >
-                                <div className="text-center font-semibold">
-                                  {setIndex + 1}
-                                </div>
-                                {measurements.map(
-                                  (measurement, measurementIndex) => (
-                                    <input
-                                      key={measurement}
-                                      type="number"
-                                      inputMode="decimal"
-                                      className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-transparent"
-                                      step={0.1}
-                                      min={0}
-                                      onFocus={(event) => event.target.select()}
-                                      {...measurementToDetails[measurement]
-                                        .inputProps}
-                                      placeholder={measurement}
-                                      value={set[measurement]}
-                                      onChange={(e) => {
-                                        updateSet(exerciseIndex, set.tmpId, {
-                                          [measurement]: e.target.valueAsNumber,
-                                          // complete: e.target.valueAsNumber
-                                          //   ? true
-                                          //   : false,
-                                        });
-                                      }}
-                                    />
-                                  ),
-                                )}
-                                <div className="text-center">
-                                  <input
-                                    type="checkbox"
-                                    className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
-                                    checked={set.complete}
-                                    onChange={(e) => {
-                                      updateSet(exerciseIndex, set.tmpId, {
-                                        complete: e.target.checked,
-                                      });
+                              {[
+                                "Set",
+                                ...measurements.map(
+                                  (m) => measurementToDetails[m].label,
+                                ),
+                                <Check key="check" size="1em" />,
+                              ].map((label, i) => (
+                                <span
+                                  key={i}
+                                  className="mx-auto text-center text-sm font-semibold capitalize text-muted-foreground"
+                                >
+                                  {label}
+                                </span>
+                              ))}
+                            </div>
+                            <SwipeableList destructiveCallbackDelay={100}>
+                              {exercise.sets.map((set, setIndex) => (
+                                <SwipeableListItem
+                                  key={set.tmpId}
+                                  trailingActions={trailingActions(
+                                    exerciseIndex,
+                                    set.tmpId,
+                                  )}
+                                >
+                                  <div
+                                    className="grid w-full items-center gap-2 tabular-nums"
+                                    style={{
+                                      gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
                                     }}
-                                  />
-                                </div>
-                              </div>
-                            </SwipeableListItem>
-                          ))}
-                        </SwipeableList>
+                                  >
+                                    <div className="text-center font-semibold">
+                                      {setIndex + 1}
+                                    </div>
+                                    {measurements.map(
+                                      (measurement, measurementIndex) => (
+                                        <input
+                                          key={measurement}
+                                          type="number"
+                                          inputMode="decimal"
+                                          className="no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-transparent"
+                                          step={0.1}
+                                          min={0}
+                                          onFocus={(event) =>
+                                            event.target.select()
+                                          }
+                                          {...measurementToDetails[measurement]
+                                            .inputProps}
+                                          placeholder={measurement}
+                                          value={set[measurement]}
+                                          onChange={(e) => {
+                                            updateSet(
+                                              exerciseIndex,
+                                              set.tmpId,
+                                              {
+                                                [measurement]:
+                                                  e.target.valueAsNumber,
+                                                // complete: e.target.valueAsNumber
+                                                //   ? true
+                                                //   : false,
+                                              },
+                                            );
+                                          }}
+                                        />
+                                      ),
+                                    )}
+                                    <div className="text-center">
+                                      <input
+                                        type="checkbox"
+                                        className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
+                                        checked={set.complete}
+                                        onChange={(e) => {
+                                          updateSet(exerciseIndex, set.tmpId, {
+                                            complete: e.target.checked,
+                                          });
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </SwipeableListItem>
+                              ))}
+                            </SwipeableList>
 
-                        {exercise.sets.length >= 100 && (
-                          <p className="text-center text-sm">tf you doing?</p>
+                            {exercise.sets.length >= 100 && (
+                              <p className="text-center text-sm">
+                                tf you doing?
+                              </p>
+                            )}
+
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              className="w-full gap-1"
+                              // disabled={exercise.sets.length >= 100}
+                              onClick={() => addSet(exerciseIndex)}
+                            >
+                              <PlusIcon size="1em" className="text-sm" />
+                              Add set
+                            </Button>
+                          </div>
                         )}
-
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="w-full gap-1"
-                          // disabled={exercise.sets.length >= 100}
-                          onClick={() => addSet(exerciseIndex)}
-                        >
-                          <PlusIcon size="1em" className="text-sm" />
-                          Add set
-                        </Button>
                       </>
                     ) : (
-                      <>
-                        <p className="text-lg font-semibold">
-                          Deleted exercise
-                        </p>
-                      </>
+                      <div className="p-4">
+                        <Skeleton className="h-8 w-28" />
+                      </div>
                     )}
                   </div>
                 );
