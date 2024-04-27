@@ -47,13 +47,11 @@ export default function WorkoutHistoryCard({ workout, internalNav }: Props) {
           {workout.exercises.length !== 1 && "s"}
         </p>
         <div className="flex flex-wrap gap-2">
-          {workout.exercises.map((e) => {
-            return (
-              <Badge key={e.exerciseId} variant={"outline"}>
-                {exercisesMapById[e.exerciseId]?.name}
-              </Badge>
-            );
-          })}
+          {workout.exercises.map((e) => (
+            <Badge key={`${e.exerciseId}_${e.order}`} variant={"outline"}>
+              {exercisesMapById[e.exerciseId]?.name}
+            </Badge>
+          ))}
         </div>
       </div>
       {!internalNav && <WorkoutHistoryCardPopover workoutId={workout.id} />}

@@ -18,10 +18,11 @@ type Props = {
 
 export default function WorkoutHistoryCardPopover({ workoutId }: Props) {
   const router = useRouter();
+  const utils = api.useUtils();
   const deleteWorkout = api.workouts.delete.useMutation({
     onSuccess: async () => {
       router.refresh();
-      await api.useUtils().invalidate(undefined, { queryKey: ["asdfghjkl"] });
+      await utils.workouts.invalidate();
     },
   });
   return (
@@ -43,6 +44,7 @@ export default function WorkoutHistoryCardPopover({ workoutId }: Props) {
           <Button
             variant={"destructive"}
             className="w-full"
+            isLoading={deleteWorkout.isPending}
             onClick={() => {
               deleteWorkout.mutate({ id: workoutId });
             }}

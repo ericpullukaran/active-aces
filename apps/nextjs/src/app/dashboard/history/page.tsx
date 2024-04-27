@@ -10,10 +10,7 @@ import HistoryLoading from "./_loading";
 type Props = {};
 
 export default function HistoryPage({}: Props) {
-  const workoutHistory = api.workouts.history.useQuery(
-    { limit: 10 },
-    { queryHash: "asdfghjkl" },
-  );
+  const workoutHistory = api.workouts.history.useQuery({ limit: 10 });
 
   if (!workoutHistory.data) {
     return <HistoryLoading />;
