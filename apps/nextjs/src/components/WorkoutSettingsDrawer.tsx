@@ -50,6 +50,7 @@ export default function WorkoutSettingsDrawer({
                 type="number"
                 id="workout-rest-timer-duration"
                 value={workoutTimerDuration ?? ""}
+                onFocus={(event) => event.target.select()}
                 onChange={(e) => {
                   setWorkoutTimerDuration(
                     Number.isNaN(e.target.valueAsNumber)

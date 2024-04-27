@@ -36,7 +36,10 @@ export default function EndWorkoutDrawer({
   return (
     <Drawer>
       <DrawerTrigger className="" asChild>
-        <Button variant="destructive" className="w-full">
+        <Button
+          variant={"outline"}
+          className="w-full border-destructive bg-destructive/10"
+        >
           End Workout
         </Button>
       </DrawerTrigger>
