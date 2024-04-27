@@ -280,7 +280,7 @@ export default function WorkoutPage({}: Props) {
                 return (
                   <div
                     key={exerciseIndex}
-                    className="space-y-4 rounded-xl bg-card transition-all duration-1000"
+                    className="space-y-4 rounded-xl bg-card"
                   >
                     {exerciseDetails ? (
                       <>
