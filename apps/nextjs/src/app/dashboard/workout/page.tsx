@@ -135,10 +135,7 @@ export default function WorkoutPage({}: Props) {
                 console.log(exercise);
 
                 return (
-                  <div
-                    key={exerciseIndex}
-                    className="space-y-4 rounded-xl bg-card"
-                  >
+                  <div key={exerciseIndex} className="rounded-xl bg-card">
                     {exerciseDetails ? (
                       <>
                         <WorkoutExerciseHeader
@@ -149,6 +146,7 @@ export default function WorkoutPage({}: Props) {
                           <WorkoutExerciseBody
                             exerciseIndex={exerciseIndex}
                             currExercise={exercise}
+                            workoutTimer={workoutTimer}
                           />
                         )}
                       </>

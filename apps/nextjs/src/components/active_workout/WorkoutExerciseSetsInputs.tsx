@@ -9,29 +9,26 @@ import {
 import type { RouterInputs } from "@acme/api";
 
 import type { SetMeasurement } from "./WorkoutExerciseBody";
+import type { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 import { cn } from "~/lib/cn";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { useLocalStorage } from "~/utils/useLocalStorage";
-import { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 import { measurementToDetails } from "./WorkoutExerciseBody";
 
 type Props = {
   exerciseIndex: number;
   measurements: SetMeasurement[];
   currExercise: RouterInputs["workouts"]["put"]["workout"]["exercises"][number];
+  workoutTimer: ReturnType<typeof useWorkoutTimer>;
 };
 
 export default function WorkoutExerciseSetsInputs({
   exerciseIndex,
   measurements,
   currExercise,
+  workoutTimer,
 }: Props) {
   const { setCurrentWorkout } = useCurrentWorkout();
-  const [workoutTimerDuration] = useLocalStorage<number | null>(
-    "aa_workout-timer-duration",
-    null,
-  );
-  const workoutTimer = useWorkoutTimer(workoutTimerDuration);
 
   const updateSet = useCallback(
     (
@@ -98,16 +95,25 @@ export default function WorkoutExerciseSetsInputs({
           trailingActions={trailingActions(set.tmpId)}
         >
           <div
-            className="grid w-full items-center gap-2 tabular-nums"
+            className={cn(
+              "grid w-full items-center gap-2 tabular-nums transition-colors",
+              {
+                "bg-green-950": set.complete,
+              },
+              {
+                "rounded-t-lg":
+                  setIndex === 0 || !currExercise.sets[setIndex - 1]?.complete,
+                "rounded-b-lg":
+                  currExercise.sets.length - 1 === setIndex ||
+                  !currExercise.sets[setIndex + 1]?.complete,
+                "bg-green-950": set.complete,
+              },
+            )}
             style={{
               gridTemplateColumns: `3rem ${measurements.map(() => "1fr").join(" ")} 3rem`,
             }}
           >
-            <div
-              className={cn("text-center font-semibold", {
-                "text-zinc-600": set.complete,
-              })}
-            >
+            <div className={cn("text-center font-semibold")}>
               {setIndex + 1}
             </div>
             {measurements.map((measurement) => (
@@ -116,10 +122,7 @@ export default function WorkoutExerciseSetsInputs({
                 type="number"
                 inputMode="decimal"
                 className={cn(
-                  "no-spin-buttonsrounded w-full rounded-md border-none bg-card p-2 text-center focus:ring-transparent",
-                  {
-                    "text-zinc-600": set.complete,
-                  },
+                  "no-spin-buttonsrounded w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
                 )}
                 step={0.1}
                 min={0}
@@ -137,7 +140,7 @@ export default function WorkoutExerciseSetsInputs({
             <div className="text-center">
               <input
                 type="checkbox"
-                className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-primary"
+                className="h-6 w-10 rounded-full border-zinc-300 bg-transparent text-primary focus:ring-green-800"
                 checked={set.complete}
                 onChange={(e) =>
                   updateSet(set.tmpId, { complete: e.target.checked })

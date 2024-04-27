@@ -5,6 +5,7 @@ import { Check, PlusIcon } from "lucide-react";
 import type { RouterInputs } from "@acme/api";
 import type { Doc } from "@acme/db";
 
+import type { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { useExercises } from "~/utils/use-search-exercises";
 import { Button } from "../ui/button";
@@ -59,9 +60,11 @@ export const getDefaultSet = () => ({
 type Props = {
   exerciseIndex: number;
   currExercise: RouterInputs["workouts"]["put"]["workout"]["exercises"][number];
+  workoutTimer: ReturnType<typeof useWorkoutTimer>;
 };
 
 export default function WorkoutExerciseBody({
+  workoutTimer,
   exerciseIndex,
   currExercise,
 }: Props) {
@@ -96,7 +99,7 @@ export default function WorkoutExerciseBody({
   return (
     <div className="p-4 pt-0">
       <div
-        className="grid items-center gap-1 tabular-nums"
+        className="grid items-center gap-1 py-2 tabular-nums"
         style={{
           gridTemplateColumns: `3rem ${Array.from(measurements, () => "1fr").join(" ")} 3rem`,
         }}
@@ -119,6 +122,7 @@ export default function WorkoutExerciseBody({
         exerciseIndex={exerciseIndex}
         currExercise={currExercise}
         measurements={measurements}
+        workoutTimer={workoutTimer}
       />
 
       {currExercise.sets.length >= 100 && (
