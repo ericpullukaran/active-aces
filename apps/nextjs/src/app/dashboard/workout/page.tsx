@@ -464,7 +464,11 @@ export default function WorkoutPage({}: Props) {
           ) : null}
 
           {workout ? (
-            <EndWorkoutDrawer onEnd={endWorkout} title={workout?.name} />
+            <EndWorkoutDrawer
+              isLoading={putWorkoutRouter.isPending}
+              onEnd={endWorkout}
+              title={workout?.name}
+            />
           ) : (
             <div className="w-full animate-pulse rounded-lg bg-zinc-500"></div>
           )}

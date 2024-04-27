@@ -15,11 +15,13 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 
 type Props = {
+  isLoading: boolean;
   onEnd: (title: string, notes: string | undefined) => void;
   title: string | null | undefined;
 };
 
 export default function EndWorkoutDrawer({
+  isLoading,
   onEnd,
   title: initialTitle,
 }: Props) {
@@ -47,39 +49,33 @@ export default function EndWorkoutDrawer({
         </DrawerHeader>
         <div className="mx-8 mb-4 flex flex-col gap-3">
           <div>
-            <label
-              htmlFor="workoutTitle"
-              className="text-md block font-semibold"
-            >
-              Workout Title
-            </label>
+            <div className="block font-semibold">Workout Title</div>
             <Input
               id="workoutTitle"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              type="text"
               placeholder="Enter workout title"
               className="mt-1 block w-full"
             />
           </div>
 
           <div className="">
-            <label
-              htmlFor="workoutNotes"
-              className="text-md block font-semibold"
-            >
-              Notes
-            </label>
-            <Textarea
+            <div className="block font-semibold">Notes</div>
+            <Input
               id="workoutNotes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
+              type="text"
               placeholder="Add any notes (optional)"
-              className="mt-1 block w-full focus:border-primary focus:ring-primary"
+              className="mt-1 block w-full"
             />
           </div>
         </div>
         <DrawerFooter>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button isLoading={isLoading} onClick={handleSubmit}>
+            Submit
+          </Button>
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>

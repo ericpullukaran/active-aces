@@ -76,3 +76,12 @@
     margin: 0;
   }
 }
+
+/**
+ * Disables zoom on ios devices
+ */
+input[type="text"],
+input[type="number"],
+textarea {
+  font-size: 1rem;
+}
