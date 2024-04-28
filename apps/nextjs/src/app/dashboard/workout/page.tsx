@@ -1,48 +1,21 @@
 "use client";
 
-import type { ComponentProps } from "react";
-import React, { startTransition } from "react";
+import React, { startTransition, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Check,
-  Delete,
-  PlusIcon,
-  Settings,
-  StopCircle,
-  Trash,
-} from "lucide-react";
-import {
-  SwipeableList,
-  SwipeableListItem,
-  SwipeAction,
-  TrailingActions,
-} from "react-swipeable-list";
+import { Delete } from "lucide-react";
 
 import "react-swipeable-list/dist/styles.css";
-
-import type { RouterInputs } from "@acme/api";
-import type { Doc } from "@acme/db";
 
 import EndWorkoutDrawer from "~/components/active_workout/EndWorkoutDrawer";
 import WorkoutExerciseBody, {
   getDefaultSet,
 } from "~/components/active_workout/WorkoutExerciseBody";
 import WorkoutExerciseHeader from "~/components/active_workout/WorkoutExerciseHeader";
-import WorkoutExerciseSetsInputs from "~/components/active_workout/WorkoutExerciseSetsInputs";
 import WorkoutSettingsDrawer from "~/components/active_workout/WorkoutSettingsDrawer";
 import WorkoutStats from "~/components/active_workout/WorkoutStats";
 import { Countdown } from "~/components/Countdown";
-import ExercisesDrawer from "~/components/ExercisesDrawer";
 import NavBar from "~/components/NavBar";
 import { Button } from "~/components/ui/button";
-import { FormControl, FormItem, FormLabel } from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
 import { Skeleton } from "~/components/ui/skeleton";
 import { WhenHydrated } from "~/components/WhenHydrated";
 import { cn } from "~/lib/cn";
@@ -51,6 +24,10 @@ import { api } from "~/trpc/react";
 import { useExercises } from "~/utils/use-search-exercises";
 import { useLocalStorage } from "~/utils/useLocalStorage";
 import { useWorkoutTimer } from "~/utils/useWorkoutTimer";
+
+const ExercisesDrawer = React.lazy(
+  () => import("~/components/ExercisesDrawer"),
+);
 
 type Props = {};
 
@@ -219,11 +196,13 @@ export default function WorkoutPage({}: Props) {
           ) : (
             <div className="w-full animate-pulse rounded-lg bg-zinc-500"></div>
           )}
-          <ExercisesDrawer
-            onExerciseSelect={(exerciseId) => {
-              addExercise(exerciseId);
-            }}
-          />
+          <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+            <ExercisesDrawer
+              onExerciseSelect={(exerciseId) => {
+                addExercise(exerciseId);
+              }}
+            />
+          </Suspense>
         </div>
       </div>
     </WhenHydrated>
