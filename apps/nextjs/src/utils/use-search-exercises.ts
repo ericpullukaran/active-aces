@@ -18,7 +18,18 @@ export const useExercises = (
 
   const fuse = useMemo(() => {
     return new Fuse(exercises.data ?? [], {
-      keys: ["name", "primaryMuscleGroupId"],
+      keys: [
+        {
+          name: "name",
+          weight: 0.7,
+        },
+        {
+          name: "primaryMuscleGroupId",
+          weight: 0.3,
+        },
+      ],
+      includeScore: true,
+      threshold: 0.4,
     });
   }, [exercises.data]);
 
