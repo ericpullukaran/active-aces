@@ -1,12 +1,13 @@
 import type { ComponentProps } from "react";
-import React, { useMemo } from "react";
-import { Check, PlusIcon } from "lucide-react";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Check, Loader2, PlusIcon } from "lucide-react";
 
 import type { RouterInputs } from "@acme/api";
 import type { Doc } from "@acme/db";
 
 import type { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 import { useCurrentWorkout } from "~/lib/current-workout";
+import { api } from "~/trpc/react";
 import { useExercises } from "~/utils/use-search-exercises";
 import { Button } from "../ui/button";
 import WorkoutExerciseSetsInputs from "./WorkoutExerciseSetsInputs";
@@ -68,24 +69,60 @@ export default function WorkoutExerciseBody({
   exerciseIndex,
   currExercise,
 }: Props) {
-  const { currentWorkout, setCurrentWorkout, clearWorkout } =
-    useCurrentWorkout();
+  const { currentWorkout, setCurrentWorkout } = useCurrentWorkout();
   const allExercises = useExercises();
+  const getPreviousSet = api.workouts.getPreviousSet.useMutation();
 
-  const addSet = (exerciseIndex: number) => {
+  const addSet = useCallback(async () => {
+    const newSet = {
+      ...getDefaultSet(),
+      order: currExercise.sets.length,
+    };
+
+    const updatedExercises = currentWorkout!.exercises.map((exercise, idx) =>
+      idx === exerciseIndex
+        ? { ...exercise, sets: [...exercise.sets, newSet] }
+        : exercise,
+    );
+
     setCurrentWorkout({
       ...currentWorkout!,
-      exercises:
-        currentWorkout?.exercises?.map((exercise, i) =>
-          i === exerciseIndex
-            ? {
-                ...exercise,
-                sets: [...exercise.sets, getDefaultSet()],
-              }
-            : exercise,
-        ) ?? [],
+      exercises: updatedExercises,
     });
-  };
+
+    getPreviousSet.mutate(
+      {
+        exerciseId: currExercise.exerciseId,
+        setOrder: newSet.order,
+      },
+      {
+        onSuccess: (data) => {
+          if (data) {
+            const updatedSets = updatedExercises[exerciseIndex]?.sets.map(
+              (set, idx) =>
+                idx === newSet.order
+                  ? { ...set, ...data, complete: false }
+                  : set,
+            );
+
+            setCurrentWorkout((current) => ({
+              ...current!,
+              exercises: current!.exercises.map((ex, idx) =>
+                idx === exerciseIndex ? { ...ex, sets: updatedSets ?? [] } : ex,
+              ),
+            }));
+          }
+        },
+      },
+    );
+  }, [
+    currExercise.sets.length,
+    currExercise.exerciseId,
+    currentWorkout,
+    setCurrentWorkout,
+    getPreviousSet,
+    exerciseIndex,
+  ]);
 
   const specificExercise = useMemo(
     () => allExercises.find((e) => e.id === currExercise.exerciseId),
@@ -95,6 +132,12 @@ export default function WorkoutExerciseBody({
     () => exerciseTypeToFields[specificExercise?.measurementType ?? "reps"],
     [specificExercise],
   );
+
+  useEffect(() => {
+    if (currExercise.sets.length === 0) {
+      void addSet();
+    }
+  }, [addSet, currExercise.sets.length, currentWorkout]);
 
   return (
     <div className="p-4 pt-0">
@@ -119,6 +162,7 @@ export default function WorkoutExerciseBody({
       </div>
 
       <WorkoutExerciseSetsInputs
+        isFetchingSetValue={getPreviousSet.isPending}
         exerciseIndex={exerciseIndex}
         currExercise={currExercise}
         measurements={measurements}
@@ -133,7 +177,7 @@ export default function WorkoutExerciseBody({
         size="sm"
         variant="outline"
         className="mt-2 w-full gap-1"
-        onClick={() => addSet(exerciseIndex)}
+        onClick={() => addSet()}
       >
         <PlusIcon size="1em" className="text-sm" />
         Add set

@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Loader2 } from "lucide-react";
 import {
   SwipeableList,
   SwipeableListItem,
@@ -15,6 +16,7 @@ import { useCurrentWorkout } from "~/lib/current-workout";
 import { measurementToDetails } from "./WorkoutExerciseBody";
 
 type Props = {
+  isFetchingSetValue: boolean;
   exerciseIndex: number;
   measurements: SetMeasurement[];
   currExercise: RouterInputs["workouts"]["put"]["workout"]["exercises"][number];
@@ -22,6 +24,7 @@ type Props = {
 };
 
 export default function WorkoutExerciseSetsInputs({
+  isFetchingSetValue,
   exerciseIndex,
   measurements,
   currExercise,
@@ -112,8 +115,17 @@ export default function WorkoutExerciseSetsInputs({
               gridTemplateColumns: `3rem ${measurements.map(() => "1fr").join(" ")} 3rem`,
             }}
           >
-            <div className={cn("text-center font-semibold")}>
-              {setIndex + 1}
+            <div
+              className={cn(
+                "grid place-content-center text-center font-semibold",
+              )}
+            >
+              {isFetchingSetValue &&
+              currExercise.sets.length === setIndex + 1 ? (
+                <Loader2 className="sq-3 animate-spin" />
+              ) : (
+                setIndex + 1
+              )}
             </div>
             {measurements.map((measurement) => (
               <input

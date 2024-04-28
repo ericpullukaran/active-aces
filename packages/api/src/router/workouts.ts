@@ -77,6 +77,64 @@ const PutWorkoutSchema = z.object({
 });
 
 export const workoutsRouter = createTRPCRouter({
+  getPreviousSet: protectedProcedure
+    .input(
+      z.object({
+        exerciseId: z.string(),
+        setOrder: z.number().nonnegative(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { exerciseId, setOrder } = input;
+
+      const result = await ctx.db
+        .select({
+          weight: ctx.db.$schema.workoutExerciseSets.weight,
+          numReps: ctx.db.$schema.workoutExerciseSets.numReps,
+          time: ctx.db.$schema.workoutExerciseSets.time,
+          distance: ctx.db.$schema.workoutExerciseSets.distance,
+          complete: ctx.db.$schema.workoutExerciseSets.complete,
+        })
+        .from(ctx.db.$schema.workoutExerciseSets)
+        .innerJoin(
+          ctx.db.$schema.workoutExercises,
+          ctx.db.$cmp.eq(
+            ctx.db.$schema.workoutExerciseSets.workoutExerciseId,
+            ctx.db.$schema.workoutExercises.id,
+          ),
+        )
+        .innerJoin(
+          ctx.db.$schema.workouts,
+          ctx.db.$cmp.eq(
+            ctx.db.$schema.workoutExercises.workoutId,
+            ctx.db.$schema.workouts.id,
+          ),
+        )
+        .where(
+          ctx.db.$cmp.and(
+            ctx.db.$cmp.eq(
+              ctx.db.$schema.workoutExercises.exerciseId,
+              exerciseId,
+            ),
+            ctx.db.$cmp.eq(ctx.db.$schema.workouts.userId, ctx.auth.userId),
+            ctx.db.$cmp.eq(ctx.db.$schema.workoutExerciseSets.order, setOrder),
+          ),
+        )
+        .orderBy(ctx.db.$order.desc(ctx.db.$schema.workouts.endTime))
+        .limit(1)
+        .execute();
+
+      return result[0]
+        ? {
+            weight: result[0].weight ?? undefined,
+            numReps: result[0].numReps ?? undefined,
+            time: result[0].time ?? undefined,
+            distance: result[0].distance ?? undefined,
+            complete: result[0].complete ?? undefined,
+          }
+        : undefined;
+    }),
+
   previousExercise: protectedProcedure
     .input(
       z.object({

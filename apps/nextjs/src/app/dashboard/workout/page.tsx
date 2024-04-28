@@ -1,6 +1,6 @@
 "use client";
 
-import React, { startTransition, Suspense } from "react";
+import React, { startTransition, Suspense, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Delete } from "lucide-react";
 
@@ -51,7 +51,7 @@ export default function WorkoutPage({}: Props) {
         ...(workout?.exercises ?? []),
         {
           exerciseId,
-          sets: [getDefaultSet()],
+          sets: [],
           collapsed: false,
         },
       ],
