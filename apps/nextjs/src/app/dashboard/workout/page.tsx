@@ -6,6 +6,8 @@ import { Delete } from "lucide-react";
 
 import "react-swipeable-list/dist/styles.css";
 
+import dynamic from "next/dynamic";
+
 import EndWorkoutDrawer from "~/components/active_workout/EndWorkoutDrawer";
 import WorkoutExerciseBody, {
   getDefaultSet,
@@ -25,9 +27,7 @@ import { useExercises } from "~/utils/use-search-exercises";
 import { useLocalStorage } from "~/utils/useLocalStorage";
 import { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 
-const ExercisesDrawer = React.lazy(
-  () => import("~/components/ExercisesDrawer"),
-);
+const ExercisesDrawer = dynamic(() => import("~/components/ExercisesDrawer"));
 
 type Props = {};
 
