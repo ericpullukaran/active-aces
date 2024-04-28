@@ -12,7 +12,6 @@ import type { SetMeasurement } from "./WorkoutExerciseBody";
 import type { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 import { cn } from "~/lib/cn";
 import { useCurrentWorkout } from "~/lib/current-workout";
-import { useLocalStorage } from "~/utils/useLocalStorage";
 import { measurementToDetails } from "./WorkoutExerciseBody";
 
 type Props = {
@@ -124,7 +123,7 @@ export default function WorkoutExerciseSetsInputs({
                 className={cn(
                   "no-spin-buttonsrounded w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
                 )}
-                step={0.1}
+                step={0.5}
                 min={0}
                 onFocus={(event) => event.target.select()}
                 {...measurementToDetails[measurement].inputProps}

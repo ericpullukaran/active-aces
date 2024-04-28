@@ -25,7 +25,6 @@ export default function WorkoutExercises({
     <div className="space-y-4">
       {cachedWorkoutExercises.map((exercise, exerciseIndex) => {
         const exerciseDetails = exercisesById[exercise.exerciseId];
-        console.log(exercise);
 
         return (
           <div key={exerciseIndex} className="rounded-xl bg-card">
