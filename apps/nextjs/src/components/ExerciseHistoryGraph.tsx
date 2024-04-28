@@ -43,19 +43,12 @@ export default function ExerciseHistoryGraph({
   exerciseId,
   workoutType,
 }: Props) {
-  const [setOrder, setSetOrder] = useState(1);
+  const [setOrder, setSetOrder] = useState(0);
   const { data, isLoading, isError } =
-    api.workouts.getExerciseSetHistory.useQuery(
-      {
-        exerciseId,
-        setOrder,
-      },
-      {
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-      },
-    );
+    api.workouts.getExerciseSetHistory.useQuery({
+      exerciseId,
+      setOrder,
+    });
 
   if (isLoading) return <GraphSkeleton />;
   if (isError) return <p>Error fetching exercise data.</p>;
@@ -129,12 +122,12 @@ export default function ExerciseHistoryGraph({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"outline"} size={"sm"}>
-              Set No. {setOrder}
+              Set No. {setOrder + 1}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {Array.from({ length: 6 }, (_, i) => (
-              <DropdownMenuItem key={i} onSelect={() => setSetOrder(i + 1)}>
+              <DropdownMenuItem key={i} onSelect={() => setSetOrder(i)}>
                 Set {i + 1}
               </DropdownMenuItem>
             ))}
