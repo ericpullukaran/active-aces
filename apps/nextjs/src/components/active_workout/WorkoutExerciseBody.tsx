@@ -10,6 +10,7 @@ import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
 import { useExercises } from "~/utils/use-search-exercises";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 import WorkoutExerciseSetsInputs from "./WorkoutExerciseSetsInputs";
 
 export type SetMeasurement = Exclude<
@@ -161,6 +162,7 @@ export default function WorkoutExerciseBody({
         ))}
       </div>
 
+      {currExercise.sets.length === 0 && <Skeleton className="h-10 w-10" />}
       <WorkoutExerciseSetsInputs
         isFetchingSetValue={getPreviousSet.isPending}
         exerciseIndex={exerciseIndex}
