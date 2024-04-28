@@ -3,9 +3,12 @@ import Fuse from "fuse.js";
 
 import { api } from "~/trpc/react";
 
-const ONE_HOUR = 1000 * 60 * 60;
+export const ONE_HOUR = 1000 * 60 * 60;
 
-export const useExercises = (searchQuery?: string | undefined) => {
+export const useExercises = (
+  searchQuery?: string | undefined,
+  filters?: string[] | undefined,
+) => {
   const exercises = api.exercises.all.useQuery(undefined, {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -15,17 +18,36 @@ export const useExercises = (searchQuery?: string | undefined) => {
 
   const fuse = useMemo(() => {
     return new Fuse(exercises.data ?? [], {
-      keys: ["name"],
+      keys: [
+        {
+          name: "name",
+          weight: 0.7,
+        },
+        {
+          name: "primaryMuscleGroupId",
+          weight: 0.3,
+        },
+      ],
+      includeScore: true,
+      threshold: 0.4,
     });
   }, [exercises.data]);
 
   const filteredExercises = useMemo(() => {
-    if (!searchQuery) {
-      return exercises.data ?? [];
+    let results = exercises.data ?? [];
+
+    if (searchQuery) {
+      results = fuse.search(searchQuery).map((result) => result.item);
     }
 
-    return fuse.search(searchQuery).map((result) => result.item);
-  }, [searchQuery, exercises.data, fuse]);
+    if (filters && filters.length > 0) {
+      results = results.filter((exercise) =>
+        filters.includes(exercise.primaryMuscleGroupId),
+      );
+    }
+
+    return results;
+  }, [searchQuery, exercises.data, fuse, filters]);
 
   return filteredExercises;
 };

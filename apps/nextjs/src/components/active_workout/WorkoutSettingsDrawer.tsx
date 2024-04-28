@@ -61,9 +61,10 @@ export default function WorkoutSettingsDrawer({
               />
               <Button
                 variant={"outline"}
+                className="bg-background"
                 onClick={() => setWorkoutTimerDuration(0)}
               >
-                <RotateCcw />
+                <RotateCcw className="sq-4" />
               </Button>
             </div>
           </FormItem>
