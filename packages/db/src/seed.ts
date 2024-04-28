@@ -40,16 +40,7 @@ const _exercisesData: {
   measurementType: MeasurementType;
 }[] = [
   {
-    name: "Bench Press",
-    primaryMuscleGroupId: "chest",
-    description:
-      "A compound exercise that targets the chest muscles by pressing a weight upwards from a supine position.",
-    commonPitfalls:
-      "Not keeping the feet flat on the ground, arching the back excessively, flaring the elbows.",
-    measurementType: "weight-reps",
-  },
-  {
-    name: "Squats",
+    name: "Squats (barbell)",
     primaryMuscleGroupId: "quadriceps",
     description:
       "A lower body exercise that targets the quadriceps, glutes, and hamstrings by bending the knees and lowering the body.",
@@ -67,24 +58,6 @@ const _exercisesData: {
     measurementType: "weight-reps",
   },
   {
-    name: "Pull-ups",
-    primaryMuscleGroupId: "lats",
-    description:
-      "An upper-body strength exercise that targets the lats by pulling the body up while hanging from a bar.",
-    commonPitfalls:
-      "Using momentum instead of muscle strength, not fully extending the arms on the way down.",
-    measurementType: "reps",
-  },
-  {
-    name: "Shoulder Press",
-    primaryMuscleGroupId: "shoulders",
-    description:
-      "A weight training exercise in which a weight is pressed from the shoulders until the arms are extended overhead.",
-    commonPitfalls:
-      "Arching the back, not using full range of motion, locking the elbows at the top.",
-    measurementType: "weight-reps",
-  },
-  {
     name: "Leg Press",
     primaryMuscleGroupId: "quadriceps",
     description:
@@ -94,7 +67,7 @@ const _exercisesData: {
     measurementType: "weight-reps",
   },
   {
-    name: "Bicep Curls",
+    name: "Bicep Curl (Barbell)",
     primaryMuscleGroupId: "biceps",
     description:
       "An upper-body exercise that targets the biceps through the curling motion of lifting a weight towards the shoulders.",
@@ -104,15 +77,6 @@ const _exercisesData: {
   },
   {
     name: "Tricep Dips",
-    primaryMuscleGroupId: "triceps",
-    description:
-      "A body weight exercise that targets the triceps by using the arms to lower and raise the body.",
-    commonPitfalls:
-      "Not going low enough, flaring the elbows out, locking the elbows at the top.",
-    measurementType: "reps",
-  },
-  {
-    name: "Tricep Dips (Weighted)",
     primaryMuscleGroupId: "triceps",
     description:
       "A body weight exercise that targets the triceps by using the arms to lower and raise the body.",
@@ -309,6 +273,15 @@ const _exercisesData: {
     measurementType: "weight-reps",
   },
   {
+    name: "Close Grip Bench Press (Barbell)",
+    primaryMuscleGroupId: "triceps",
+    description:
+      "Strengthens the triceps by pressing dumbbells up from a bench with a closer grip.",
+    commonPitfalls:
+      "Not keeping the dumbbells close together, flaring the elbows, not fully extending the arms.",
+    measurementType: "weight-reps",
+  },
+  {
     name: "Skullcrusher (Dumbbell)",
     primaryMuscleGroupId: "triceps",
     description:
@@ -363,13 +336,13 @@ const _exercisesData: {
     measurementType: "weight-reps",
   },
   {
-    name: "Pull-ups (Weighted)",
+    name: "Pull-ups",
     primaryMuscleGroupId: "lats",
     description:
       "An advanced variation of pull-ups involving additional weight, increasing the challenge for the lats and upper body.",
     commonPitfalls:
       "Not fully extending the arms at the bottom, using momentum instead of controlled muscle movement.",
-    measurementType: "reps",
+    measurementType: "weight-reps",
   },
   {
     name: "Single Arm Lat Pulldown",
@@ -387,7 +360,7 @@ const _exercisesData: {
       "Strengthens the biceps and lats by pulling the body up with palms facing towards the face.",
     commonPitfalls:
       "Not pulling up high enough to bring the chin over the bar, kicking or swinging for momentum.",
-    measurementType: "reps",
+    measurementType: "weight-reps",
   },
   {
     name: "Incline Bicep Curl",
