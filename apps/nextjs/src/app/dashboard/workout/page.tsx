@@ -9,10 +9,7 @@ import "react-swipeable-list/dist/styles.css";
 import dynamic from "next/dynamic";
 
 import EndWorkoutDrawer from "~/components/active_workout/EndWorkoutDrawer";
-import WorkoutExerciseBody, {
-  getDefaultSet,
-} from "~/components/active_workout/WorkoutExerciseBody";
-import WorkoutExerciseHeader from "~/components/active_workout/WorkoutExerciseHeader";
+import { getDefaultSet } from "~/components/active_workout/WorkoutExerciseBody";
 import WorkoutSettingsDrawer from "~/components/active_workout/WorkoutSettingsDrawer";
 import WorkoutStats from "~/components/active_workout/WorkoutStats";
 import { Countdown } from "~/components/Countdown";
@@ -23,11 +20,13 @@ import { WhenHydrated } from "~/components/WhenHydrated";
 import { cn } from "~/lib/cn";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { api } from "~/trpc/react";
-import { useExercises } from "~/utils/use-search-exercises";
 import { useLocalStorage } from "~/utils/useLocalStorage";
 import { useWorkoutTimer } from "~/utils/useWorkoutTimer";
 
 const ExercisesDrawer = dynamic(() => import("~/components/ExercisesDrawer"));
+const WorkoutExercises = dynamic(
+  () => import("~/components/active_workout/WorkoutExercises"),
+);
 
 type Props = {};
 
@@ -38,11 +37,7 @@ export default function WorkoutPage({}: Props) {
     setCurrentWorkout: setWorkout,
     clearWorkout,
   } = useCurrentWorkout();
-  const exercises = useExercises();
   const putWorkoutRouter = api.workouts.put.useMutation();
-  const exercisesById = Object.fromEntries(
-    exercises.map((e) => [e.id, e]) ?? [],
-  );
   const [workoutTimerDuration, setWorkoutTimerDuration] = useLocalStorage<
     number | null
   >("aa_workout-timer-duration", null);
@@ -114,34 +109,18 @@ export default function WorkoutPage({}: Props) {
         >
           {workout?.exercises?.length ? (
             <div className="space-y-4">
-              {workout.exercises.map((exercise, exerciseIndex) => {
-                const exerciseDetails = exercisesById[exercise.exerciseId];
-                console.log(exercise);
-
-                return (
-                  <div key={exerciseIndex} className="rounded-xl bg-card">
-                    {exerciseDetails ? (
-                      <>
-                        <WorkoutExerciseHeader
-                          exerciseIndex={exerciseIndex}
-                          currExercise={exercise}
-                        />
-                        {!exercise.collapsed && (
-                          <WorkoutExerciseBody
-                            exerciseIndex={exerciseIndex}
-                            currExercise={exercise}
-                            workoutTimer={workoutTimer}
-                          />
-                        )}
-                      </>
-                    ) : (
-                      <div className="p-4">
-                        <Skeleton className="h-8 w-28" />
-                      </div>
-                    )}
+              <Suspense
+                fallback={workout.exercises.map((e) => (
+                  <div key={e.exerciseId} className="p-4">
+                    <Skeleton className="h-8 w-28" />
                   </div>
-                );
-              })}
+                ))}
+              >
+                <WorkoutExercises
+                  cachedWorkoutExercises={workout.exercises}
+                  workoutTimer={workoutTimer}
+                />
+              </Suspense>
             </div>
           ) : (
             <div>
