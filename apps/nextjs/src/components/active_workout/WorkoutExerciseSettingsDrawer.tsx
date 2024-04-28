@@ -34,6 +34,7 @@ export default function WorkoutExerciseSettingsDrawer({
   const exercisesById = Object.fromEntries(
     exercises.map((e) => [e.id, e]) ?? [],
   );
+  const currExercise = workout?.exercises[exerciseIndex];
 
   const deleteExercise = (exerciseIndex: number) => {
     setWorkout({
@@ -57,7 +58,10 @@ export default function WorkoutExerciseSettingsDrawer({
         <div className="mx-8 mb-4 flex flex-col gap-3">
           <Suspense fallback={<GraphSkeleton />}>
             <ExerciseHistoryGraph
-              workoutType="weight-reps"
+              workoutType={
+                exercisesById[currExercise?.exerciseId ?? 0]?.measurementType ??
+                "weight-reps"
+              }
               exerciseId={workout?.exercises[exerciseIndex]?.exerciseId ?? ""}
             />
           </Suspense>

@@ -119,7 +119,7 @@ export const workoutsRouter = createTRPCRouter({
             ctx.db.$cmp.eq(ctx.db.$schema.workoutExerciseSets.complete, true),
           ),
         )
-        .orderBy(ctx.db.$order.desc(ctx.db.$schema.workouts.endTime))
+        .orderBy(ctx.db.$order.asc(ctx.db.$schema.workouts.endTime))
         .limit(limit)
         .execute();
 

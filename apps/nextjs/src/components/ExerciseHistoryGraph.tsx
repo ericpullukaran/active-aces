@@ -134,11 +134,11 @@ export default function ExerciseHistoryGraph({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {workoutType === "time-distance" || workoutType === "weight-reps" ? (
+      {/* {workoutType === "time-distance" || workoutType === "weight-reps" ? (
         <Bar data={chartData} />
-      ) : (
-        <Line data={chartData} />
-      )}
+      ) : ( */}
+      <Line data={chartData} />
+      {/* )} */}
     </div>
   );
 }
