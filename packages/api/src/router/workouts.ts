@@ -77,6 +77,64 @@ const PutWorkoutSchema = z.object({
 });
 
 export const workoutsRouter = createTRPCRouter({
+  getPreviousSet: protectedProcedure
+    .input(
+      z.object({
+        exerciseId: z.string(),
+        setOrder: z.number().nonnegative(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { exerciseId, setOrder } = input;
+
+      const workoutsWithExercises = await ctx.db
+        .select()
+        .from(ctx.db.$schema.workoutExercises)
+        .innerJoin(
+          ctx.db.$schema.workouts,
+          ctx.db.$cmp.eq(
+            ctx.db.$schema.workoutExercises.workoutId,
+            ctx.db.$schema.workouts.id,
+          ),
+        )
+        .where((f) =>
+          ctx.db.$cmp.and(
+            ctx.db.$cmp.eq(f.workout_exercises.exerciseId, exerciseId),
+            ctx.db.$cmp.eq(f.workouts.userId, ctx.auth.userId),
+          ),
+        )
+        .orderBy(ctx.db.$order.desc(ctx.db.$schema.workouts.endTime))
+        .execute();
+
+      for (const { workout_exercises } of workoutsWithExercises) {
+        const sets = await ctx.db
+          .select()
+          .from(ctx.db.$schema.workoutExerciseSets)
+          .where((f) =>
+            ctx.db.$cmp.and(
+              ctx.db.$cmp.eq(f.workoutExerciseId, workout_exercises.id),
+              ctx.db.$cmp.eq(f.order, setOrder),
+            ),
+          );
+
+        if (sets.length > 0) {
+          const set = sets[0];
+          if (!set) {
+            return null;
+          }
+          return {
+            weight: set.weight ?? undefined,
+            numReps: set.numReps ?? undefined,
+            time: set.time ?? undefined,
+            distance: set.distance ?? undefined,
+            complete: set.complete ?? undefined,
+          };
+        }
+      }
+
+      return null;
+    }),
+
   previousExercise: protectedProcedure
     .input(
       z.object({
