@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 export default function AnimatedVisibility({
   children,
   isVisible,
+  dependency,
 }: {
   children: React.ReactNode;
   isVisible: boolean;
+  dependency?: unknown;
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
@@ -16,7 +18,7 @@ export default function AnimatedVisibility({
     } else {
       setHeight(0);
     }
-  }, [isVisible]);
+  }, [isVisible, dependency]);
 
   return (
     <div

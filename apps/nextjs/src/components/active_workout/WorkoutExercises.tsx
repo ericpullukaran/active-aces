@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import type { RouterInputs } from "@acme/api";
 
 import type { useWorkoutTimer } from "~/utils/useWorkoutTimer";
+import { useCurrentWorkout } from "~/lib/current-workout";
 import { useExercises } from "~/utils/use-search-exercises";
 import AnimatedVisibility from "../AnimatedVisibility";
 import { Skeleton } from "../ui/skeleton";
@@ -18,6 +19,7 @@ export default function WorkoutExercises({
   cachedWorkoutExercises,
   workoutTimer,
 }: Props) {
+  const { currentWorkout } = useCurrentWorkout();
   const exercises = useExercises();
   const exercisesById = Object.fromEntries(
     exercises.map((e) => [e.id, e]) ?? [],
@@ -34,7 +36,10 @@ export default function WorkoutExercises({
               exerciseIndex={exerciseIndex}
               currExercise={exercise}
             />
-            <AnimatedVisibility isVisible={!exercise.collapsed}>
+            <AnimatedVisibility
+              isVisible={!exercise.collapsed}
+              dependency={currentWorkout}
+            >
               <WorkoutExerciseBody
                 exerciseIndex={exerciseIndex}
                 currExercise={exercise}

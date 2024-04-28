@@ -162,7 +162,6 @@ export default function WorkoutExerciseBody({
         ))}
       </div>
 
-      {currExercise.sets.length === 0 && <Skeleton className="h-10 w-10" />}
       <WorkoutExerciseSetsInputs
         isFetchingSetValue={getPreviousSet.isPending}
         exerciseIndex={exerciseIndex}
