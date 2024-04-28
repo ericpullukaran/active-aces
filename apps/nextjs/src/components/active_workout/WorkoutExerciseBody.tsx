@@ -69,8 +69,7 @@ export default function WorkoutExerciseBody({
   exerciseIndex,
   currExercise,
 }: Props) {
-  const { currentWorkout, setCurrentWorkout, clearWorkout } =
-    useCurrentWorkout();
+  const { currentWorkout, setCurrentWorkout } = useCurrentWorkout();
   const allExercises = useExercises();
   const getPreviousSet = api.workouts.getPreviousSet.useMutation();
 
@@ -113,9 +112,6 @@ export default function WorkoutExerciseBody({
               ),
             }));
           }
-        },
-        onError: (error) => {
-          console.error("Error fetching previous set details:", error);
         },
       },
     );
