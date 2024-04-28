@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
+import dynamic from "next/dynamic";
 import { MoreHorizontal, RotateCcw, Settings } from "lucide-react";
 
 import {
@@ -12,8 +13,11 @@ import {
   DrawerTrigger,
 } from "~/components/ui/drawer";
 import { useCurrentWorkout } from "~/lib/current-workout";
+import { useExercises } from "~/utils/use-search-exercises";
 import { Button } from "../ui/button";
-import { FormItem } from "../ui/form";
+import { Skeleton } from "../ui/skeleton";
+
+const ExerciseHistoryGraph = dynamic(() => import("../ExerciseHistoryGraph"));
 
 type Props = {
   exerciseIndex: number;
@@ -26,6 +30,10 @@ export default function WorkoutExerciseSettingsDrawer({
 }: Props) {
   const { currentWorkout: workout, setCurrentWorkout: setWorkout } =
     useCurrentWorkout();
+  const exercises = useExercises();
+  const exercisesById = Object.fromEntries(
+    exercises.map((e) => [e.id, e]) ?? [],
+  );
 
   const deleteExercise = (exerciseIndex: number) => {
     setWorkout({
@@ -42,11 +50,18 @@ export default function WorkoutExerciseSettingsDrawer({
           <MoreHorizontal className="sq-4" />
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent onClick={(e) => e.stopPropagation()}>
         <DrawerHeader>
           <DrawerTitle>Exercise Settings</DrawerTitle>
         </DrawerHeader>
-        <div className="mx-8 mb-4 flex flex-col gap-3">{/*  */}</div>
+        <div className="mx-8 mb-4 flex flex-col gap-3">
+          <Suspense fallback={<GraphSkeleton />}>
+            <ExerciseHistoryGraph
+              workoutType="weight-reps"
+              exerciseId={workout?.exercises[exerciseIndex]?.exerciseId ?? ""}
+            />
+          </Suspense>
+        </div>
         <DrawerFooter>
           <DrawerClose asChild>
             <Button
@@ -62,3 +77,5 @@ export default function WorkoutExerciseSettingsDrawer({
     </Drawer>
   );
 }
+
+export const GraphSkeleton = () => <Skeleton className="h-36 w-full" />;
