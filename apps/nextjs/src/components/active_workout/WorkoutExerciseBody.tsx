@@ -72,17 +72,9 @@ export default function WorkoutExerciseBody({
   const { currentWorkout, setCurrentWorkout, clearWorkout } =
     useCurrentWorkout();
   const allExercises = useExercises();
-  // const specificSet = api.workouts.getPreviousSet.useQuery({
-  //   exerciseId: "ex:bench-press-(barbell)",
-  //   setOrder: 2,
-  // });
-  // console.log("xx", specificSet.data);
-
-  // Assuming `getPreviousSet` is a query that should be triggered manually
   const getPreviousSet = api.workouts.getPreviousSet.useMutation();
 
   const addSet = useCallback(async () => {
-    // Step 1: Add the new set locally
     const newSet = {
       ...getDefaultSet(),
       order: currExercise.sets.length,
@@ -99,19 +91,17 @@ export default function WorkoutExerciseBody({
       exercises: updatedExercises,
     });
 
-    // Step 2: Fetch the previous set's details dynamically
     getPreviousSet.mutate(
       {
         exerciseId: currExercise.exerciseId,
-        setOrder: newSet.order, // Now passing dynamically calculated setOrder
+        setOrder: newSet.order,
       },
       {
         onSuccess: (data) => {
-          // Step 3: Update the new set with fetched data if available
           if (data) {
             const updatedSets = updatedExercises[exerciseIndex]?.sets.map(
               (set, idx) =>
-                idx === newSet.order // Last set
+                idx === newSet.order
                   ? { ...set, ...data, complete: false }
                   : set,
             );
