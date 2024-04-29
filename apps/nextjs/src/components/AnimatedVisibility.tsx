@@ -4,42 +4,40 @@ export default function AnimatedVisibility({
   children,
   isVisible,
   dependency,
-  initalHeight = -1,
-  initalWidth = 0,
+  initialHeight = null,
+  initialWidthPercentage = 0,
 }: {
   children: React.ReactNode;
   isVisible: boolean;
   dependency?: unknown;
-  initalHeight?: number;
-  initalWidth?: number;
+  initialHeight?: number | null;
+  initialWidthPercentage?: number;
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(initalHeight);
-  const [width, setWidth] = useState(initalWidth);
+  const [height, setHeight] = useState<number | "auto">(
+    initialHeight ?? "auto",
+  );
+  const [widthPercentage, setWidthPercentage] = useState(
+    initialWidthPercentage,
+  );
 
   useEffect(() => {
-    console.log("congtent", contentRef.current);
-
     if (isVisible && contentRef.current) {
-      console.log("visible");
-
       setHeight(contentRef.current.scrollHeight);
-      setWidth(100);
+      setWidthPercentage(100);
     } else {
-      console.log("setting heigh", initalHeight);
-
-      setHeight(initalHeight);
-      setWidth(initalWidth);
+      setHeight(initialHeight ?? "auto");
+      setWidthPercentage(initialWidthPercentage);
     }
-  }, [isVisible, dependency, initalHeight, initalWidth]);
+  }, [isVisible, dependency, initialHeight, initialWidthPercentage]);
 
   return (
     <div
       style={{
         overflow: "hidden",
         transition: "500ms ease",
-        ...(initalHeight !== -1 ? { height: `${height}px` } : {}),
-        width: `${width}%`,
+        height: height === "auto" ? "auto" : `${height}px`,
+        width: `${widthPercentage}%`,
       }}
     >
       <div ref={contentRef}>{children}</div>

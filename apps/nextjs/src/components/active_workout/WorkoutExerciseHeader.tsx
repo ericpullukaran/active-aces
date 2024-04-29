@@ -60,7 +60,6 @@ export default function WorkoutExerciseHeader({
           <AnimatedVisibility
             isVisible={specificExercise?.name !== undefined}
             dependency={specificExercise}
-            initalHeight={-1}
           >
             {specificExercise?.name}
           </AnimatedVisibility>
