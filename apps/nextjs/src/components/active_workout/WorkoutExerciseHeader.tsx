@@ -56,16 +56,8 @@ export default function WorkoutExerciseHeader({
       }}
       className="ring-card-lighter flex cursor-pointer items-center justify-between rounded-xl p-4 shadow-2xl ring-2"
     >
-      <div>
-        <AnimatedVisibility
-          isVisible={specificExercise?.name !== undefined}
-          dependency={specificExercise}
-        >
-          <p className="text-lg font-semibold transition-all">
-            {specificExercise?.name}
-          </p>
-        </AnimatedVisibility>
-        {!specificExercise?.name && <Skeleton className="h-6 w-20" />}
+      <div className="">
+        {specificExercise?.name ?? <Skeleton className="h-6 w-20" />}
         <div className="">
           <p className="flex items-center text-sm text-zinc-400">
             {completedSets / currExercise.sets.length === 1 ? (

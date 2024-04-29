@@ -29,8 +29,6 @@ export default function WorkoutExercises({
           <AnimatedVisibility
             isVisible={!exercise.collapsed}
             dependency={currentWorkout}
-            initialHeight={0}
-            initialWidthPercentage={100}
           >
             <WorkoutExerciseBody
               exerciseIndex={exerciseIndex}
