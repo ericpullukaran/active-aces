@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { Circle, CircleCheck } from "lucide-react";
 
 import type { RouterInputs } from "@acme/api";
 
@@ -56,20 +57,25 @@ export default function WorkoutExerciseHeader({
       className="ring-card-lighter flex cursor-pointer items-center justify-between rounded-xl p-4 shadow-2xl ring-2"
     >
       <div>
-        <p className="text-lg font-semibold transition-all">
-          <AnimatedVisibility
-            isVisible={specificExercise?.name !== undefined}
-            dependency={specificExercise}
-          >
+        <AnimatedVisibility
+          isVisible={specificExercise?.name !== undefined}
+          dependency={specificExercise}
+        >
+          <p className="text-lg font-semibold transition-all">
             {specificExercise?.name}
-          </AnimatedVisibility>
-          {!specificExercise?.name && <Skeleton className="h-6 w-20" />}
-        </p>
-        {currExercise.collapsed && (
-          <p className="text-sm opacity-50">
-            {completedSets}/{currExercise.sets.length} sets
           </p>
-        )}
+        </AnimatedVisibility>
+        {!specificExercise?.name && <Skeleton className="h-6 w-20" />}
+        <div className="">
+          <p className="flex items-center text-sm text-zinc-400">
+            {completedSets / currExercise.sets.length === 1 ? (
+              <CircleCheck className="sq-4 mr-1 fill-primary text-card" />
+            ) : (
+              <>{`${completedSets}/${currExercise.sets.length} `}</>
+            )}
+            sets {completedSets / currExercise.sets.length === 1 && " complete"}
+          </p>
+        </div>
       </div>
       <WorkoutExerciseSettingsDrawer
         exerciseIndex={exerciseIndex}
