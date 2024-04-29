@@ -46,11 +46,6 @@ export default function WorkoutExercises({
                 workoutTimer={workoutTimer}
               />
             </AnimatedVisibility>
-            {!exerciseDetails && (
-              <div className="p-4">
-                <Skeleton className="h-8 w-28" />
-              </div>
-            )}
           </div>
         );
       })}

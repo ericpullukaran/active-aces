@@ -12,7 +12,6 @@ type Props = {};
 
 export default function RecentWorkoutsCard({}: Props) {
   const workoutHistory = api.workouts.history.useQuery({ limit: 3 });
-  console.log(workoutHistory);
 
   if (!workoutHistory.data) {
     return <div className="h-96 animate-pulse rounded-lg bg-card"></div>;

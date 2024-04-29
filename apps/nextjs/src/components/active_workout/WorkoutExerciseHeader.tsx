@@ -7,6 +7,7 @@ import { DocInsert } from "@acme/db";
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { useExercises } from "~/utils/use-search-exercises";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 import WorkoutExerciseSettingsDrawer from "./WorkoutExerciseSettingsDrawer";
 
 type Props = {
@@ -57,7 +58,9 @@ export default function WorkoutExerciseHeader({
       className="ring-card-lighter flex cursor-pointer items-center justify-between rounded-xl p-4 shadow-2xl ring-2"
     >
       <div>
-        <p className="text-lg font-semibold">{specificExercise?.name}</p>
+        <p className="text-lg font-semibold transition-all">
+          {specificExercise?.name ?? <Skeleton className="h-6 w-20" />}
+        </p>
         {currExercise.collapsed && (
           <p className="text-sm opacity-50">
             {completedSets}/{currExercise.sets.length} sets
