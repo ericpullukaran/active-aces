@@ -4,6 +4,7 @@ import type { RouterInputs } from "@acme/api";
 
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { useExercises } from "~/utils/use-search-exercises";
+import AnimatedVisibility from "../AnimatedVisibility";
 import { Skeleton } from "../ui/skeleton";
 import WorkoutExerciseSettingsDrawer from "./WorkoutExerciseSettingsDrawer";
 
@@ -56,7 +57,14 @@ export default function WorkoutExerciseHeader({
     >
       <div>
         <p className="text-lg font-semibold transition-all">
-          {specificExercise?.name ?? <Skeleton className="h-6 w-20" />}
+          <AnimatedVisibility
+            isVisible={specificExercise?.name !== undefined}
+            dependency={specificExercise}
+            initalHeight={-1}
+          >
+            {specificExercise?.name}
+          </AnimatedVisibility>
+          {!specificExercise?.name && <Skeleton className="h-6 w-20" />}
         </p>
         {currExercise.collapsed && (
           <p className="text-sm opacity-50">
