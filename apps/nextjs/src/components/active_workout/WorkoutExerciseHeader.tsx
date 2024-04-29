@@ -1,12 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import { Trash } from "lucide-react";
 
-import type { RouterInputs, RouterOutputs } from "@acme/api";
-import { DocInsert } from "@acme/db";
+import type { RouterInputs } from "@acme/api";
 
 import { useCurrentWorkout } from "~/lib/current-workout";
 import { useExercises } from "~/utils/use-search-exercises";
-import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import WorkoutExerciseSettingsDrawer from "./WorkoutExerciseSettingsDrawer";
 
