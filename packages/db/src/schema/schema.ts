@@ -51,6 +51,7 @@ export const exercises = sqliteTable(
   {
     id: custom.primaryKey(),
     name: text("name").notNull(),
+    category: text("category").notNull(),
     primaryMuscleGroupId: text("primary_muscle_group_id").notNull(),
     description: text("description"),
     commonPitfalls: text("common_pitfalls"),
