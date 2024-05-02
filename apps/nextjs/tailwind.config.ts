@@ -2,6 +2,8 @@ import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss/plugin";
 
+import typographyStyles from "./typography";
+
 const config = {
   future: {
     hoverOnlyWhenSupported: true,
@@ -89,8 +91,10 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
     },
+    typography: typographyStyles,
   },
   plugins: [
+    require("@tailwindcss/typography"),
     require("tailwindcss-animate"),
     require("@tailwindcss/forms"),
     plugin(({ matchUtilities, theme }) => {

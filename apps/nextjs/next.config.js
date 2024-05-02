@@ -1,5 +1,9 @@
 import { fileURLToPath } from "url";
+import rehypePrism from "@mapbox/rehype-prism";
+import createMDX from "@next/mdx";
+import nextMDX from "@next/mdx";
 import _jiti from "jiti";
+import remarkGfm from "remark-gfm";
 
 const jiti = _jiti(fileURLToPath(import.meta.url));
 
@@ -12,6 +16,8 @@ const config = {
 
   /** Enables hot reloading for local packages without a build step */
   transpilePackages: ["@acme/api", "@acme/db", "@acme/validators"],
+
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
 
   /** We already do linting and typechecking as separate tasks in CI */
   eslint: { ignoreDuringBuilds: true },
@@ -32,4 +38,12 @@ const config = {
   },
 };
 
-export default config;
+const withMDX = nextMDX({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [remarkGfm],
+    rehypePlugins: [rehypePrism],
+  },
+});
+
+export default withMDX(config);
