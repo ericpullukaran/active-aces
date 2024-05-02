@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { MuscleCategory } from "../../../db/src/schema/schema";
+import type { MuscleCategory } from "../../../db/src/schema/schema";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const setArrayUnion = z.union([
