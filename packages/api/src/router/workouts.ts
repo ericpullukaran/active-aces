@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { MuscleCategory } from "../../../db/src/schema/schema";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const setArrayUnion = z.union([
@@ -251,12 +252,16 @@ export const workoutsRouter = createTRPCRouter({
           return userIdCmp;
         },
         orderBy: (f, o) => o.desc(f.startTime),
-
         limit: limit + 1,
         with: {
           exercises: {
             with: {
               sets: {},
+              exercise: {
+                columns: {
+                  category: true,
+                },
+              },
             },
           },
         },
@@ -269,8 +274,18 @@ export const workoutsRouter = createTRPCRouter({
         nextCursor = nextItem?.endTime ?? undefined;
       }
 
+      const workoutsToReturn = workouts.map((w) => {
+        const categorySet = new Set<MuscleCategory>();
+        w.exercises.forEach((e) => categorySet.add(e.exercise.category));
+        return {
+          ...w,
+          exercises: w.exercises.map(({ exercise: _, ...e }) => ({ ...e })),
+          categorySet: Array.from(categorySet),
+        };
+      });
+
       return {
-        workouts,
+        workouts: workoutsToReturn,
         nextCursor,
       };
     }),

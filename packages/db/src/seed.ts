@@ -2,53 +2,21 @@ import { promises as fs } from "fs";
 import path from "path";
 import slugify from "slugify";
 
+import type {
+  MeasurementType,
+  MuscleCategory,
+  MuscleGroupNames,
+} from "./schema/schema";
 import { db } from ".";
+import { _muscleGroupsData } from "./schema/schema";
 import * as schema from "./schema/schema";
 
-type MeasurementType = "weight-reps" | "reps" | "time-distance" | "time";
-const _muscleCategory = [
-  "Chest",
-  "Shoulder",
-  "Ab",
-  "Leg",
-  "Back",
-  "Glute",
-  "Forearm Flexors & Grip",
-  "Bicep",
-  "Calves",
-  "Triceps",
-  "Cardio",
-  "Forearm Extensor",
-] as const;
-type MuscleCategory = (typeof _muscleCategory)[number];
-
-const _muscleGroupsData = [
-  "abdominals",
-  "abductors",
-  "adductors",
-  "biceps",
-  "calves",
-  "chest",
-  "forearms",
-  "glutes",
-  "hamstrings",
-  "lats",
-  "lower back",
-  "middle back",
-  "neck",
-  "quadriceps",
-  "shoulders",
-  "traps",
-  "triceps",
-] as const;
 const muscleGroupsData = validateIdUniqueness(
   _muscleGroupsData.map((mg) => ({
     name: mg,
     id: `mg:${getSlug(mg)}`,
   })),
 );
-
-type MuscleGroupNames = (typeof _muscleGroupsData)[number];
 
 let _exercisesData: {
   name: string;
@@ -145,13 +113,8 @@ const main = async () => {
   );
   const insertedExercisesIds = (await db.batch(exerciseInserts)).flat();
 
-  // Secondary muscle groups to enter
-
-  // for each exercise id we need to push in the associated muscle group
-  // in the end we want a list of [exericseId, muscleGroupId]
   const secondaryMuscleGroupsToInsert = requireAtLeastOne(
     exercisesData.flatMap((exercise, index) => {
-      // Map each secondary muscle group name to an insert statement
       return exercise.secondaryMuscleGroupIds.map((muscleGroupName) => {
         const muscleGroupId = muscleGroupsIdMap[muscleGroupName];
         if (!muscleGroupId) {

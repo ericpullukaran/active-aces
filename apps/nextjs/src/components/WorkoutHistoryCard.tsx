@@ -16,19 +16,6 @@ type Props = {
 };
 
 export default function WorkoutHistoryCard({ workout, internalNav }: Props) {
-  const exercises = api.exercises.all.useQuery(undefined, {});
-
-  if (!exercises.data) {
-    return <></>;
-  }
-
-  const exercisesMapById = exercises.data.reduce<
-    Record<string, Doc<"exercises">>
-  >((acc, e) => {
-    acc[e.id] = { ...e };
-    return acc;
-  }, {});
-
   return (
     <Link
       href={`/dashboard/history/${workout.id}${internalNav ? "?internalNav=true" : ""}`}
@@ -47,9 +34,9 @@ export default function WorkoutHistoryCard({ workout, internalNav }: Props) {
           {workout.exercises.length !== 1 && "s"}
         </p>
         <div className="flex flex-wrap gap-2">
-          {workout.exercises.map((e) => (
-            <Badge key={`${e.exerciseId}_${e.order}`} variant={"outline"}>
-              {exercisesMapById[e.exerciseId]?.name}
+          {workout.categorySet.map((e) => (
+            <Badge key={e} variant={"outline"}>
+              {e}
             </Badge>
           ))}
         </div>

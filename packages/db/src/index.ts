@@ -1,12 +1,11 @@
+import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import type {
+  SQLiteTableFn,
+  SQLiteTableWithColumns,
+} from "drizzle-orm/sqlite-core";
 import { createClient } from "@libsql/client";
-import {
-  getOperators,
-  getOrderByOperators,
-  InferInsertModel,
-  InferSelectModel,
-} from "drizzle-orm";
+import { getOperators, getOrderByOperators } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
-import { SQLiteTableFn, SQLiteTableWithColumns } from "drizzle-orm/sqlite-core";
 
 import * as schema from "./schema/schema";
 

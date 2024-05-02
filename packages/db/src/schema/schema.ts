@@ -10,6 +10,44 @@ import {
 import { createPrimaryKeyId } from "../cuid";
 
 export type MeasurementType = "weight-reps" | "reps" | "time-distance" | "time";
+const _muscleCategory = [
+  "Chest",
+  "Shoulders",
+  "Abs",
+  "Legs",
+  "Back",
+  "Glutes",
+  "Forearm Flexors",
+  "Biceps",
+  "Calves",
+  "Triceps",
+  "Cardio",
+  "Forearm Extensors",
+] as const;
+export type MuscleCategory = (typeof _muscleCategory)[number];
+
+export const _muscleGroupsData = [
+  "abdominals",
+  "abductors",
+  "adductors",
+  "biceps",
+  "calves",
+  "chest",
+  "forearms",
+  "glutes",
+  "hamstrings",
+  "lats",
+  "lower back",
+  "middle back",
+  "neck",
+  "quadriceps",
+  "shoulders",
+  "traps",
+  "triceps",
+] as const;
+
+export type MuscleGroupNames = (typeof _muscleGroupsData)[number];
+
 const custom = {
   primaryKey: () =>
     text("id")
@@ -51,7 +89,7 @@ export const exercises = sqliteTable(
   {
     id: custom.primaryKey(),
     name: text("name").notNull(),
-    category: text("category").notNull(),
+    category: text("category").notNull().$type<MuscleCategory>(),
     primaryMuscleGroupId: text("primary_muscle_group_id").notNull(),
     description: text("description"),
     commonPitfalls: text("common_pitfalls"),
@@ -59,7 +97,7 @@ export const exercises = sqliteTable(
     gifUrl: text("gif_url"),
     measurementType: text("measurement_type")
       .notNull()
-      .$type<"weight-reps" | "reps" | "time-distance" | "time">(),
+      .$type<MeasurementType>(),
   },
   (t) => ({
     primaryMuscleGroup: index("exercises_primary_muscle_group_id").on(
