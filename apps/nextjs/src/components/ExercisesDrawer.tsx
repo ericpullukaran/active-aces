@@ -38,12 +38,7 @@ export default function ExercisesDrawer(props: Props) {
   );
 
   return (
-    <Drawer
-      onClose={() => {
-        setSearchQuery("");
-        setFilters([]);
-      }}
-    >
+    <Drawer onClose={() => setSearchQuery("")}>
       <DrawerTrigger asChild>
         <Button
           className="gap-1 border-dashed border-zinc-200 text-zinc-200"
