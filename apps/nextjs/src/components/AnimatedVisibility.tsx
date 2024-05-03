@@ -24,7 +24,7 @@ export default function AnimatedVisibility({
     <div
       style={{
         overflow: "hidden",
-        transition: "height 500ms ease",
+        transition: "height 250ms ease",
         height: `${height}px`,
       }}
     >
