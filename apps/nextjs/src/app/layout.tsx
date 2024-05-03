@@ -9,6 +9,8 @@ import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
+import { Analytics } from "@vercel/analytics/react";
+
 import { cn } from "~/lib/cn";
 
 export const metadata: Metadata = {
@@ -77,12 +79,10 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           publishableKey={env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         >
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <TRPCReactProvider>
-              {/* <NavBar /> */}
-              {props.children}
-            </TRPCReactProvider>
+            <TRPCReactProvider>{props.children}</TRPCReactProvider>
           </ThemeProvider>
         </ClerkProvider>
+        <Analytics />
       </body>
     </html>
   );
