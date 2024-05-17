@@ -40,6 +40,12 @@ export default async function HomePage() {
             Track your workouts and fitness activities effortlessly with our
             app, designed to keep you motivated and on track towards your goals.
           </p>
+          <Link
+            href={"/privacy-policy?ref=activeaces.com"}
+            className="mb-4 text-left underline sm:text-center"
+          >
+            Privacy Policy
+          </Link>
           <div className="fixed bottom-0 left-0 right-0 w-full bg-card p-4 sm:static sm:flex sm:flex-col sm:justify-center sm:bg-transparent">
             <SignedOut>
               <SignInButton mode="modal">
