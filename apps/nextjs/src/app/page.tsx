@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { SignedOut, SignInButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 
 import { Button } from "~/components/ui/button";
@@ -9,11 +9,6 @@ import { Button } from "~/components/ui/button";
 export const runtime = "edge";
 
 export default async function HomePage() {
-  const { userId }: { userId: string | null } = auth();
-  if (userId) {
-    redirect("/dashboard");
-  }
-
   return (
     <main>
       <div className="absolute h-[400px] w-full">
@@ -47,6 +42,13 @@ export default async function HomePage() {
             Privacy Policy
           </Link>
           <div className="fixed bottom-0 left-0 right-0 w-full bg-card p-4 sm:static sm:flex sm:flex-col sm:justify-center sm:bg-transparent">
+            <SignedIn>
+              <Button asChild>
+                <Link href={"/dashboard"} className="mb-2 w-full">
+                  Go to Dashboard
+                </Link>
+              </Button>
+            </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
                 <Button className="mb-2 w-full">Get Started</Button>
