@@ -19,7 +19,10 @@ export default function WorkoutStats({ workout, currentWorkout }: Props) {
     (acc, e) => {
       acc.exercises.add(e.exerciseId);
       acc.totalSets += e.sets.reduce((acc, s) => acc + (s.complete ? 1 : 0), 0);
-      acc.volume += e.sets.reduce((acc, s) => acc + (s.weight ?? 0), 0);
+      acc.volume += e.sets.reduce(
+        (acc, s) => acc + (s.complete ? (s.weight ?? 0) * (s.numReps ?? 0) : 0),
+        0,
+      );
       return acc;
     },
     { exercises: new Set<string>(), totalSets: 0, volume: 0 },
