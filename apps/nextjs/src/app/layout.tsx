@@ -9,9 +9,22 @@ import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/globals.css";
 
+import { headers } from "next/headers";
 import { Analytics } from "@vercel/analytics/react";
 
 import { cn } from "~/lib/cn";
+
+export async function generateViewport(): Promise<Viewport> {
+  const userAgent = headers().get("user-agent");
+  const isiPhone = /iphone/i.test(userAgent ?? "");
+  return isiPhone
+    ? {
+        width: "device-width",
+        initialScale: 1,
+        maximumScale: 1, // disables auto-zoom on ios safari
+      }
+    : {};
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(
