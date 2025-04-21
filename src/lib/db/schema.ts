@@ -192,7 +192,7 @@ export const exerciseSets = sqliteTable(
   {
     id: custom.primaryKey(),
 
-    workoutExerciseId: integer("workout_exercise_id")
+    workoutExerciseId: text("workout_exercise_id")
       .notNull()
       .references(() => workoutExercises.id, { onDelete: "cascade" }),
     order: integer("order").notNull(),

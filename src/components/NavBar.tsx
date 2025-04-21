@@ -21,8 +21,7 @@ export default function NavBar({
   navigateBack,
   rightSideContent,
 }: Props) {
-  const { isLoaded, isSignedIn, user } = useUser();
-  console.log("user", user);
+  const { isLoaded } = useUser();
   const pathname = usePathname();
   const isWorkoutPage = "/dashboard/workout" === pathname;
 
