@@ -92,3 +92,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Adds a space between the unit and the value */
+/* prettier-ignore */
+@utility sq-* {
+  width: --value(number)rem;
+  height: --value(number)rem;
+  width: --value([length]);
+  height: --value([length]);
+}

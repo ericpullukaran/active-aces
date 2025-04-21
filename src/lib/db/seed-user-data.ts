@@ -1,5 +1,5 @@
-import { db } from "./index";
-import { exercises, workouts, workoutExercises, exerciseSets } from "./schema";
+import { db } from "./index"
+import { exercises, workouts, workoutExercises, exerciseSets } from "./schema"
 
 // Sample workout data
 const sampleWorkouts = [
@@ -165,7 +165,7 @@ const sampleWorkouts = [
       },
     ],
   },
-];
+]
 
 /**
  * Seeds workout logs and exercises for a given user ID
@@ -173,57 +173,52 @@ const sampleWorkouts = [
  * @param numberOfWorkouts Number of workouts to create (default: 10)
  */
 async function seedUserData(userId: string, numberOfWorkouts = 10) {
-  console.log(`🌱 Starting user data seed process for user ${userId}...`);
+  console.log(`🌱 Starting user data seed process for user ${userId}...`)
 
   try {
     // Get all exercises
-    console.log("Fetching exercises...");
-    const allExercises = await db.select().from(exercises);
-    const exerciseMap = new Map(
-      allExercises.map((exercise) => [exercise.name, exercise.id])
-    );
+    console.log("Fetching exercises...")
+    const allExercises = await db.select().from(exercises)
+    const exerciseMap = new Map(allExercises.map((exercise) => [exercise.name, exercise.id]))
 
     // Check if user exists
     const user = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.id, userId),
-    });
+    })
 
     if (!user) {
-      console.error(`❌ User with ID ${userId} not found`);
-      return;
+      console.error(`❌ User with ID ${userId} not found`)
+      return
     }
 
-    console.log(`✅ Found user: ${user.name || userId}`);
+    console.log(`✅ Found user: ${user.name || userId}`)
 
     // Create workouts
-    console.log(`Creating ${numberOfWorkouts} workouts...`);
+    console.log(`Creating ${numberOfWorkouts} workouts...`)
 
     // Generate dates for workouts (spread over the last 30 days)
     const workoutDates = Array.from({ length: numberOfWorkouts }, (_, i) => {
       // Spread workouts over the last 30 days
-      const daysAgo = Math.floor(Math.random() * 30);
-      const hoursAgo = Math.floor(Math.random() * 24);
-      const minutesAgo = Math.floor(Math.random() * 60);
+      const daysAgo = Math.floor(Math.random() * 30)
+      const hoursAgo = Math.floor(Math.random() * 24)
+      const minutesAgo = Math.floor(Math.random() * 60)
 
-      const date = new Date();
-      date.setDate(date.getDate() - daysAgo);
-      date.setHours(date.getHours() - hoursAgo);
-      date.setMinutes(date.getMinutes() - minutesAgo);
+      const date = new Date()
+      date.setDate(date.getDate() - daysAgo)
+      date.setHours(date.getHours() - hoursAgo)
+      date.setMinutes(date.getMinutes() - minutesAgo)
 
-      return date;
-    }).sort((a, b) => a.getTime() - b.getTime());
+      return date
+    }).sort((a, b) => a.getTime() - b.getTime())
 
     for (let i = 0; i < numberOfWorkouts; i++) {
       // Select a random workout template
-      const workoutTemplate =
-        sampleWorkouts[Math.floor(Math.random() * sampleWorkouts.length)];
+      const workoutTemplate = sampleWorkouts[Math.floor(Math.random() * sampleWorkouts.length)]
 
       // Create workout
-      const startTime = workoutDates[i];
-      const endTime = new Date(startTime);
-      endTime.setMinutes(
-        endTime.getMinutes() + 60 + Math.floor(Math.random() * 30)
-      ); // 60-90 minutes
+      const startTime = workoutDates[i]
+      const endTime = new Date(startTime)
+      endTime.setMinutes(endTime.getMinutes() + 60 + Math.floor(Math.random() * 30)) // 60-90 minutes
 
       const [workout] = await db
         .insert(workouts)
@@ -234,21 +229,17 @@ async function seedUserData(userId: string, numberOfWorkouts = 10) {
           endTime,
           notes: workoutTemplate.notes,
         })
-        .returning();
+        .returning()
 
-      console.log(
-        `✅ Created workout: ${
-          workout.name
-        } (${startTime.toLocaleDateString()})`
-      );
+      console.log(`✅ Created workout: ${workout.name} (${startTime.toLocaleDateString()})`)
 
       // Create workout exercises
       for (const exerciseTemplate of workoutTemplate.exercises) {
-        const exerciseId = exerciseMap.get(exerciseTemplate.name);
+        const exerciseId = exerciseMap.get(exerciseTemplate.name)
 
         if (!exerciseId) {
-          console.warn(`⚠️ Exercise not found: ${exerciseTemplate.name}`);
-          continue;
+          console.warn(`⚠️ Exercise not found: ${exerciseTemplate.name}`)
+          continue
         }
 
         const [workoutExercise] = await db
@@ -258,16 +249,16 @@ async function seedUserData(userId: string, numberOfWorkouts = 10) {
             exerciseId,
             order: exerciseTemplate.order,
           })
-          .returning();
+          .returning()
 
         // Create exercise sets
         for (let j = 0; j < exerciseTemplate.sets.length; j++) {
-          const setTemplate = exerciseTemplate.sets[j];
-          const setStartTime = new Date(startTime);
-          setStartTime.setMinutes(setStartTime.getMinutes() + j * 2 + 5); // 5 minutes after workout start, 2 minutes between sets
+          const setTemplate = exerciseTemplate.sets[j]
+          const setStartTime = new Date(startTime)
+          setStartTime.setMinutes(setStartTime.getMinutes() + j * 2 + 5) // 5 minutes after workout start, 2 minutes between sets
 
           // Check if weight exists in the set template
-          const weight = "weight" in setTemplate ? setTemplate.weight : null;
+          const weight = "weight" in setTemplate ? setTemplate.weight : null
 
           await db.insert(exerciseSets).values({
             workoutExerciseId: workoutExercise.id,
@@ -276,49 +267,45 @@ async function seedUserData(userId: string, numberOfWorkouts = 10) {
             reps: setTemplate.reps,
             completed: setTemplate.completed,
             completedAt: setTemplate.completed ? setStartTime : null,
-          });
+          })
         }
       }
     }
 
-    console.log(
-      `✅ Successfully created ${numberOfWorkouts} workouts for user ${userId}`
-    );
+    console.log(`✅ Successfully created ${numberOfWorkouts} workouts for user ${userId}`)
   } catch (error) {
-    console.error("❌ Error during user data seed:", error);
-    throw error;
+    console.error("❌ Error during user data seed:", error)
+    throw error
   }
 }
 
 // Command-line interface
 if (require.main === module) {
-  const args = process.argv.slice(2);
+  const args = process.argv.slice(2)
 
   if (args.length < 1) {
-    console.error(
-      "Usage: ts-node seed-user-data.ts <userId> [numberOfWorkouts]"
-    );
-    process.exit(1);
+    console.error("Usage: ts-node seed-user-data.ts <userId> [numberOfWorkouts]")
+    process.exit(1)
   }
 
-  const userId = args[0];
-  const numberOfWorkouts = args.length > 1 ? parseInt(args[1], 10) : 10;
+  const userId = args[0]
+  const numberOfWorkouts = args.length > 1 ? parseInt(args[1], 10) : 10
 
   if (isNaN(numberOfWorkouts)) {
-    console.error("Number of workouts must be a valid number");
-    process.exit(1);
+    console.error("Number of workouts must be a valid number")
+    process.exit(1)
   }
 
-  console.log(`Seeding ${numberOfWorkouts} workouts for user ${userId}...`);
+  console.log(`Seeding ${numberOfWorkouts} workouts for user ${userId}...`)
 
   seedUserData(userId, numberOfWorkouts)
     .catch((error) => {
-      console.error("Failed to seed user data:", error);
-      process.exit(1);
+      console.error("Failed to seed user data:", error)
+      process.exit(1)
     })
     .finally(() => {
-      process.exit(0);
-    });
+      process.exit(0)
+    })
 }
 
-export { seedUserData };
+export { seedUserData }

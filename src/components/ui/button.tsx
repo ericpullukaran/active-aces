@@ -1,26 +1,23 @@
-"use client";
+"use client"
 
-import type { VariantProps } from "class-variance-authority";
-import * as React from "react";
-import { Slot, Slottable } from "@radix-ui/react-slot";
-import { cva } from "class-variance-authority";
-import { Loader2 } from "lucide-react";
+import type { VariantProps } from "class-variance-authority"
+import * as React from "react"
+import { Slot, Slottable } from "@radix-ui/react-slot"
+import { cva } from "class-variance-authority"
+import { Loader2 } from "lucide-react"
 
-import { cn } from "~/lib/utils";
+import { cn } from "~/lib/utils"
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-md text-sm font-medium ring-offset-background transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+  "ring-offset-background focus-visible:ring-ring relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-md text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
   {
     variants: {
       variant: {
-        default:
-          "bg-primary text-primary-foreground enabled:hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground enabled:hover:bg-destructive/90",
+        default: "bg-primary text-primary-foreground enabled:hover:bg-primary/90",
+        destructive: "bg-destructive text-destructive-foreground enabled:hover:bg-destructive/90",
         outline:
-          "border border-input bg-card enabled:hover:bg-accent enabled:hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground enabled:hover:bg-secondary/80",
+          "border-input bg-card enabled:hover:bg-accent enabled:hover:text-accent-foreground border",
+        secondary: "bg-secondary text-secondary-foreground enabled:hover:bg-secondary/80",
         tertiary: "bg-white text-zinc-800 enabled:hover:bg-zinc-100",
         ghost: "enabled:hover:bg-accent enabled:hover:text-accent-foreground",
         link: "text-primary underline-offset-4 enabled:hover:underline",
@@ -46,15 +43,15 @@ const buttonVariants = cva(
       size: "default",
       disabled: false,
     },
-  }
-);
+  },
+)
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     Omit<VariantProps<typeof buttonVariants>, "disabled"> {
-  asChild?: boolean;
-  isLoading?: boolean;
-  scalingOnClick?: boolean;
-  Icon?: React.ComponentType<{ className?: string }>;
+  asChild?: boolean
+  isLoading?: boolean
+  scalingOnClick?: boolean
+  Icon?: React.ComponentType<{ className?: string }>
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -70,19 +67,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
-    const Comp = asChild ? Slot : "button";
+    const Comp = asChild ? Slot : "button"
     return (
       <Comp
-        className={cn(
-          buttonVariants({ variant, size, disabled: props.disabled }),
-          className,
-          {
-            "focus-visible:shadow-focus-ring-button focus:scale-[0.98] enabled:active:scale-[0.97]":
-              scalingOnClick,
-          }
-        )}
+        className={cn(buttonVariants({ variant, size, disabled: props.disabled }), className, {
+          "focus-visible:shadow-focus-ring-button focus:scale-[0.98] enabled:active:scale-[0.97]":
+            scalingOnClick,
+        })}
         ref={ref}
         disabled={isLoading || props.disabled}
         {...props}
@@ -96,25 +89,25 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             className={cn(
               "pointer-events-none absolute inset-0 grid place-items-center transition",
               {
-                "scale-50 opacity-0 backdrop-blur-0": !isLoading,
+                "backdrop-blur-0 scale-50 opacity-0": !isLoading,
                 "backdrop-blur-xxs": isLoading,
-              }
+              },
             )}
           >
             <span
               className={cn(
                 "bg-accent",
                 buttonVariants({ variant, size }),
-                "absolute inset-0 border-none bg-opacity-70"
+                "bg-opacity-70 absolute inset-0 border-none",
               )}
             />
-            <Loader2 className="animate-spin text-current sq-4" />
+            <Loader2 className="sq-4 animate-spin text-current" />
           </span>
         )}
       </Comp>
-    );
-  }
-);
-Button.displayName = "Button";
+    )
+  },
+)
+Button.displayName = "Button"
 
-export { Button, buttonVariants };
+export { Button, buttonVariants }

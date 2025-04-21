@@ -1,5 +1,5 @@
-import { createTRPCRouter, publicProcedure } from "./trpc";
-import { workoutsRouter } from "./routers/workouts";
+import { createTRPCRouter, publicProcedure } from "./trpc"
+import { workoutsRouter } from "./routers/workouts"
 
 /**
  * This is the primary router for your server.
@@ -10,10 +10,10 @@ export const appRouter = createTRPCRouter({
   hello: publicProcedure.query(() => {
     return {
       greeting: "hello world",
-    };
+    }
   }),
   workouts: workoutsRouter,
-});
+})
 
 // export type definition of API
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter

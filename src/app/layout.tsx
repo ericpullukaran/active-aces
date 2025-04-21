@@ -1,30 +1,28 @@
-import type { Metadata, Viewport } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { env } from "~/env";
-import { headers } from "next/headers";
-import { cn } from "~/lib/utils";
-import { TRPCProvider } from "~/lib/trpc/client";
+import type { Metadata, Viewport } from "next"
+import { ClerkProvider } from "@clerk/nextjs"
+import { dark } from "@clerk/themes"
+import { Inter } from "next/font/google"
+import "./globals.css"
+import { env } from "~/env"
+import { headers } from "next/headers"
+import { cn } from "~/lib/utils"
+import { TRPCProvider } from "~/lib/trpc/client"
 
 export async function generateViewport(): Promise<Viewport> {
-  const userAgent = (await headers()).get("user-agent");
-  const isiPhone = /iphone/i.test(userAgent ?? "");
+  const userAgent = (await headers()).get("user-agent")
+  const isiPhone = /iphone/i.test(userAgent ?? "")
   return isiPhone
     ? {
         width: "device-width",
         initialScale: 1,
         maximumScale: 1, // disables auto-zoom on ios safari
       }
-    : {};
+    : {}
 }
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    env.VERCEL_ENV === "production"
-      ? "https://activeaces.com"
-      : "http://localhost:3000"
+    env.VERCEL_ENV === "production" ? "https://activeaces.com" : "http://localhost:3000",
   ),
   title: "Active Aces",
   description: "A fitness and gym tracking platform",
@@ -48,33 +46,33 @@ export const metadata: Metadata = {
   other: {
     "mobile-web-app-capable": "yes",
   },
-};
+}
 
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-};
+}
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
-});
+})
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
       <body
         style={{ height: "100svh" }}
         className={cn(
-          "flex flex-col bg-background font-sans text-foreground antialiased",
-          inter.variable
+          "bg-background text-foreground flex flex-col font-sans antialiased",
+          inter.variable,
         )}
       >
         <ClerkProvider
@@ -93,5 +91,5 @@ export default function RootLayout({
         </ClerkProvider>
       </body>
     </html>
-  );
+  )
 }

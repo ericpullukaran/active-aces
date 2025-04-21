@@ -1,6 +1,6 @@
-import React from "react";
+import React from "react"
 
-type Props = { className?: string };
+type Props = { className?: string }
 
 export default function Logo({ className }: Props) {
   return (
@@ -46,5 +46,5 @@ export default function Logo({ className }: Props) {
         ></path>
       </g>
     </svg>
-  );
+  )
 }

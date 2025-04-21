@@ -1,67 +1,22 @@
-"use client";
+"use client"
 
-import React from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
-import clsx from "clsx";
+import React from "react"
+import AuthButton from "./AuthButton"
+import Logo from "./Logo"
 
-import NavBackButton from "./NavBackButton";
-import AuthButton from "./AuthButton";
-import Logo from "./Logo";
-
-type Props = {
-  title: string;
-  navigateBack?: string;
-  rightSideContent?: React.ReactNode;
-};
-
-export default function NavBar({
-  title,
-  navigateBack,
-  rightSideContent,
-}: Props) {
-  const { isLoaded } = useUser();
-  const pathname = usePathname();
-  const isWorkoutPage = "/dashboard/workout" === pathname;
-
+export default function NavBar() {
   return (
-    <div className="pb-20 md:pb-6">
-      <nav
-        className={clsx(
-          "bg-card-darker border-card-lighter/50 fixed left-0 right-0 z-50 flex items-center border-b-2 p-3.5 px-5 md:static"
-        )}
-      >
-        {navigateBack ? (
-          <NavBackButton navigateBack={navigateBack} />
-        ) : (
-          <div className="font-display">
-            <Link
-              className="flex flex-row text-xl font-extrabold tracking-tight"
-              href="/dashboard"
-            >
-              <Logo className="sq-7" />
-            </Link>
-          </div>
-        )}
-
-        <div className="flex-1 truncate px-3 pl-3 text-xl font-semibold">
-          {title}
+    <nav className="bg-card/90 fixed top-0 right-4 left-4 z-10 flex items-center justify-between rounded-b-2xl px-4 py-4 shadow-sm backdrop-blur-md">
+      <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-center">
+          <Logo className="sq-2 bg-transparent" />
         </div>
+        <span className="text-lg font-bold">Active Aces</span>
+      </div>
 
-        <div className="flex items-center gap-4 sm:gap-6">
-          {rightSideContent}
-          {!isWorkoutPage && (
-            <>
-              {isLoaded ? (
-                <AuthButton />
-              ) : (
-                <div className="h-8 w-8 animate-pulse rounded-full bg-zinc-600"></div>
-              )}
-            </>
-          )}
-        </div>
-      </nav>
-    </div>
-  );
+      <div>
+        <AuthButton />
+      </div>
+    </nav>
+  )
 }
