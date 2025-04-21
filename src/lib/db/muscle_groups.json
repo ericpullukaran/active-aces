@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Abdominals",
+    "description": "Rectus abdominis muscles, commonly known as 'abs'"
+  },
+  {
+    "name": "Abductors",
+    "description": "Hip abductors and outer thigh muscles"
+  },
+  {
+    "name": "Adductors",
+    "description": "Hip adductors and inner thigh muscles"
+  },
+  { "name": "Biceps", "description": "Muscles on the front of the upper arm" },
+  {
+    "name": "Calves",
+    "description": "Gastrocnemius and soleus muscles on the back of the lower leg"
+  },
+  {
+    "name": "Cardio",
+    "description": "Exercises focused on cardiovascular endurance"
+  },
+  {
+    "name": "Chest",
+    "description": "Pectoral muscles including the pectoralis major and minor"
+  },
+  {
+    "name": "Forearms",
+    "description": "Muscles in the lower arm responsible for wrist, hand and finger movement"
+  },
+  { "name": "Glutes", "description": "Gluteus maximus, medius, and minimus" },
+  { "name": "Hamstrings", "description": "Muscles on the back of the thigh" },
+  {
+    "name": "Hip Flexors",
+    "description": "Muscles that help you lift your knee toward your body and bend at the waist"
+  },
+  {
+    "name": "Lats",
+    "description": "Latissimus dorsi, large muscles of the mid and lower back"
+  },
+  {
+    "name": "Lower Back",
+    "description": "Erector spinae and lower back muscles"
+  },
+  {
+    "name": "Neck",
+    "description": "Muscles supporting and moving the head and neck"
+  },
+  {
+    "name": "Obliques",
+    "description": "Side abdominal muscles that help rotate and bend the torso"
+  },
+  { "name": "Quadriceps", "description": "Muscles on the front of the thigh" },
+  {
+    "name": "Rhomboids",
+    "description": "Mid and upper back muscles between the shoulder blades"
+  },
+  { "name": "Rotator Cuff", "description": "Shoulder stabilization muscles" },
+  {
+    "name": "Shoulders",
+    "description": "Deltoid muscles including the anterior, lateral, and posterior heads"
+  },
+  {
+    "name": "Shins",
+    "description": "Tibialis anterior muscles on the front of the lower leg"
+  },
+  {
+    "name": "Traps",
+    "description": "Trapezius muscles of the upper back and neck"
+  },
+  { "name": "Triceps", "description": "Muscles on the back of the upper arm" }
+]
