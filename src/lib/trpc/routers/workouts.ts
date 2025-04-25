@@ -1,13 +1,28 @@
-import { desc } from "drizzle-orm"
+import { workoutService } from "~/lib/services/workout-service"
 import { createTRPCRouter, protectedProcedure } from "../trpc"
+import { z } from "zod"
+import { PutWorkoutSchema } from "~/lib/types/schemas/workout"
 
 export const workoutsRouter = createTRPCRouter({
   history: protectedProcedure.query(async ({ ctx }) => {
-    const workouts = await ctx.db.query.workouts.findMany({
-      where: ctx.db.$cmp.eq(ctx.db.$schema.workouts.userId, ctx.auth.userId),
-      orderBy: [desc(ctx.db.$schema.workouts.createdAt)],
+    return await workoutService.getWorkoutHistory(ctx.db, {
+      userId: ctx.auth.userId,
       limit: 3,
     })
-    return workouts
   }),
+
+  put: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().optional(),
+        workout: PutWorkoutSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await workoutService.putWorkout(ctx.db, {
+        id: input.id,
+        workout: input.workout,
+        userId: ctx.auth.userId,
+      })
+    }),
 })

@@ -1,22 +1,22 @@
 "use client"
 import React from "react"
-import { useSession } from "@clerk/nextjs"
-import RecentWorkoutsCard from "~/components/RecentWorkoutsCard"
+import { HomeScreen } from "~/components/dashboard-screen/HomeScreen"
+import { useWorkoutManager } from "~/components/workout-manager/WorkoutManagerProvider"
+import { UnreachableError } from "~/lib/utils/errors"
 
 export default function DashboardPage() {
-  const { session } = useSession()
+  const { currentPage } = useWorkoutManager()
 
-  return (
-    <div className="w-full">
-      <div className="mx-4 pb-40">
-        <h1 className="mt-4 mb-10 text-4xl leading-10 font-semibold tracking-tight text-white sm:text-6xl">
-          Good morning, {session?.user.firstName} <br /> Welcome Back 👋
-        </h1>
-        <RecentWorkoutsCard />
-        {/* <div className="fixed bottom-0 left-0 right-0 grid h-20 place-content-center">
-          <StartWorkoutButton />
-        </div> */}
-      </div>
-    </div>
-  )
+  switch (currentPage) {
+    case "home":
+      return <HomeScreen />
+    case "history":
+      return <div>History</div>
+    case "workout":
+      return <div>Workout</div>
+    case "exercises":
+      return <div>Exercises</div>
+    default:
+      throw new UnreachableError(currentPage)
+  }
 }

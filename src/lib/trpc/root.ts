@@ -7,11 +7,6 @@ import { workoutsRouter } from "./routers/workouts"
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  hello: publicProcedure.query(() => {
-    return {
-      greeting: "hello world",
-    }
-  }),
   workouts: workoutsRouter,
 })
 

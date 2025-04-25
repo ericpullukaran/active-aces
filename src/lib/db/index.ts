@@ -21,12 +21,10 @@ const createDb = () => {
 
   const db = drizzle(client, { schema })
 
-  return Object.assign(db, {
-    $schema: schema,
-    $cmp: getOperators(),
-    $order: getOrderByOperators(),
-  })
+  return db
 }
+
+export type DB = ReturnType<typeof createDb>
 
 /**
  * Filters out any relation definitions from your schema
@@ -54,6 +52,8 @@ type DBInsertTypeMap = {
 export type DocInsert<TableName extends keyof DBInsertTypeMap> = DBInsertTypeMap[TableName]
 
 export const db = globalThis.db ?? createDb()
+export const cmp = getOperators()
+export const orderBy = getOrderByOperators()
 export { schema }
 
 if (process.env.NODE_ENV !== "production") {

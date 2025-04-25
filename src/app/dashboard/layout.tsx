@@ -1,10 +1,14 @@
-import NavBar from "~/components/NavBar"
+import BottomNavigation from "~/components/BottomNavigation"
+import { WorkoutManagerProvider } from "~/components/workout-manager/WorkoutManagerProvider"
+import { WhenHydrated } from "~/lib/utils/WhenHydrated"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <NavBar />
-      <div className="mx-auto max-w-7xl py-16">{children}</div>
-    </div>
+    <WhenHydrated>
+      <WorkoutManagerProvider initialPage="home">
+        <div className="mx-4 max-w-7xl">{children}</div>
+        <BottomNavigation />
+      </WorkoutManagerProvider>
+    </WhenHydrated>
   )
 }
