@@ -1,7 +1,17 @@
 "use client"
 import React from "react"
 import { motion, LayoutGroup } from "motion/react"
-import { Home, Clock, ListOrdered, User, Square, Plus, Play } from "lucide-react"
+import {
+  Home,
+  Clock,
+  ListOrdered,
+  User,
+  Square,
+  Plus,
+  Play,
+  Database,
+  SquarePlus,
+} from "lucide-react"
 import { useWorkoutManager } from "./workout-manager/WorkoutManagerProvider"
 import AuthButton from "./AuthButton"
 import { cn } from "~/lib/utils"
@@ -100,16 +110,13 @@ const BottomNavigation = () => {
             onClick={() => !isWorkoutActive && setCurrentPage("exercises")}
           >
             <motion.div
-              animate={{ rotate: isWorkoutActive ? 135 : 0 }}
+              animate={{ rotate: isWorkoutActive ? 90 : 0 }}
               transition={{ duration: 0.3 }}
             >
               {isWorkoutActive ? (
-                <Plus size={24} color={currentPage === "exercises" ? "#ffffff" : "#9ca3af"} />
+                <SquarePlus size={24} color={currentPage === "exercises" ? "#ffffff" : "#9ca3af"} />
               ) : (
-                <ListOrdered
-                  size={24}
-                  color={currentPage === "exercises" ? "#ffffff" : "#9ca3af"}
-                />
+                <Database size={24} color={currentPage === "exercises" ? "#ffffff" : "#9ca3af"} />
               )}
             </motion.div>
             {!isWorkoutActive && currentPage === "exercises" && (
