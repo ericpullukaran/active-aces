@@ -6,10 +6,12 @@ import { ArrowRight } from "lucide-react"
 
 import { Button } from "./ui/button"
 import WorkoutHistoryCard from "./WorkoutHistoryCard"
-import { api } from "~/lib/trpc/client"
+import { useTRPC } from "~/lib/trpc/client"
+import { useQuery } from "@tanstack/react-query"
 
 export default function RecentWorkoutsCard() {
-  const workoutHistory = api.workouts.history.useQuery()
+  const trpc = useTRPC()
+  const workoutHistory = useQuery(trpc.workouts.history.queryOptions())
 
   if (!workoutHistory.data) {
     return <div className="bg-card h-96 animate-pulse rounded-lg"></div>
@@ -23,7 +25,7 @@ export default function RecentWorkoutsCard() {
           <Button variant={"ghost"} className="bg-card" asChild>
             <Link href={"/dashboard/history"} className="flex text-right">
               See More
-              <ArrowRight className="sq-5 ml-1" />
+              <ArrowRight className="ml-1" />
             </Link>
           </Button>
         </div>
