@@ -4,7 +4,7 @@ import { Doc } from "../db"
 // Schema for a workout exercise set
 export const ExerciseSetSchema = z.object({
   // A stable ID that doesn't change when items are reordered
-  stableId: z.string(),
+  stableSetId: z.string(),
 
   order: z.number(),
   weight: z.number().optional(),
@@ -19,7 +19,7 @@ export type ExerciseSet = z.infer<typeof ExerciseSetSchema>
 // Schema for a workout exercise
 export const WorkoutExerciseSchema = z.object({
   // A stable ID that doesn't change when items are reordered
-  stableId: z.string(),
+  stableExerciseId: z.string(),
 
   exerciseId: z.string(),
   notes: z.string().optional(),

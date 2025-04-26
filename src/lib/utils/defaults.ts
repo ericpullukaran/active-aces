@@ -11,7 +11,7 @@ export const defaultWorkout = (name: string = "Workout"): PutWorkout => {
 
 export const defaultWorkoutExercise = (exerciseId: string): WorkoutExercise => {
   return {
-    stableId: createPrimaryKeyId(),
+    stableExerciseId: createPrimaryKeyId(),
 
     exerciseId,
     sets: [defaultExerciseSet()],
@@ -20,7 +20,7 @@ export const defaultWorkoutExercise = (exerciseId: string): WorkoutExercise => {
 
 export const defaultExerciseSet = (): ExerciseSet => {
   return {
-    stableId: createPrimaryKeyId(),
+    stableSetId: createPrimaryKeyId(),
 
     order: 0,
     reps: 0,

@@ -3,9 +3,9 @@ import { ReactNode, useCallback, useMemo, useState } from "react"
 import { createTypedContext } from "~/lib/utils/context"
 import { AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
-import { PutWorkout } from "~/lib/types/workout"
+import { ExerciseSet, PutWorkout } from "~/lib/types/workout"
 import { useUpdatedRef } from "~/lib/utils/useUpdatedRef"
-import { defaultWorkout, defaultWorkoutExercise } from "~/lib/utils/defaults"
+import { defaultExerciseSet, defaultWorkout, defaultWorkoutExercise } from "~/lib/utils/defaults"
 
 export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
   (props: { initialPage: AppPage; children: ReactNode }) => {
@@ -34,11 +34,13 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       [workoutRef, setCurrentWorkout],
     )
     const deleteExercise = useCallback(
-      (position: number) => {
+      (stableExerciseId: string) => {
         if (!workoutRef.current) return
         setCurrentWorkout({
           ...workoutRef.current,
-          exercises: workoutRef.current.exercises.filter((_, idx) => idx !== position),
+          exercises: workoutRef.current.exercises.filter(
+            (exercise) => exercise.stableExerciseId !== stableExerciseId,
+          ),
         })
       },
       [workoutRef],
@@ -47,6 +49,57 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       return currentWorkout?.exercises.map((exercise) => exercise) ?? []
     }, [currentWorkout])
 
+    const addSet = useCallback(
+      (stableExerciseId: string) => {
+        if (!workoutRef.current) return
+        setCurrentWorkout({
+          ...workoutRef.current,
+          exercises: workoutRef.current.exercises.map((exercise) =>
+            exercise.stableExerciseId === stableExerciseId
+              ? { ...exercise, sets: [...exercise.sets, defaultExerciseSet()] }
+              : exercise,
+          ),
+        })
+      },
+      [workoutRef],
+    )
+    const updateSet = useCallback(
+      (stableExerciseId: string, stableSetId: string, setUpdate: Partial<ExerciseSet>) => {
+        const workout = workoutRef.current
+        if (!workout) return
+        setCurrentWorkout({
+          ...workout,
+          exercises: workout.exercises.map((exercise) =>
+            exercise.stableExerciseId === stableExerciseId
+              ? {
+                  ...exercise,
+                  sets: exercise.sets.map((set) =>
+                    set.stableSetId === stableSetId ? { ...set, ...setUpdate } : set,
+                  ),
+                }
+              : exercise,
+          ),
+        })
+      },
+      [workoutRef],
+    )
+    const removeSet = useCallback(
+      (stableExerciseId: string, stableSetId: string) => {
+        if (!workoutRef.current) return
+        setCurrentWorkout({
+          ...workoutRef.current,
+          exercises: workoutRef.current.exercises.map((exercise) =>
+            exercise.stableExerciseId === stableExerciseId
+              ? {
+                  ...exercise,
+                  sets: exercise.sets.filter((set) => set.stableSetId !== stableSetId),
+                }
+              : exercise,
+          ),
+        })
+      },
+      [workoutRef],
+    )
     return {
       // Page navigation
       currentPage,
@@ -61,6 +114,11 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       addExercise,
       deleteExercise,
       currentExercises,
+
+      // Set properties
+      addSet,
+      updateSet,
+      removeSet,
     }
   },
 )

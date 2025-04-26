@@ -1,28 +1,34 @@
-import { motion } from "motion/react"
+import { useEffect, useRef, useState } from "react"
 
 export default function AnimatedVisibility({
   children,
   isVisible,
+  dependency,
 }: {
   children: React.ReactNode
   isVisible: boolean
+  dependency?: unknown
 }) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(0)
+
+  useEffect(() => {
+    if (isVisible && contentRef.current) {
+      setHeight(contentRef.current.scrollHeight)
+    } else {
+      setHeight(0)
+    }
+  }, [isVisible, dependency])
+
   return (
-    <motion.div
-      animate={{
-        height: isVisible ? "auto" : 0,
-      }}
-      initial={{ height: 0 }}
-      transition={{
-        type: "spring",
-        bounce: 0.2,
-        duration: 0.5,
-      }}
+    <div
       style={{
         overflow: "hidden",
+        transition: "height 250ms ease",
+        height: `${height}px`,
       }}
     >
-      {children}
-    </motion.div>
+      <div ref={contentRef}>{children}</div>
+    </div>
   )
 }

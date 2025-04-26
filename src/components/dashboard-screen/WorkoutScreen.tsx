@@ -25,8 +25,8 @@ export default function WorkoutScreen() {
   return (
     <div className="flex flex-col items-center gap-8 pt-20">
       <AnimatePresence mode="popLayout">
-        {exercisesWithMetadata.map((exercise, idx) => (
-          <WorkoutExerciseWidget key={exercise.stableId} order={idx} exercise={exercise} />
+        {exercisesWithMetadata.map((exercise) => (
+          <WorkoutExerciseWidget key={exercise.stableExerciseId} exercise={exercise} />
         ))}
       </AnimatePresence>
     </div>

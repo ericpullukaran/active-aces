@@ -4,18 +4,19 @@ import { PlusIcon, Check } from "lucide-react"
 import { useState } from "react"
 import { Button } from "./ui/button"
 import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
-import { MeasurementType } from "~/lib/db/types"
+import { MeasurementMetric, MeasurementType } from "~/lib/db/types"
 import { defaultExerciseSet } from "~/lib/utils/defaults"
+import WorkoutExerciseWidgetInputs from "./WorkoutExerciseWidgetInputs"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 
 const measurementFields = {
   weight: { label: "Weight" },
   reps: { label: "Reps" },
   time: { label: "Time" },
   distance: { label: "Distance" },
-}
-type MeasurementFieldKey = keyof typeof measurementFields
+} satisfies Record<MeasurementMetric, { label: string }>
 
-const exerciseTypeToFields: Record<MeasurementType, MeasurementFieldKey[]> = {
+const exerciseTypeToFields: Record<MeasurementType, MeasurementMetric[]> = {
   [MeasurementType.WEIGHT_REPS]: ["weight", "reps"],
   [MeasurementType.TIME_DISTANCE]: ["time", "distance"],
   [MeasurementType.WEIGHT_DURATION]: ["weight", "time"],
@@ -29,14 +30,9 @@ export default function WorkoutExerciseWidgetBody({
 }: {
   exercise: WorkoutExerciseWithMetadata
 }) {
-  const [sets, setSets] = useState(exercise.sets)
-
+  const { addSet } = useWorkoutManager()
   const measurementType = exercise.metadata.measurementType
   const fieldKeys = exerciseTypeToFields[measurementType]
-
-  const handleAddSet = () => {
-    setSets([...sets, defaultExerciseSet()])
-  }
 
   return (
     <div className="p-4 pt-2">
@@ -60,38 +56,16 @@ export default function WorkoutExerciseWidgetBody({
 
       {/* Sets rows */}
       <div className="space-y-2">
-        {sets.map((set, index) => (
-          <div
-            key={set.stableId}
-            className="grid items-center gap-1"
-            style={{
-              gridTemplateColumns: `3rem ${fieldKeys.map(() => "1fr").join(" ")} 3rem`,
-            }}
-          >
-            {/* Set number */}
-            <div className="text-center font-medium">{index + 1}</div>
-
-            {/* Input fields based on measurement type */}
-            {fieldKeys.map((field) => (
-              <div key={field} className="bg-muted h-10 rounded-md p-2 text-center">
-                {set[field] || 0}
-              </div>
-            ))}
-
-            {/* Completed checkbox */}
-            <div className="flex justify-center">
-              <div
-                className={`flex h-10 w-10 items-center justify-center rounded-full ${set.completed ? "bg-primary" : "bg-muted"}`}
-              >
-                {set.completed && <Check className="text-primary-foreground" size={16} />}
-              </div>
-            </div>
-          </div>
-        ))}
+        <WorkoutExerciseWidgetInputs measurements={fieldKeys} exercise={exercise} />
       </div>
 
       {/* Add set button */}
-      <Button size="sm" variant="outline" className="mt-4 w-full gap-1" onClick={handleAddSet}>
+      <Button
+        size="sm"
+        variant="outline"
+        className="mt-4 w-full gap-1"
+        onClick={() => addSet(exercise.stableExerciseId)}
+      >
         <PlusIcon size={16} />
         Add set
       </Button>

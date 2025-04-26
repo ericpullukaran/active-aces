@@ -1,3 +1,4 @@
+export type MeasurementMetric = "weight" | "reps" | "time" | "distance"
 export const enum MeasurementType {
   // e.g. Bench Press 100kg x 10reps
   WEIGHT_REPS = "weight-reps",
