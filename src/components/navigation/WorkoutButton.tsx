@@ -8,12 +8,16 @@ export const WorkoutButton = () => {
   const { currentPage, currentWorkout, setCurrentPage, startWorkout, removeCurrentWorkout } =
     useWorkoutManager()
   const isWorkoutActive = currentWorkout !== null
+  const isWorkoutPage = currentPage === "workout"
+
+  const workoutRunningInBackground = isWorkoutActive && !isWorkoutPage
+  const workoutRunningInForeground = isWorkoutActive && isWorkoutPage
 
   const toggleWorkoutState = () => {
-    if (isWorkoutActive && currentPage !== "workout") {
+    if (workoutRunningInBackground) {
       // If returning to a paused workout
       setCurrentPage("workout")
-    } else if (isWorkoutActive && currentPage === "workout") {
+    } else if (workoutRunningInForeground) {
       // Stop workout
       removeCurrentWorkout()
       setCurrentPage("home")
@@ -26,7 +30,7 @@ export const WorkoutButton = () => {
   const getActionButtonContent = () => {
     if (!isWorkoutActive) {
       return { text: "Start", icon: null, color: "#22c55e" }
-    } else if (isWorkoutActive && currentPage !== "workout") {
+    } else if (workoutRunningInBackground) {
       return { text: "Continue", icon: <Play size={18} />, color: "#3b82f6" }
     } else {
       return { text: "Stop", icon: <Square size={18} />, color: "#ef4444" }
