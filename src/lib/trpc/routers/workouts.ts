@@ -1,7 +1,7 @@
 import { workoutService } from "~/lib/services/workout-service"
 import { createTRPCRouter, protectedProcedure } from "../trpc"
 import { z } from "zod"
-import { PutWorkoutSchema } from "~/lib/types/schemas/workout"
+import { PutWorkoutSchema } from "~/lib/types/workout"
 
 export const workoutsRouter = createTRPCRouter({
   history: protectedProcedure.query(async ({ ctx }) => {

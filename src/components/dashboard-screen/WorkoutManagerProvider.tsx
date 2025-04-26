@@ -1,16 +1,16 @@
 "use client"
 import { ReactNode, useCallback, useState } from "react"
 import { createTypedContext } from "~/lib/utils/context"
-import { AppPage } from "../BottomNavigation"
+import { AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
-import { PutWorkout } from "~/lib/types/schemas/workout"
+import { PutWorkout } from "~/lib/types/workout"
 import { useUpdatedRef } from "~/lib/utils/useUpdatedRef"
 
 export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
   (props: { initialPage: AppPage; children: ReactNode }) => {
     const [currentWorkout, setCurrentWorkout, removeCurrentWorkout] =
       useLocalStorage<PutWorkout | null>("current_workout", null)
-    const [currentPage, setCurrentPage] = useState(props.initialPage)
+    const [currentPage, setCurrentPage] = useState(currentWorkout ? "workout" : props.initialPage)
     const workoutRef = useUpdatedRef(currentWorkout)
 
     const startWorkout = useCallback(() => {

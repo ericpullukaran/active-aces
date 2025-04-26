@@ -1,5 +1,5 @@
-import BottomNavigation from "~/components/BottomNavigation"
-import { WorkoutManagerProvider } from "~/components/workout-manager/WorkoutManagerProvider"
+import BottomNavigation from "~/components/navigation/BottomNavigation"
+import { WorkoutManagerProvider } from "~/components/dashboard-screen/WorkoutManagerProvider"
 import { WhenHydrated } from "~/lib/utils/WhenHydrated"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

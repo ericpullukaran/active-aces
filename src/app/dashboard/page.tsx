@@ -1,7 +1,8 @@
 "use client"
 import React from "react"
 import { HomeScreen } from "~/components/dashboard-screen/HomeScreen"
-import { useWorkoutManager } from "~/components/workout-manager/WorkoutManagerProvider"
+import WorkoutScreen from "~/components/dashboard-screen/WorkoutScreen"
+import { useWorkoutManager } from "~/components/dashboard-screen/WorkoutManagerProvider"
 import { UnreachableError } from "~/lib/utils/errors"
 
 export default function DashboardPage() {
@@ -13,7 +14,7 @@ export default function DashboardPage() {
     case "history":
       return <div>History</div>
     case "workout":
-      return <div>Workout</div>
+      return <WorkoutScreen />
     case "exercises":
       return <div>Exercises</div>
     default:

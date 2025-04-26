@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm"
 import { DB } from "../db"
-import { PutWorkout } from "../types/schemas/workout"
+import { PutWorkout } from "../types/workout"
 import { exerciseSets, workoutExercises, workouts } from "../db/schema"
 
 const getWorkoutHistory = async (

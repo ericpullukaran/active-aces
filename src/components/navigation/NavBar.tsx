@@ -1,8 +1,8 @@
 "use client"
 
 import React from "react"
-import AuthButton from "./AuthButton"
-import Logo from "./Logo"
+import AuthButton from "../AuthButton"
+import Logo from "../Logo"
 
 export default function NavBar() {
   return (

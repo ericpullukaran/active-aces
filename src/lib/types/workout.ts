@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { Doc } from "../db"
 
 // Schema for a workout exercise set
 export const ExerciseSetSchema = z.object({
@@ -29,3 +30,5 @@ export const PutWorkoutSchema = z.object({
   exercises: z.array(WorkoutExerciseSchema),
 })
 export type PutWorkout = z.infer<typeof PutWorkoutSchema>
+
+export type Exercise = Doc<"exercises"> & { primaryMuscleGroup: Doc<"muscleGroups"> | undefined }

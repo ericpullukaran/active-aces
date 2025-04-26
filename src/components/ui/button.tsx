@@ -80,7 +80,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {Icon ? <Icon className="sq-4" /> : null}
+        {Icon ? <Icon className="sq-1" /> : null}
 
         <Slottable>{children}</Slottable>
 
