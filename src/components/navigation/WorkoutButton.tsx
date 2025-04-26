@@ -1,11 +1,16 @@
 "use client"
 import React from "react"
 import { motion } from "motion/react"
-import { Square, Play } from "lucide-react"
+import { Square, Play, Loader2 } from "lucide-react"
 import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
+import { useTRPC } from "~/lib/trpc/client"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 export const WorkoutButton = () => {
-  const { currentPage, currentWorkout, setCurrentPage, startWorkout, removeCurrentWorkout } =
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
+  const { currentPage, currentWorkout, setCurrentPage, startWorkout, stopWorkout } =
     useWorkoutManager()
   const isWorkoutActive = currentWorkout !== null
   const isWorkoutPage = currentPage === "workout"
@@ -19,8 +24,17 @@ export const WorkoutButton = () => {
       setCurrentPage("workout")
     } else if (workoutRunningInForeground) {
       // Stop workout
-      removeCurrentWorkout()
-      setCurrentPage("home")
+      putWorkoutMutation.mutate(
+        { workout: currentWorkout },
+        {
+          onSuccess: () => {
+            stopWorkout()
+            queryClient.invalidateQueries({
+              queryKey: trpc.workouts.history.queryOptions().queryKey,
+            })
+          },
+        },
+      )
     } else {
       setCurrentPage("workout")
       startWorkout()
@@ -33,7 +47,15 @@ export const WorkoutButton = () => {
     } else if (workoutRunningInBackground) {
       return { text: "Continue", icon: <Play size={18} />, color: "#3b82f6" }
     } else {
-      return { text: "Stop", icon: <Square size={18} />, color: "#ef4444" }
+      return {
+        text: putWorkoutMutation.isPending ? "Saving..." : "Stop",
+        icon: putWorkoutMutation.isPending ? (
+          <Loader2 size={18} className="animate-spin" />
+        ) : (
+          <Square size={18} />
+        ),
+        color: "#ef4444",
+      }
     }
   }
 

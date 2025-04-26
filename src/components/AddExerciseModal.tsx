@@ -2,7 +2,7 @@
 import React from "react"
 import { Search } from "lucide-react"
 import ResponsiveDialog from "./ui/ResponsiveDialog"
-import { ExercisesList } from "./ExercisesList"
+import { AddExercisesList } from "./AddExercisesList"
 import { Button } from "./ui/button"
 
 export const AddExerciseModal: React.FC<{
@@ -15,7 +15,7 @@ export const AddExerciseModal: React.FC<{
       renderTrigger={({ openDialog }) => children({ openDialog })}
       renderContent={({ closeDialog }) => (
         <div className="h-full p-4">
-          <ExercisesList />
+          <AddExercisesList />
         </div>
       )}
       renderFooter={({ closeDialog }) => (

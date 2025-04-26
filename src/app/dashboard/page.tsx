@@ -4,6 +4,8 @@ import { HomeScreen } from "~/components/dashboard-screen/HomeScreen"
 import WorkoutScreen from "~/components/dashboard-screen/WorkoutScreen"
 import { useWorkoutManager } from "~/components/dashboard-screen/WorkoutManagerProvider"
 import { UnreachableError } from "~/lib/utils/errors"
+import ExercisesScreen from "~/components/dashboard-screen/ExercisesScreen"
+import HistoryScreen from "~/components/dashboard-screen/HistoryScreen"
 
 export default function DashboardPage() {
   const { currentPage } = useWorkoutManager()
@@ -12,11 +14,11 @@ export default function DashboardPage() {
     case "home":
       return <HomeScreen />
     case "history":
-      return <div>History</div>
+      return <HistoryScreen />
     case "workout":
       return <WorkoutScreen />
     case "exercises":
-      return <div>Exercises</div>
+      return <ExercisesScreen />
     default:
       throw new UnreachableError(currentPage)
   }

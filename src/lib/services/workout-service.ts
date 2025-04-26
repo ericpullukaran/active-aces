@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm"
+import { and, desc, eq, lt } from "drizzle-orm"
 import { DB } from "../db"
 import { PutWorkout } from "../types/workout"
 import { exerciseSets, workoutExercises, workouts } from "../db/schema"
@@ -13,6 +13,64 @@ const getWorkoutHistory = async (
     limit,
   })
   return workoutResults
+}
+
+/**
+ * Retrieves paginated workout history with exercises and muscle groups
+ */
+const getWorkoutHistoryWithExercises = async (
+  db: DB,
+  { userId, limit = 10, cursor }: { userId: string; limit?: number; cursor?: string },
+) => {
+  // Get workouts by user ID, ordered by creation date
+  let query = db.query.workouts.findMany({
+    where: (workout) => eq(workout.userId, userId),
+    orderBy: [desc(workouts.createdAt)],
+    limit,
+    with: {
+      workoutExercises: {
+        orderBy: [workoutExercises.order],
+        with: {
+          exercise: {
+            with: {
+              primaryMuscleGroup: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  // If cursor is provided, we need to get items after that cursor
+  if (cursor) {
+    const cursorWorkout = await db.query.workouts.findFirst({
+      where: (workout) => eq(workout.id, cursor),
+    })
+
+    if (cursorWorkout) {
+      // Update the query with the cursor filter
+      query = db.query.workouts.findMany({
+        where: (workout) =>
+          and(eq(workout.userId, userId), lt(workout.createdAt, cursorWorkout.createdAt)),
+        orderBy: [desc(workouts.createdAt)],
+        limit,
+        with: {
+          workoutExercises: {
+            orderBy: [workoutExercises.order],
+            with: {
+              exercise: {
+                with: {
+                  primaryMuscleGroup: true,
+                },
+              },
+            },
+          },
+        },
+      })
+    }
+  }
+
+  return query
 }
 
 /**
@@ -119,5 +177,6 @@ const putWorkout = async (
 
 export const workoutService = {
   getWorkoutHistory,
+  getWorkoutHistoryWithExercises,
   putWorkout,
 }

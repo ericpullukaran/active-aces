@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 import { useTRPC } from "~/lib/trpc/client"
 import { ExerciseCard } from "./ExerciseCard"
-import { useMemo } from "react"
 import { Skeleton } from "./ui/skeleton"
+import { useMemo } from "react"
 
-export function ExercisesList() {
+export function AddExercisesList() {
   const trpc = useTRPC()
   const exercises = useQuery(trpc.exercises.getAll.queryOptions())
 
@@ -12,7 +12,7 @@ export function ExercisesList() {
     if (!exercises.data) return null
 
     return Array.from(exercises.data).map(([id, exercise]) => (
-      <ExerciseCard key={id} inWorkout={false} exercise={exercise} />
+      <ExerciseCard key={id} inWorkout={true} exercise={exercise} />
     ))
   }, [exercises.data])
 
@@ -22,6 +22,7 @@ export function ExercisesList() {
         Array.from({ length: 10 }).map((_, index) => (
           <Skeleton key={index} className="h-[100px] w-full" />
         ))}
+
       {exerciseElements}
     </div>
   )

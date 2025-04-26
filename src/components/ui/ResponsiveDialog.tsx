@@ -19,8 +19,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "./drawer"
-
-export const MOBILE_VIEWPORT = "(max-width: 640px)"
+import { MOBILE_VIEWPORT } from "~/lib/utils"
 
 type InternalResponsiveDialogProps = {
   isOpen: boolean

@@ -21,6 +21,11 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       }
       setCurrentWorkout(defaultWorkout())
     }, [workoutRef])
+    const stopWorkout = useCallback(() => {
+      if (!workoutRef.current) return
+      removeCurrentWorkout()
+      setCurrentPage("home")
+    }, [workoutRef])
 
     const addExercise = useCallback(
       (exerciseId: string) => {
@@ -108,7 +113,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       // Workout properties
       currentWorkout,
       startWorkout,
-      removeCurrentWorkout,
+      stopWorkout,
 
       // Exercise properties
       addExercise,

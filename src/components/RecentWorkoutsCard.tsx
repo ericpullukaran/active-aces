@@ -8,10 +8,12 @@ import { Button } from "./ui/button"
 import WorkoutHistoryCard from "./WorkoutHistoryCard"
 import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 
 export default function RecentWorkoutsCard() {
   const trpc = useTRPC()
-  const workoutHistory = useQuery(trpc.workouts.history.queryOptions())
+  const workoutHistory = useQuery(trpc.workouts.historyInfinite.queryOptions({ limit: 3 }))
+  const { setCurrentPage } = useWorkoutManager()
 
   if (workoutHistory.isError) {
     return (
@@ -31,15 +33,17 @@ export default function RecentWorkoutsCard() {
     <div className="bg-card rounded-lg p-4">
       <div className="mb-3 flex items-center">
         <h3 className="flex-1 text-lg font-semibold">Recent Workouts</h3>
-        <Button variant={"ghost"} className="bg-card" asChild>
-          <Link href={"/dashboard/history"} className="flex text-right">
-            See More
-            <ArrowRight className="ml-1" />
-          </Link>
+        <Button
+          variant={"ghost"}
+          onClick={() => setCurrentPage("history")}
+          className="bg-card flex text-right"
+        >
+          See More
+          <ArrowRight className="ml-1" />
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        {workoutHistory.data?.map((w) => (
+        {workoutHistory.data?.items.map((w) => (
           <WorkoutHistoryCard key={w.id} workout={w} internalNav={true} />
         ))}
       </div>

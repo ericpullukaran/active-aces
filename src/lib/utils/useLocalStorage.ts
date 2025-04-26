@@ -1,5 +1,6 @@
 import type { Dispatch, SetStateAction } from "react"
 import { useCallback, useEffect, useState } from "react"
+import SuperJSON from "superjson"
 
 const localStorage = typeof window === "undefined" ? null : window.localStorage
 
@@ -13,7 +14,7 @@ export const useLocalStorage = <T>(
     if (!cached) return initialValue
 
     try {
-      return JSON.parse(cached) as T
+      return SuperJSON.parse(cached) as T
     } catch (err) {
       return initialValue
     }
