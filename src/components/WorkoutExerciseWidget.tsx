@@ -3,6 +3,7 @@ import { useCallback, useState } from "react"
 import AnimatedVisibility from "~/lib/utils/AnimatedVisibility"
 import { WorkoutExerciseHeader } from "./WorkoutExerciseHeader"
 import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
+import WorkoutExerciseWidgetBody from "./WorkoutExerciseWidgetBody"
 
 export default function WorkoutExerciseWidget({
   exercise,
@@ -15,15 +16,12 @@ export default function WorkoutExerciseWidget({
   }, [])
 
   return (
-    <div className="bg-card max-w-lg rounded-xl">
+    <div className="bg-card w-full max-w-lg rounded-xl">
       {/* header */}
       <WorkoutExerciseHeader exercise={exercise} collapseExercise={collapseExercise} />
       {/* body */}
       <AnimatedVisibility isVisible={!collapsed}>
-        <div className="mt-4">
-          hello this is some kinda arbitrary text that is really long really long really long really
-          long really long really long really long
-        </div>
+        <WorkoutExerciseWidgetBody exercise={exercise} />
       </AnimatedVisibility>
     </div>
   )

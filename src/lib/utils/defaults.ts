@@ -1,0 +1,27 @@
+import { ExerciseSet, PutWorkout, WorkoutExercise } from "../types/workout"
+
+export const defaultWorkout = (name: string = "Workout"): PutWorkout => {
+  return {
+    name,
+    startTime: new Date(),
+    exercises: [],
+  }
+}
+
+export const defaultWorkoutExercise = (exerciseId: string): WorkoutExercise => {
+  return {
+    exerciseId,
+    sets: [defaultExerciseSet()],
+  }
+}
+
+export const defaultExerciseSet = (): ExerciseSet => {
+  return {
+    order: 0,
+    reps: 0,
+    weight: 0,
+    distance: 0,
+    time: 0,
+    completed: false,
+  }
+}

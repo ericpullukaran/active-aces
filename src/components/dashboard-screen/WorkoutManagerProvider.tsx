@@ -5,6 +5,7 @@ import { AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
 import { PutWorkout } from "~/lib/types/workout"
 import { useUpdatedRef } from "~/lib/utils/useUpdatedRef"
+import { defaultWorkout, defaultWorkoutExercise } from "~/lib/utils/defaults"
 
 export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
   (props: { initialPage: AppPage; children: ReactNode }) => {
@@ -18,11 +19,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
         setCurrentPage("workout")
         return
       }
-      setCurrentWorkout({
-        name: "New Workout",
-        startTime: new Date(),
-        exercises: [],
-      })
+      setCurrentWorkout(defaultWorkout())
     }, [workoutRef])
 
     const addExercise = useCallback(
@@ -31,20 +28,14 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
 
         setCurrentWorkout({
           ...workoutRef.current,
-          exercises: [
-            ...workoutRef.current.exercises,
-            {
-              exerciseId,
-              sets: [],
-            },
-          ],
+          exercises: [...workoutRef.current.exercises, defaultWorkoutExercise(exerciseId)],
         })
       },
       [workoutRef, setCurrentWorkout],
     )
     const currentExercises = useMemo(() => {
-      return workoutRef.current?.exercises.map((exercise) => exercise) ?? []
-    }, [workoutRef])
+      return currentWorkout?.exercises.map((exercise) => exercise) ?? []
+    }, [currentWorkout])
 
     return {
       // Page navigation
