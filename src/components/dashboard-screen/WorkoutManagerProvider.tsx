@@ -33,6 +33,16 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       },
       [workoutRef, setCurrentWorkout],
     )
+    const deleteExercise = useCallback(
+      (position: number) => {
+        if (!workoutRef.current) return
+        setCurrentWorkout({
+          ...workoutRef.current,
+          exercises: workoutRef.current.exercises.filter((_, idx) => idx !== position),
+        })
+      },
+      [workoutRef],
+    )
     const currentExercises = useMemo(() => {
       return currentWorkout?.exercises.map((exercise) => exercise) ?? []
     }, [currentWorkout])
@@ -49,6 +59,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
 
       // Exercise properties
       addExercise,
+      deleteExercise,
       currentExercises,
     }
   },

@@ -27,8 +27,8 @@ const buttonVariants = cva(
         xs: "h-7 rounded-md px-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
-        icon: "sq-10",
-        "icon-sm": "sq-9",
+        icon: "h-10 w-10",
+        "icon-sm": "h-9 w-9",
       },
       /**
        * Note: separated so disabled styles don't affect the loading state
@@ -80,7 +80,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {Icon ? <Icon className="sq-1" /> : null}
+        {Icon ? <Icon className="h-5 w-5" /> : null}
 
         <Slottable>{children}</Slottable>
 

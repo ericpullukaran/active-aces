@@ -3,6 +3,7 @@ import WorkoutExerciseWidget from "../WorkoutExerciseWidget"
 import { useWorkoutManager } from "./WorkoutManagerProvider"
 import { useQuery } from "@tanstack/react-query"
 import { useTRPC } from "~/lib/trpc/client"
+import { AnimatePresence } from "motion/react"
 
 export default function WorkoutScreen() {
   const trpc = useTRPC()
@@ -23,9 +24,11 @@ export default function WorkoutScreen() {
 
   return (
     <div className="flex flex-col items-center gap-8 pt-20">
-      {exercisesWithMetadata.map((exercise, idx) => (
-        <WorkoutExerciseWidget key={`${exercise.exerciseId}-${idx}`} exercise={exercise} />
-      ))}
+      <AnimatePresence mode="popLayout">
+        {exercisesWithMetadata.map((exercise, idx) => (
+          <WorkoutExerciseWidget key={exercise.stableId} order={idx} exercise={exercise} />
+        ))}
+      </AnimatePresence>
     </div>
   )
 }

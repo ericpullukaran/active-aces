@@ -15,7 +15,7 @@ const measurementFields = {
 }
 type MeasurementFieldKey = keyof typeof measurementFields
 
-const exerciseTypeToFields: Record<MeasurementType, Array<MeasurementFieldKey>> = {
+const exerciseTypeToFields: Record<MeasurementType, MeasurementFieldKey[]> = {
   [MeasurementType.WEIGHT_REPS]: ["weight", "reps"],
   [MeasurementType.TIME_DISTANCE]: ["time", "distance"],
   [MeasurementType.WEIGHT_DURATION]: ["weight", "time"],
@@ -62,7 +62,7 @@ export default function WorkoutExerciseWidgetBody({
       <div className="space-y-2">
         {sets.map((set, index) => (
           <div
-            key={index}
+            key={set.stableId}
             className="grid items-center gap-1"
             style={{
               gridTemplateColumns: `3rem ${fieldKeys.map(() => "1fr").join(" ")} 3rem`,
