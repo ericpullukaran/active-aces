@@ -122,7 +122,7 @@ const ResponsiveDialogCore = ({
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        {content}
+        <div className="max-h-96 overflow-scroll">{content}</div>
         {footer && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>

@@ -3,7 +3,7 @@ import React from "react"
 import { motion } from "motion/react"
 import { Database, SquarePlus } from "lucide-react"
 import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
-import { AddExerciseModal } from "../workouts/AddExerciseModal"
+import { AddExerciseModal } from "../AddExerciseModal"
 
 export const ExercisesButton = () => {
   const { currentPage, currentWorkout, setCurrentPage } = useWorkoutManager()
@@ -20,11 +20,6 @@ export const ExercisesButton = () => {
           layout
           className="relative flex h-14 w-10 flex-col items-center justify-center p-2"
           onClick={() => {
-            console.log({
-              currentPage,
-              isWorkoutActive,
-              val: !isWorkoutActive && !isWorkoutPage,
-            })
             if (!isWorkoutActive || (isWorkoutActive && !isWorkoutPage)) {
               setCurrentPage("exercises")
             } else {

@@ -31,4 +31,9 @@ export const PutWorkoutSchema = z.object({
 })
 export type PutWorkout = z.infer<typeof PutWorkoutSchema>
 
-export type Exercise = Doc<"exercises"> & { primaryMuscleGroup: Doc<"muscleGroups"> | undefined }
+export type DbExercise = Doc<"exercises"> & { primaryMuscleGroup: Doc<"muscleGroups"> | null }
+export type DbExercisesMap = Map<string, DbExercise>
+
+export type WorkoutExerciseWithMetadata = WorkoutExercise & {
+  metadata: DbExercise
+}

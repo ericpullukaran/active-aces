@@ -1,9 +1,9 @@
 "use client"
 import React from "react"
 import { Search } from "lucide-react"
-import ResponsiveDialog from "../ui/ResponsiveDialog"
-import { ExercisesList } from "../ExercisesList"
-import { Button } from "../ui/button"
+import ResponsiveDialog from "./ui/ResponsiveDialog"
+import { ExercisesList } from "./ExercisesList"
+import { Button } from "./ui/button"
 
 export const AddExerciseModal: React.FC<{
   children: (props: { openDialog: () => void }) => React.ReactNode

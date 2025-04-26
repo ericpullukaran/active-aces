@@ -1,5 +1,5 @@
 "use client"
-import { ReactNode, useCallback, useState } from "react"
+import { ReactNode, useCallback, useMemo, useState } from "react"
 import { createTypedContext } from "~/lib/utils/context"
 import { AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
@@ -23,7 +23,28 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
         startTime: new Date(),
         exercises: [],
       })
-    }, [workoutRef, setCurrentWorkout, setCurrentPage])
+    }, [workoutRef])
+
+    const addExercise = useCallback(
+      (exerciseId: string) => {
+        if (!workoutRef.current) return
+
+        setCurrentWorkout({
+          ...workoutRef.current,
+          exercises: [
+            ...workoutRef.current.exercises,
+            {
+              exerciseId,
+              sets: [],
+            },
+          ],
+        })
+      },
+      [workoutRef, setCurrentWorkout],
+    )
+    const currentExercises = useMemo(() => {
+      return workoutRef.current?.exercises.map((exercise) => exercise) ?? []
+    }, [workoutRef])
 
     return {
       // Page navigation
@@ -34,6 +55,10 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       currentWorkout,
       startWorkout,
       removeCurrentWorkout,
+
+      // Exercise properties
+      addExercise,
+      currentExercises,
     }
   },
 )

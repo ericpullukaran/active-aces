@@ -1,17 +1,14 @@
-import { Doc } from "~/lib/db"
 import { Badge } from "~/components/ui/badge"
-import { Exercise } from "~/lib/types/workout"
+import { DbExercise } from "~/lib/types/workout"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import { DrawerClose } from "./ui/drawer"
 
-export function ExerciseCard({
-  exercise,
-  onClick,
-}: {
-  exercise: Exercise
-  onClick: (exerciseId: string) => void
-}) {
+export function ExerciseCard({ exercise }: { exercise: DbExercise }) {
+  const { addExercise } = useWorkoutManager()
+
   return (
-    <div
-      onClick={() => onClick?.(exercise.id)}
+    <DrawerClose
+      onClick={() => addExercise(exercise.id)}
       className="hover:border-primary flex items-center space-x-4 rounded-md border p-4 text-left transition-all"
     >
       <div className="h-10 w-10 rounded-lg bg-red-400"></div>
@@ -26,6 +23,6 @@ export function ExerciseCard({
         </div>
         <p className="text-muted-foreground line-clamp-2 text-sm">{exercise.description}</p>
       </div>
-    </div>
+    </DrawerClose>
   )
 }
