@@ -14,7 +14,12 @@ export const AddExerciseModal: React.FC<{
   const [searchQuery, setSearchQuery] = useState("")
   const searchInputRef = useRef<HTMLInputElement>(null)
 
-  const toggleSearch = () => setIsSearching(!isSearching)
+  const toggleSearch = () => {
+    if (isSearching) {
+      setSearchQuery("")
+    }
+    setIsSearching(!isSearching)
+  }
 
   useEffect(() => {
     if (isSearching && searchInputRef.current) {
