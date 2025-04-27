@@ -37,6 +37,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
         stableExerciseId: string,
         opts: {
           enableAssistedReps?: boolean
+          enableWeightedReps?: boolean
           notes?: string
         },
       ) => {
@@ -53,6 +54,9 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
                   }),
                   ...(opts.notes !== undefined && {
                     notes: opts.notes,
+                  }),
+                  ...(opts.enableWeightedReps !== undefined && {
+                    enableWeightedReps: opts.enableWeightedReps,
                   }),
                 }
               : exercise,

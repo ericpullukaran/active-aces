@@ -70,8 +70,12 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
             {workout.workoutExercises.map((exerciseData, idx) => {
               const { exercise, sets = [], notes } = exerciseData
               const hasAssistedReps = sets.some((set) => set.assistedReps)
+              const hasWeightedReps = sets.some((set) => set.weight != null)
               const measurementType = exercise.measurementType || MeasurementType.WEIGHT_REPS
-              const fieldKeys = getFieldKeys(measurementType, hasAssistedReps)
+              const fieldKeys = getFieldKeys(measurementType, {
+                enableAssistedReps: hasAssistedReps,
+                enableWeightedReps: hasWeightedReps,
+              })
 
               return (
                 <div key={idx} className="rounded-lg border p-3">

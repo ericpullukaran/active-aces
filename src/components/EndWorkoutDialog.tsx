@@ -82,8 +82,9 @@ export default function EndWorkoutDialog({
               <DialogTrigger asChild>
                 <Button
                   variant={"outline"}
+                  disabled={putWorkoutMutation.isPending}
                   onClick={() => setShowDeleteConfirmation(true)}
-                  className="text-destructive border-destructive flex-1"
+                  className="text-destructive border-destructive flex-1 text-nowrap"
                 >
                   Delete Workout
                 </Button>

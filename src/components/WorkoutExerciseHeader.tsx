@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import ExerciseNotesDialog from "./ExerciseNotesDialog"
+import { MeasurementType } from "~/lib/db/types"
 
 export function WorkoutExerciseHeader({
   exercise,
@@ -89,19 +90,36 @@ export function WorkoutExerciseHeader({
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
-          <DropdownMenuItem
-            className="flex items-center px-2 py-1.5"
-            variant={exercise.enableAssistedReps ? "selected" : "default"}
-            onClick={() =>
-              updateExerciseSettings(exercise.stableExerciseId, {
-                enableAssistedReps: !exercise.enableAssistedReps,
-              })
-            }
-          >
-            {!exercise.enableAssistedReps && <CircleDashed className="mr-2 h-4 w-4" />}
-            {exercise.enableAssistedReps && <CircleCheckBigIcon className="mr-2 h-4 w-4" />}
-            {exercise.enableAssistedReps ? "Assisted reps" : "Enable assisted reps"}
-          </DropdownMenuItem>
+          {exercise.metadata.measurementType === MeasurementType.WEIGHT_REPS && (
+            <DropdownMenuItem
+              className="flex items-center px-2 py-1.5"
+              variant={exercise.enableAssistedReps ? "selected" : "default"}
+              onClick={() =>
+                updateExerciseSettings(exercise.stableExerciseId, {
+                  enableAssistedReps: !exercise.enableAssistedReps,
+                })
+              }
+            >
+              {!exercise.enableAssistedReps && <CircleDashed className="mr-2 h-4 w-4" />}
+              {exercise.enableAssistedReps && <CircleCheckBigIcon className="mr-2 h-4 w-4" />}
+              {exercise.enableAssistedReps ? "Assisted reps" : "Enable assisted reps"}
+            </DropdownMenuItem>
+          )}
+          {exercise.metadata.measurementType === MeasurementType.REPS && (
+            <DropdownMenuItem
+              className="flex items-center px-2 py-1.5"
+              variant={exercise.enableWeightedReps ? "selected" : "default"}
+              onClick={() =>
+                updateExerciseSettings(exercise.stableExerciseId, {
+                  enableWeightedReps: !exercise.enableWeightedReps,
+                })
+              }
+            >
+              {!exercise.enableWeightedReps && <CircleDashed className="mr-2 h-4 w-4" />}
+              {exercise.enableWeightedReps && <CircleCheckBigIcon className="mr-2 h-4 w-4" />}
+              {exercise.enableWeightedReps ? "Weighted reps" : "Enable Weighted reps"}
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuItem
             className="flex items-center px-2 py-1.5"

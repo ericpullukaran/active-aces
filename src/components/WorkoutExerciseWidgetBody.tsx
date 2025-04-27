@@ -14,7 +14,10 @@ export default function WorkoutExerciseWidgetBody({
 }) {
   const { addSet } = useWorkoutManager()
   const measurementType = exercise.metadata.measurementType
-  const fieldKeys = getFieldKeys(measurementType, exercise.enableAssistedReps)
+  const fieldKeys = getFieldKeys(measurementType, {
+    enableAssistedReps: exercise.enableAssistedReps,
+    enableWeightedReps: exercise.enableWeightedReps,
+  })
 
   return (
     <div className="p-4 pt-2">

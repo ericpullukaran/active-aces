@@ -14,11 +14,14 @@ export const MEASUREMENT_FIELDS = {
  */
 export function getFieldKeys(
   measurementType: MeasurementType,
-  enableAssistedReps: boolean = false,
+  opts: {
+    enableAssistedReps?: boolean
+    enableWeightedReps?: boolean
+  },
 ): MeasurementMetric[] {
   switch (measurementType) {
     case MeasurementType.WEIGHT_REPS:
-      return ["weight", "reps", ...(enableAssistedReps ? ["assistedReps" as const] : [])]
+      return ["weight", "reps", ...(opts.enableAssistedReps ? ["assistedReps" as const] : [])]
     case MeasurementType.TIME_DISTANCE:
       return ["time", "distance"]
     case MeasurementType.WEIGHT_DURATION:
@@ -28,7 +31,7 @@ export function getFieldKeys(
     case MeasurementType.TIME:
       return ["time"]
     case MeasurementType.REPS:
-      return ["reps"]
+      return ["reps", ...(opts.enableWeightedReps ? ["weight" as const] : [])]
     default:
       return []
   }
