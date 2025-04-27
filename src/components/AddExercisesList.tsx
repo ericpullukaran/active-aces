@@ -23,7 +23,7 @@ export function AddExercisesList({
   }, [filteredExercises])
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex w-full flex-col gap-4">
       {isLoading &&
         Array.from({ length: 10 }).map((_, index) => (
           <Skeleton key={index} className="h-[100px] w-full" />
