@@ -16,6 +16,7 @@ export const defaultWorkoutExercise = (exerciseId: string): WorkoutExercise => {
     exerciseId,
     sets: [defaultExerciseSet()],
     enableAssistedReps: false,
+    enableWeightedReps: false,
   }
 }
 
