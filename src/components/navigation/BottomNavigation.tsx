@@ -21,7 +21,7 @@ const BottomNavigation = () => {
   const { currentPage, setCurrentPage } = useWorkoutManager()
 
   return (
-    <div className="fixed inset-x-0 bottom-6 mx-3 flex flex-col items-center gap-8">
+    <div className="fixed inset-x-0 bottom-10 mx-3 flex flex-col items-center gap-8">
       <motion.div
         layout
         className="bg-card/70 relative flex w-full max-w-lg items-center justify-between overflow-hidden rounded-full px-3 py-1 text-gray-300 backdrop-blur-3xl"

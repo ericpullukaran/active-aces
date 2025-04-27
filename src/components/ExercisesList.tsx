@@ -51,6 +51,7 @@ export function ExercisesList() {
 
   const handleReset = () => {
     setFilters({ muscleGroups: [], onlyMine: false })
+    setIsFilterOpen(false)
   }
 
   return (
