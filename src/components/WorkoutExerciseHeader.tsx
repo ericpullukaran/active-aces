@@ -1,4 +1,11 @@
-import { Check, CircleCheck, Menu, Settings, Square, Trash } from "lucide-react"
+import {
+  CircleCheck,
+  CircleCheckBigIcon,
+  CircleDashed,
+  Menu,
+  NotepadText,
+  Trash,
+} from "lucide-react"
 import { useMemo, useState } from "react"
 import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import { Skeleton } from "~/components/ui/skeleton"
@@ -11,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
+import ExerciseNotesDialog from "./ExerciseNotesDialog"
 
 export function WorkoutExerciseHeader({
   exercise,
@@ -22,6 +30,7 @@ export function WorkoutExerciseHeader({
   deleteExercise: () => void
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const [showNotesDialog, setShowNotesDialog] = useState(false)
   const { updateExerciseSettings } = useWorkoutManager()
   const completedSets = useMemo(
     () => exercise.sets.reduce((acc, set) => acc + (set.completed ? 1 : 0), 0),
@@ -56,6 +65,15 @@ export function WorkoutExerciseHeader({
           </div>
         </div>
       </div>
+
+      {/* External Exercise Notes Dialog */}
+      <ExerciseNotesDialog
+        exerciseId={exercise.stableExerciseId}
+        initialNotes={exercise.notes || ""}
+        isOpen={showNotesDialog}
+        onClose={() => setShowNotesDialog(false)}
+      />
+
       <DropdownMenu open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -80,9 +98,22 @@ export function WorkoutExerciseHeader({
               })
             }
           >
-            {exercise.enableAssistedReps && <Check className="mr-2 h-4 w-4" />}
+            {!exercise.enableAssistedReps && <CircleDashed className="mr-2 h-4 w-4" />}
+            {exercise.enableAssistedReps && <CircleCheckBigIcon className="mr-2 h-4 w-4" />}
             {exercise.enableAssistedReps ? "Assisted reps" : "Enable assisted reps"}
           </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="flex items-center px-2 py-1.5"
+            onClick={() => {
+              setIsPopoverOpen(false)
+              setShowNotesDialog(true)
+            }}
+          >
+            <NotepadText className="mr-2 h-4 w-4" />
+            {exercise.notes ? "Edit notes" : "Add notes"}
+          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={deleteExercise}>
             <Trash className="mr-2 h-4 w-4" />

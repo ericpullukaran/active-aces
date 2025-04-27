@@ -51,7 +51,7 @@ export type WorkoutExerciseWithMetadata = WorkoutExercise & {
 export type WorkoutHistoryExercise = Doc<"workouts"> & {
   workoutExercises: (Doc<"workoutExercises"> & {
     exercise: Doc<"exercises"> & {
-      primaryMuscleGroup: Doc<"muscleGroups">
+      primaryMuscleGroup: Doc<"muscleGroups"> | null
     }
     sets: Doc<"exerciseSets">[]
   })[]

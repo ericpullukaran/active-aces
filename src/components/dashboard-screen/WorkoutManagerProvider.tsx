@@ -37,6 +37,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
         stableExerciseId: string,
         opts: {
           enableAssistedReps?: boolean
+          notes?: string
         },
       ) => {
         if (!workoutRef.current) return
@@ -49,6 +50,9 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
                   // Update assisted reps toggle if provided
                   ...(opts.enableAssistedReps !== undefined && {
                     enableAssistedReps: opts.enableAssistedReps,
+                  }),
+                  ...(opts.notes !== undefined && {
+                    notes: opts.notes,
                   }),
                 }
               : exercise,

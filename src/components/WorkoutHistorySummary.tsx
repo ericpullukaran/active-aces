@@ -70,6 +70,7 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
             {workout.workoutExercises.map((exerciseData, idx) => {
               const { exercise, sets = [], notes } = exerciseData
               const hasAssistedReps = sets.some((set) => set.assistedReps)
+              console.log(sets)
               const measurementType = exercise.measurementType || MeasurementType.WEIGHT_REPS
               const fieldKeys = getFieldKeys(measurementType, hasAssistedReps)
 

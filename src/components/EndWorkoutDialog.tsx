@@ -38,6 +38,7 @@ export default function EndWorkoutDialog({
 
   const endWorkout = (closeDialog: () => void) => {
     if (currentWorkout) {
+      console.log({ currentWorkout })
       putWorkoutMutation.mutate(
         {
           workout: { ...currentWorkout, endTime: new Date(), ...(note !== "" && { notes: note }) },

@@ -163,7 +163,7 @@ const putWorkout = async (
               order: set.order ?? j,
               weight: set.weight,
               reps: set.reps,
-              assistedReps: set.assistedReps,
+              ...(set.assistedReps && set.assistedReps > 0 && { assistedReps: set.assistedReps }),
               distance: set.distance,
               time: set.time,
               completed: set.completed ?? false,
