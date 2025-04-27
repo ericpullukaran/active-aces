@@ -25,6 +25,11 @@ export default function WorkoutScreen() {
   return (
     <div className="flex flex-col items-center gap-8 pt-20 pb-28">
       <AnimatePresence mode="popLayout">
+        {exercisesWithMetadata.length === 0 && (
+          <div className="text-muted-foreground text-center text-sm">
+            Add an exercise to get started!
+          </div>
+        )}
         {exercisesWithMetadata.map((exercise) => (
           <WorkoutExerciseWidget key={exercise.stableExerciseId} exercise={exercise} />
         ))}
