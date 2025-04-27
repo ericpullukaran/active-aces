@@ -64,7 +64,7 @@ export function ExercisesList() {
 
       <Button
         variant="outline"
-        className="fixed right-4 bottom-24 rounded-full"
+        className="fixed right-4 bottom-28 rounded-full"
         Icon={ListFilter}
         onClick={() => setIsFilterOpen(true)}
       />
