@@ -37,11 +37,15 @@ function DrawerClose({ ...props }: React.ComponentProps<typeof DrawerPrimitive.C
 
 function DrawerOverlay({
   className,
+  onClose,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Overlay>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Overlay> & { onClose?: () => void }) {
   return (
     <DrawerPrimitive.Overlay
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation()
+        onClose?.()
+      }}
       data-slot="drawer-overlay"
       className={cn(
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
@@ -55,11 +59,12 @@ function DrawerOverlay({
 function DrawerContent({
   className,
   children,
+  onClose,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Content> & { onClose?: () => void }) {
   return (
     <DrawerPortal data-slot="drawer-portal">
-      <DrawerOverlay />
+      <DrawerOverlay onClose={onClose} />
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(

@@ -4,7 +4,12 @@ import Fuse from "fuse.js"
 import { useTRPC } from "~/lib/trpc/client"
 import { DbExercise } from "~/lib/types/workout"
 
-export function useExercises(searchQuery: string = "", filters?: string[]) {
+export type ExerciseFilterOptions = {
+  muscleGroups?: string[]
+  onlyMine?: boolean
+}
+
+export function useExercises(searchQuery: string = "", filterOptions?: ExerciseFilterOptions) {
   const trpc = useTRPC()
   const exercises = useQuery(trpc.exercises.getAll.queryOptions())
 
@@ -48,15 +53,20 @@ export function useExercises(searchQuery: string = "", filters?: string[]) {
       ])
     }
 
-    // Apply additional filters if provided
-    if (filters && filters.length > 0) {
+    // Apply muscle group filters if provided
+    if (filterOptions?.muscleGroups && filterOptions.muscleGroups.length > 0) {
       results = results.filter(([_, exercise]) =>
-        filters.includes(exercise.primaryMuscleGroup?.id || ""),
+        filterOptions.muscleGroups?.includes(exercise.primaryMuscleGroup?.id || ""),
       )
     }
 
+    // Apply creator filter if onlyMine is true
+    if (filterOptions?.onlyMine) {
+      results = results.filter(([_, exercise]) => exercise.creatorId !== null)
+    }
+
     setFilteredExercises(results)
-  }, [searchQuery, exercises.data, fuse, filters])
+  }, [searchQuery, exercises.data, fuse, filterOptions])
 
   return {
     filteredExercises,

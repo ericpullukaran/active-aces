@@ -1,10 +1,16 @@
-import { useExercises } from "~/lib/utils/useExercises"
+import { useExercises, ExerciseFilterOptions } from "~/lib/utils/useExercises"
 import { ExerciseCard } from "./ExerciseCard"
 import { Skeleton } from "./ui/skeleton"
 import { useMemo } from "react"
 
-export function AddExercisesList({ searchQuery = "" }: { searchQuery?: string }) {
-  const { filteredExercises, isLoading } = useExercises(searchQuery)
+export function AddExercisesList({
+  searchQuery = "",
+  filterOptions = {},
+}: {
+  searchQuery?: string
+  filterOptions?: ExerciseFilterOptions
+}) {
+  const { filteredExercises, isLoading } = useExercises(searchQuery, filterOptions)
 
   const exerciseElements = useMemo(() => {
     if (filteredExercises.length === 0) {
