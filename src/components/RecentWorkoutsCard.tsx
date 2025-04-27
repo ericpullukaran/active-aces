@@ -43,9 +43,7 @@ export default function RecentWorkoutsCard() {
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        {workoutHistory.data?.items.map((w) => (
-          <WorkoutHistoryCard key={w.id} workout={w} internalNav={true} />
-        ))}
+        {workoutHistory.data?.items.map((w) => <WorkoutHistoryCard key={w.id} workout={w} />)}
       </div>
     </div>
   )

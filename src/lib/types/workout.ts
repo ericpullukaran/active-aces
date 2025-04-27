@@ -47,3 +47,12 @@ export type DbExercisesMap = Map<string, DbExercise>
 export type WorkoutExerciseWithMetadata = WorkoutExercise & {
   metadata: DbExercise
 }
+
+export type WorkoutHistoryExercise = Doc<"workouts"> & {
+  workoutExercises: (Doc<"workoutExercises"> & {
+    exercise: Doc<"exercises"> & {
+      primaryMuscleGroup: Doc<"muscleGroups">
+    }
+    sets: Doc<"exerciseSets">[]
+  })[]
+}

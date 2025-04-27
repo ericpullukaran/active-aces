@@ -31,6 +31,7 @@ const getWorkoutHistoryWithExercises = async (
       workoutExercises: {
         orderBy: [workoutExercises.order],
         with: {
+          sets: true,
           exercise: {
             with: {
               primaryMuscleGroup: true,
@@ -58,6 +59,7 @@ const getWorkoutHistoryWithExercises = async (
           workoutExercises: {
             orderBy: [workoutExercises.order],
             with: {
+              sets: true,
               exercise: {
                 with: {
                   primaryMuscleGroup: true,
