@@ -48,13 +48,13 @@ export default function HistoryScreen() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-4 py-10 pb-20">
+    <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 py-10 pb-20">
       <h1 className="text-2xl font-bold">Workout History</h1>
 
       <div className="flex w-full flex-col gap-4">
         {isLoading
           ? Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="bg-card h-32 w-full rounded-lg" />
+              <Skeleton key={i} className="bg-card h-32 w-full rounded-xl" />
             ))
           : data?.pages.map((page) =>
               page.items.map((workout) => (
@@ -62,7 +62,7 @@ export default function HistoryScreen() {
               )),
             )}
 
-        {isFetchingNextPage && <Skeleton className="bg-card h-32 w-full rounded-lg" />}
+        {isFetchingNextPage && <Skeleton className="bg-card h-32 w-full rounded-xl" />}
 
         {/* Observer target element */}
         <div ref={observerTarget} className="h-4" />

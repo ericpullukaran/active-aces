@@ -46,7 +46,7 @@ export default function WorkoutHistoryCard({ workout, internalNav }: Props) {
   const moreCount = allMuscleGroups.length - 3
 
   return (
-    <div className="hover:border-primary bg-card flex flex-col space-y-2 rounded-lg border p-4 text-left transition-all">
+    <div className="hover:border-primary bg-card flex flex-col space-y-2 rounded-xl border p-4 text-left transition-all">
       <div className="flex items-center justify-between">
         <p className="text-lg font-medium">{workout.name}</p>
         <span className="text-muted-foreground text-sm">{formattedDate}</span>

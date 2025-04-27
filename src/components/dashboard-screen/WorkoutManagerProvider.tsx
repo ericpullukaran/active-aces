@@ -14,17 +14,22 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
     const [currentPage, setCurrentPage] = useState(currentWorkout ? "workout" : props.initialPage)
     const workoutRef = useUpdatedRef(currentWorkout)
 
+    const addWorkoutNote = useCallback(
+      (note: string) => {
+        if (!workoutRef.current) return
+        setCurrentWorkout({
+          ...workoutRef.current,
+          notes: note,
+        })
+      },
+      [workoutRef],
+    )
     const startWorkout = useCallback(() => {
       if (workoutRef.current) {
         setCurrentPage("workout")
         return
       }
       setCurrentWorkout(defaultWorkout())
-    }, [workoutRef])
-    const stopWorkout = useCallback(() => {
-      if (!workoutRef.current) return
-      removeCurrentWorkout()
-      setCurrentPage("home")
     }, [workoutRef])
 
     const updateExerciseSettings = useCallback(
@@ -136,9 +141,10 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       setCurrentPage,
 
       // Workout properties
+      addWorkoutNote,
+      removeCurrentWorkout,
       currentWorkout,
       startWorkout,
-      stopWorkout,
 
       // Exercise properties
       addExercise,

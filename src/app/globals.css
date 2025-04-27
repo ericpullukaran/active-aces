@@ -105,3 +105,6 @@
   width: --value([length]);
   height: --value([length]);
 }
+@utility backdrop-blur-xxs {
+  backdrop-filter: blur(1px);
+}

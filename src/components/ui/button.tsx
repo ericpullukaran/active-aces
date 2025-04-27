@@ -101,7 +101,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 "bg-opacity-70 absolute inset-0 border-none",
               )}
             />
-            <Loader2 className="sq-4 animate-spin text-current" />
+            <Loader2 className="h-4 w-4 animate-spin text-current" />
           </span>
         )}
       </Comp>
