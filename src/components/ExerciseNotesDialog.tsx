@@ -37,6 +37,7 @@ export default function ExerciseNotesDialog({
       renderContent={() => (
         <div className="flex flex-col gap-4 p-4">
           <Textarea
+            maxLength={500}
             placeholder="Add notes about this exercise..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}

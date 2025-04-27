@@ -67,6 +67,7 @@ export default function EndWorkoutDialog({
             <div>
               <p className="mb-2 text-sm font-medium">Workout Notes</p>
               <Textarea
+                maxLength={500}
                 placeholder="How was your workout today? (optional)"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}

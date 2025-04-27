@@ -53,7 +53,7 @@ export default function HistoryScreen() {
 
       <div className="flex w-full flex-col gap-4">
         {isLoading
-          ? Array.from({ length: 3 }).map((_, i) => (
+          ? Array.from({ length: 5 }).map((_, i) => (
               <Skeleton key={i} className="bg-card h-32 w-full rounded-xl" />
             ))
           : data?.pages.map((page) =>
