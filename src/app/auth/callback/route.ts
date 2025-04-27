@@ -1,7 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { eq } from "drizzle-orm"
-import { db } from "~/lib/db"
+import { db, schema } from "~/lib/db"
 
 export async function GET() {
   const { userId } = await auth()
@@ -13,12 +13,12 @@ export async function GET() {
 
   const existingUser = await db
     .select()
-    .from(db.$schema.users)
-    .where(eq(db.$schema.users.id, userId))
+    .from(schema.users)
+    .where(eq(schema.users.id, userId))
     .limit(1)
 
   if (existingUser.length === 0) {
-    await db.insert(db.$schema.users).values({
+    await db.insert(schema.users).values({
       id: userId,
       name: user?.fullName ?? "User",
     })
