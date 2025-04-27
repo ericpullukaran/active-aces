@@ -30,7 +30,7 @@ export const WorkoutButton = () => {
           onSuccess: () => {
             stopWorkout()
             queryClient.invalidateQueries({
-              queryKey: trpc.workouts.history.queryOptions().queryKey,
+              queryKey: trpc.workouts.historyInfinite.infiniteQueryKey(),
             })
           },
         },

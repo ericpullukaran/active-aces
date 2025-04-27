@@ -1,9 +1,16 @@
-import { CircleCheck, Menu, Settings, Trash } from "lucide-react"
+import { Check, CircleCheck, Menu, Settings, Square, Trash } from "lucide-react"
 import { useMemo, useState } from "react"
 import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import { Skeleton } from "~/components/ui/skeleton"
 import { Button } from "./ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
 
 export function WorkoutExerciseHeader({
   exercise,
@@ -15,6 +22,7 @@ export function WorkoutExerciseHeader({
   deleteExercise: () => void
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const { updateExerciseSettings } = useWorkoutManager()
   const completedSets = useMemo(
     () => exercise.sets.reduce((acc, set) => acc + (set.completed ? 1 : 0), 0),
     [exercise.sets],
@@ -48,8 +56,8 @@ export function WorkoutExerciseHeader({
           </div>
         </div>
       </div>
-      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-        <PopoverTrigger asChild>
+      <DropdownMenu open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <DropdownMenuTrigger asChild>
           <Button
             scalingOnClick
             onClick={(e) => {
@@ -61,13 +69,27 @@ export function WorkoutExerciseHeader({
             className="absolute top-1/4 right-3"
             Icon={Menu}
           />
-        </PopoverTrigger>
-        <PopoverContent className="p-0 py-2">
-          <Button onClick={deleteExercise} variant="destructive" Icon={Trash} className="w-full">
-            Delete
-          </Button>
-        </PopoverContent>
-      </Popover>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuItem
+            className="flex items-center px-2 py-1.5"
+            variant={exercise.enableAssistedReps ? "selected" : "default"}
+            onClick={() =>
+              updateExerciseSettings(exercise.stableExerciseId, {
+                enableAssistedReps: !exercise.enableAssistedReps,
+              })
+            }
+          >
+            {exercise.enableAssistedReps && <Check className="mr-2 h-4 w-4" />}
+            {exercise.enableAssistedReps ? "Assisted reps" : "Enable assisted reps"}
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive" onClick={deleteExercise}>
+            <Trash className="mr-2 h-4 w-4" />
+            Delete Exercise
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }

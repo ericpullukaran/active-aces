@@ -4,13 +4,6 @@ import { z } from "zod"
 import { PutWorkoutSchema } from "~/lib/types/workout"
 
 export const workoutsRouter = createTRPCRouter({
-  history: protectedProcedure.query(async ({ ctx }) => {
-    return await workoutService.getWorkoutHistory(ctx.db, {
-      userId: ctx.auth.userId,
-      limit: 3,
-    })
-  }),
-
   historyInfinite: protectedProcedure
     .input(
       z.object({

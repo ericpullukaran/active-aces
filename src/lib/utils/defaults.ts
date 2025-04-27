@@ -15,6 +15,7 @@ export const defaultWorkoutExercise = (exerciseId: string): WorkoutExercise => {
 
     exerciseId,
     sets: [defaultExerciseSet()],
+    enableAssistedReps: false,
   }
 }
 
@@ -24,6 +25,7 @@ export const defaultExerciseSet = (): ExerciseSet => {
 
     order: 0,
     reps: 0,
+    assistedReps: 0,
     weight: 0,
     distance: 0,
     time: 0,

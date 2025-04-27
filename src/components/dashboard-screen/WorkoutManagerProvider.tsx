@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react"
 import { createTypedContext } from "~/lib/utils/context"
 import { AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
-import { ExerciseSet, PutWorkout } from "~/lib/types/workout"
+import { ExerciseSet, PutWorkout, WorkoutExercise } from "~/lib/types/workout"
 import { useUpdatedRef } from "~/lib/utils/useUpdatedRef"
 import { defaultExerciseSet, defaultWorkout, defaultWorkoutExercise } from "~/lib/utils/defaults"
 
@@ -27,6 +27,31 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       setCurrentPage("home")
     }, [workoutRef])
 
+    const updateExerciseSettings = useCallback(
+      (
+        stableExerciseId: string,
+        opts: {
+          enableAssistedReps?: boolean
+        },
+      ) => {
+        if (!workoutRef.current) return
+        setCurrentWorkout({
+          ...workoutRef.current,
+          exercises: workoutRef.current.exercises.map((exercise) =>
+            exercise.stableExerciseId === stableExerciseId
+              ? {
+                  ...exercise,
+                  // Update assisted reps toggle if provided
+                  ...(opts.enableAssistedReps !== undefined && {
+                    enableAssistedReps: opts.enableAssistedReps,
+                  }),
+                }
+              : exercise,
+          ),
+        })
+      },
+      [workoutRef],
+    )
     const addExercise = useCallback(
       (exerciseId: string) => {
         if (!workoutRef.current) return
@@ -119,6 +144,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       addExercise,
       deleteExercise,
       currentExercises,
+      updateExerciseSettings,
 
       // Set properties
       addSet,

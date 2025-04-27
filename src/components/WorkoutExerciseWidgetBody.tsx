@@ -12,12 +12,13 @@ import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 const measurementFields = {
   weight: { label: "Weight" },
   reps: { label: "Reps" },
+  assistedReps: { label: "Assisted" },
   time: { label: "Time" },
   distance: { label: "Distance" },
 } satisfies Record<MeasurementMetric, { label: string }>
 
 const exerciseTypeToFields: Record<MeasurementType, MeasurementMetric[]> = {
-  [MeasurementType.WEIGHT_REPS]: ["weight", "reps"],
+  [MeasurementType.WEIGHT_REPS]: ["weight", "reps", "assistedReps"],
   [MeasurementType.TIME_DISTANCE]: ["time", "distance"],
   [MeasurementType.WEIGHT_DURATION]: ["weight", "time"],
   [MeasurementType.WEIGHT_DISTANCE]: ["weight", "distance"],
@@ -32,7 +33,25 @@ export default function WorkoutExerciseWidgetBody({
 }) {
   const { addSet } = useWorkoutManager()
   const measurementType = exercise.metadata.measurementType
-  const fieldKeys = exerciseTypeToFields[measurementType]
+  const getFieldKeys = (measurementType: MeasurementType): MeasurementMetric[] => {
+    switch (measurementType) {
+      case MeasurementType.WEIGHT_REPS:
+        return ["weight", "reps", ...(exercise.enableAssistedReps ? ["assistedReps" as const] : [])]
+      case MeasurementType.TIME_DISTANCE:
+        return ["time", "distance"]
+      case MeasurementType.WEIGHT_DURATION:
+        return ["weight", "time"]
+      case MeasurementType.WEIGHT_DISTANCE:
+        return ["weight", "distance"]
+      case MeasurementType.TIME:
+        return ["time"]
+      case MeasurementType.REPS:
+        return ["reps"]
+      default:
+        return []
+    }
+  }
+  const fieldKeys = getFieldKeys(measurementType)
 
   return (
     <div className="p-4 pt-2">

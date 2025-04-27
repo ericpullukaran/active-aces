@@ -183,6 +183,7 @@ export const exerciseSets = sqliteTable(
     order: integer("order").notNull(),
     weight: real("weight"),
     reps: integer("reps"),
+    assistedReps: integer("assisted_reps"),
     distance: real("distance"),
     time: integer("time"), // In ms
     completed: integer("completed", { mode: "boolean" }).notNull().default(false),

@@ -14,19 +14,23 @@ export const measurementToDetails: Record<
   { inputProps: React.InputHTMLAttributes<HTMLInputElement>; label: string }
 > = {
   weight: {
-    inputProps: { placeholder: "Weight", min: 0, step: 1 },
+    inputProps: { placeholder: "Weight" },
     label: "Weight",
   },
   reps: {
-    inputProps: { placeholder: "Reps", min: 0, step: 1 },
+    inputProps: { placeholder: "Reps", min: 0 },
     label: "Reps",
   },
+  assistedReps: {
+    inputProps: { placeholder: "Assisted", min: 0 },
+    label: "Assisted",
+  },
   time: {
-    inputProps: { placeholder: "Time", min: 0, step: 1 },
+    inputProps: { placeholder: "Time", min: 0 },
     label: "Time",
   },
   distance: {
-    inputProps: { placeholder: "Distance", min: 0, step: 0.1 },
+    inputProps: { placeholder: "Distance", min: 0 },
     label: "Distance",
   },
 }
@@ -70,6 +74,7 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
             {measurements.map((measurement) => (
               <Input
                 key={measurement}
+                disabled={set.completed}
                 type="number"
                 inputMode="decimal"
                 className={cn(

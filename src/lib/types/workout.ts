@@ -9,6 +9,7 @@ export const ExerciseSetSchema = z.object({
   order: z.number(),
   weight: z.number().optional(),
   reps: z.number().optional(),
+  assistedReps: z.number().optional(),
   distance: z.number().optional(),
   time: z.number().optional(),
   completed: z.boolean().optional(),
@@ -24,6 +25,9 @@ export const WorkoutExerciseSchema = z.object({
   exerciseId: z.string(),
   notes: z.string().optional(),
   sets: z.array(ExerciseSetSchema),
+
+  // Settings for the exercise
+  enableAssistedReps: z.boolean().default(false),
 })
 export type WorkoutExercise = z.infer<typeof WorkoutExerciseSchema>
 
