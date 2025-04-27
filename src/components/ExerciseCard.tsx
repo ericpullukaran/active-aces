@@ -20,7 +20,7 @@ export function ExerciseCard({
   return (
     <Component
       onClick={inWorkout ? () => addExercise(exercise.id) : undefined}
-      className="hover:border-primary flex items-center space-x-4 rounded-md border p-4 text-left transition-all"
+      className="hover:border-primary flex items-center space-x-4 rounded-xl border p-4 text-left transition-all"
     >
       <div className="h-10 w-10 rounded-lg bg-red-400"></div>
       <div className="flex-1 space-y-1">

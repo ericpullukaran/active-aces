@@ -48,7 +48,7 @@ export default function HistoryScreen() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-4 py-10">
+    <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-4 py-10 pb-20">
       <h1 className="text-2xl font-bold">Workout History</h1>
 
       <div className="flex w-full flex-col gap-4">

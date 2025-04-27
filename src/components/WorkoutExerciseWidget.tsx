@@ -25,6 +25,7 @@ export default function WorkoutExerciseWidget({
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
       layout
       layoutId={exercise.stableExerciseId}
       className="bg-card w-full max-w-lg rounded-xl"

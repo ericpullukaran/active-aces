@@ -23,7 +23,7 @@ export default function WorkoutScreen() {
   }, [currentExercises, exercisesQuery.data])
 
   return (
-    <div className="flex flex-col items-center gap-8 pt-20">
+    <div className="flex flex-col items-center gap-8 pt-20 pb-28">
       <AnimatePresence mode="popLayout">
         {exercisesWithMetadata.map((exercise) => (
           <WorkoutExerciseWidget key={exercise.stableExerciseId} exercise={exercise} />
