@@ -105,7 +105,7 @@ const ResponsiveDialogCore = ({
       preventScrollRestoration={false}
       onClose={() => closeDialog(true)}
     >
-      <DrawerContent>
+      <DrawerContent onClick={(e) => e.stopPropagation()}>
         <DrawerHeader className="text-center">
           <DrawerTitle>{title}</DrawerTitle>
           {description && <DrawerDescription>{description}</DrawerDescription>}
@@ -116,7 +116,7 @@ const ResponsiveDialogCore = ({
     </Drawer>
   ) : (
     <Dialog open={isOpen}>
-      <DialogContent onClose={() => closeDialog(true)}>
+      <DialogContent onClick={(e) => e.stopPropagation()} onClose={() => closeDialog(true)}>
         <DialogHeader className="text-left">
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}

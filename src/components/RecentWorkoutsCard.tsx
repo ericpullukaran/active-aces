@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 import { Button } from "./ui/button"
@@ -9,11 +8,16 @@ import WorkoutHistoryCard from "./WorkoutHistoryCard"
 import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import { AnimatePresence } from "motion/react"
 
+export const recentWorkoutsQueryKey: readonly string[] = ["recent-workouts"]
 export default function RecentWorkoutsCard() {
   const trpc = useTRPC()
-  const workoutHistory = useQuery(trpc.workouts.historyInfinite.queryOptions({ limit: 3 }))
-  const { setCurrentPage } = useWorkoutManager()
+  const workoutHistory = useQuery({
+    ...trpc.workouts.historyInfinite.queryOptions({ limit: 3 }),
+    queryKey: [recentWorkoutsQueryKey],
+  })
+  const { setCurrentPage, currentPage } = useWorkoutManager()
 
   if (workoutHistory.isError) {
     return (
@@ -43,7 +47,9 @@ export default function RecentWorkoutsCard() {
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        {workoutHistory.data?.items.map((w) => <WorkoutHistoryCard key={w.id} workout={w} />)}
+        {workoutHistory.data?.items.map((w) => (
+          <WorkoutHistoryCard key={`${currentPage}-${w.id}`} workout={w} />
+        ))}
       </div>
     </div>
   )

@@ -178,8 +178,13 @@ const putWorkout = async (
   })
 }
 
+const deleteWorkout = async (db: DB, { id, userId }: { id: string; userId: string }) => {
+  return await db.delete(workouts).where(and(eq(workouts.id, id), eq(workouts.userId, userId)))
+}
+
 export const workoutService = {
   getWorkoutHistory,
   getWorkoutHistoryWithExercises,
   putWorkout,
+  deleteWorkout,
 }

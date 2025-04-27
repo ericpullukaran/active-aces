@@ -45,4 +45,17 @@ export const workoutsRouter = createTRPCRouter({
         userId: ctx.auth.userId,
       })
     }),
+
+  delete: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await workoutService.deleteWorkout(ctx.db, {
+        id: input.id,
+        userId: ctx.auth.userId,
+      })
+    }),
 })

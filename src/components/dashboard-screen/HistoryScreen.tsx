@@ -5,7 +5,9 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useEffect, useRef } from "react"
 import WorkoutHistoryCard from "../WorkoutHistoryCard"
 import { Skeleton } from "../ui/skeleton"
+import { AnimatePresence } from "motion/react"
 
+export const historyQueryKey: readonly string[] = ["history-screen"]
 export default function HistoryScreen() {
   const trpc = useTRPC()
   const observerTarget = useRef<HTMLDivElement>(null)
@@ -16,6 +18,7 @@ export default function HistoryScreen() {
         limit: 10,
       }),
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      queryKey: [historyQueryKey],
     })
 
   // Setup infinite scroll observer
@@ -52,16 +55,17 @@ export default function HistoryScreen() {
       <h1 className="text-2xl font-bold">Workout History</h1>
 
       <div className="flex w-full flex-col gap-4">
-        {isLoading
-          ? Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="bg-card h-32 w-full rounded-xl" />
-            ))
-          : data?.pages.map((page) =>
-              page.items.map((workout) => (
-                <WorkoutHistoryCard key={workout.id} workout={workout} />
-              )),
-            )}
-
+        <AnimatePresence mode="popLayout">
+          {isLoading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="bg-card h-32 w-full rounded-xl" />
+              ))
+            : data?.pages.map((page) =>
+                page.items.map((workout) => (
+                  <WorkoutHistoryCard key={workout.id} workout={workout} />
+                )),
+              )}
+        </AnimatePresence>
         {isFetchingNextPage && <Skeleton className="bg-card h-32 w-full rounded-xl" />}
 
         {/* Observer target element */}
