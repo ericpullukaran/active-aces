@@ -13,11 +13,16 @@ export default function AnimatedVisibility({
   const [height, setHeight] = useState(0)
 
   useEffect(() => {
-    if (isVisible && contentRef.current) {
-      setHeight(contentRef.current.scrollHeight)
-    } else {
-      setHeight(0)
-    }
+    setTimeout(() => {
+      if (isVisible && contentRef.current) {
+        setHeight(contentRef.current.scrollHeight)
+      } else {
+        setHeight(0)
+      }
+      // TODO: This is a hack to ensure the correct height is set
+      // since after swiping/deleting a set, even tho this runs
+      // immediately, the height is not correct.
+    }, 10)
   }, [isVisible, dependency])
 
   return (
