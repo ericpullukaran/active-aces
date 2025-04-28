@@ -8,10 +8,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Checkbox } from "./ui/checkbox"
 import { ExerciseFilterOptions } from "~/lib/utils/useExercises"
 
-export const useFilters = (
+export const useExercisesFilters = (
   initalFilters: ExerciseFilterOptions = {
     muscleGroups: [],
     onlyMine: false,
+    deleted: false,
   },
 ) => {
   const [filters, setFilters] = useState<ExerciseFilterOptions>(initalFilters)

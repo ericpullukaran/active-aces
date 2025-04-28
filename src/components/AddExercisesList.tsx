@@ -3,6 +3,7 @@ import { ExerciseCard } from "./ExerciseCard"
 import { Skeleton } from "./ui/skeleton"
 import { useMemo } from "react"
 import { Plus } from "lucide-react"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 
 export function AddExercisesList({
   searchQuery = "",
@@ -14,6 +15,7 @@ export function AddExercisesList({
   onCreateExercise?: (name: string) => void
 }) {
   const { filteredExercises, isLoading } = useExercises(searchQuery, filterOptions)
+  const { addExercise } = useWorkoutManager()
 
   const exerciseElements = useMemo(() => {
     if (filteredExercises.length === 0) {
@@ -44,7 +46,12 @@ export function AddExercisesList({
     }
 
     return filteredExercises.map(([id, exercise]) => (
-      <ExerciseCard key={id} inWorkout={true} exercise={exercise} />
+      <ExerciseCard
+        key={id}
+        inWorkout={true}
+        exercise={exercise}
+        onClick={() => addExercise(exercise.id)}
+      />
     ))
   }, [filteredExercises, searchQuery, isLoading, onCreateExercise])
 

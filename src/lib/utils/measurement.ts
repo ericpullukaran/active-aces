@@ -9,6 +9,15 @@ export const MEASUREMENT_FIELDS = {
   distance: { label: "Distance" },
 } satisfies Record<MeasurementMetric, { label: string }>
 
+export const MeasurementTypeLabels = {
+  [MeasurementType.REPS]: "Reps",
+  [MeasurementType.WEIGHT_REPS]: "Weight & Reps",
+  [MeasurementType.TIME_DISTANCE]: "Time & Distance",
+  [MeasurementType.WEIGHT_DURATION]: "Weight & Duration",
+  [MeasurementType.WEIGHT_DISTANCE]: "Weight & Distance",
+  [MeasurementType.TIME]: "Time",
+} satisfies Record<MeasurementType, string>
+
 /**
  * Gets the field keys for a given measurement type and assisted reps setting
  */

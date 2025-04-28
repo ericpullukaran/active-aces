@@ -9,17 +9,18 @@ import MuscleGroupBadge from "./MuscleGroupBadge"
 export function ExerciseCard({
   inWorkout,
   exercise,
+  onClick,
 }: {
   inWorkout: boolean
   exercise: DbExercise
+  onClick: () => void
 }) {
   const isMobile = useMediaQuery(MOBILE_VIEWPORT)
-  const { addExercise } = useWorkoutManager()
   const Component = inWorkout ? (isMobile ? DrawerClose : DialogClose) : "div"
 
   return (
     <Component
-      onClick={inWorkout ? () => addExercise(exercise.id) : undefined}
+      onClick={onClick}
       className="hover:border-primary bg-card flex items-center space-x-4 rounded-xl border p-4 text-left transition-all"
     >
       <div className="flex-1 flex-col space-y-2">

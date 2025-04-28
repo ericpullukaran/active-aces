@@ -55,6 +55,7 @@ export const exercises = sqliteTable(
     thumbnailUrl: text("thumbnail_url"),
     createdAt: custom.timestamp("created_at").notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp_ms" }),
+    deleted: integer("deleted", { mode: "boolean" }).notNull().default(false),
   },
   (t) => [
     index("idx_exercise_name").on(t.name),

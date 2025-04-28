@@ -5,11 +5,14 @@ import { useExercises, ExerciseFilterOptions } from "~/lib/utils/useExercises"
 import { ListFilter } from "lucide-react"
 import { Button } from "./ui/button"
 import { cn } from "~/lib/utils"
-import { ExercisesFilterDialog, useFilters } from "./ExercisesFilterDialog"
+import { ExercisesFilterDialog, useExercisesFilters } from "./ExercisesFilterDialog"
+import { DbExercise } from "~/lib/types/workout"
+import { ExerciseDialogSummary } from "./ExerciseDialogSummary"
 
 export function ExercisesList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const { filters, setFilters, hasFiltersApplied } = useFilters()
+  const [selectedExercise, setSelectedExercise] = useState<DbExercise | null>(null)
+  const { filters, setFilters, hasFiltersApplied } = useExercisesFilters()
   const { filteredExercises, isLoading } = useExercises("", filters)
 
   const exerciseElements = useMemo(() => {
@@ -18,7 +21,12 @@ export function ExercisesList() {
     }
 
     return filteredExercises.map(([id, exercise]) => (
-      <ExerciseCard key={id} inWorkout={false} exercise={exercise} />
+      <ExerciseCard
+        key={id}
+        inWorkout={false}
+        exercise={exercise}
+        onClick={() => setSelectedExercise(exercise)}
+      />
     ))
   }, [filteredExercises])
 
@@ -45,6 +53,14 @@ export function ExercisesList() {
         filters={filters}
         onApplyFilters={setFilters}
       />
+
+      {selectedExercise && (
+        <ExerciseDialogSummary
+          isOpen={!!selectedExercise}
+          onClose={() => setSelectedExercise(null)}
+          exercise={selectedExercise}
+        />
+      )}
     </div>
   )
 }

@@ -1,9 +1,15 @@
 import { cmp, DB, orderBy, schema } from "../db"
-import { DbExercisesMap } from "../types/workout"
+import { DbExercise, DbExercisesMap } from "../types/workout"
 import { exercises, muscleGroups } from "../db/schema"
 import { MeasurementType } from "../db/types"
 
-const getAllExercises = async (db: DB, userId: string): Promise<DbExercisesMap> => {
+const getAllExercises = async (
+  db: DB,
+  userId: string,
+  opts: {
+    includeAccessoryMuscleGroups?: boolean
+  },
+): Promise<DbExercisesMap> => {
   const exercises = await db.query.exercises.findMany({
     where: cmp.or(
       cmp.isNull(schema.exercises.creatorId),
@@ -12,12 +18,17 @@ const getAllExercises = async (db: DB, userId: string): Promise<DbExercisesMap> 
     orderBy: [orderBy.asc(schema.exercises.name)],
     with: {
       primaryMuscleGroup: true,
+      exerciseMuscleGroups: {
+        with: {
+          muscleGroup: true,
+        },
+      },
     },
   })
   return exercises.reduce((acc, exercise) => {
     acc.set(exercise.id, exercise)
     return acc
-  }, new Map() as DbExercisesMap)
+  }, new Map<string, DbExercise>())
 }
 
 const getAllMuscleGroups = async (db: DB) => {
@@ -54,19 +65,35 @@ const createExercise = async (
     })
     .returning()
 
-  // Get the exercise with the primary muscle group
   const exerciseWithRelations = await db.query.exercises.findFirst({
     where: cmp.eq(schema.exercises.id, exercise.id),
     with: {
       primaryMuscleGroup: true,
+      exerciseMuscleGroups: {
+        with: {
+          muscleGroup: true,
+        },
+      },
     },
   })
 
   return exerciseWithRelations
 }
 
+const deleteExercise = async (db: DB, userId: string, exerciseId: string) => {
+  await db
+    .update(exercises)
+    .set({
+      deleted: true,
+    })
+    .where(
+      cmp.and(cmp.eq(schema.exercises.id, exerciseId), cmp.eq(schema.exercises.creatorId, userId)),
+    )
+}
+
 export const exercisesService = {
   getAllExercises,
   getAllMuscleGroups,
   createExercise,
+  deleteExercise,
 }

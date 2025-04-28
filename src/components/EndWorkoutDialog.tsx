@@ -13,6 +13,8 @@ import {
   DialogTrigger,
 } from "./ui/dialog"
 import { Textarea } from "./ui/textarea"
+import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
+import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
 
 export default function EndWorkoutDialog({
   children,
@@ -23,8 +25,7 @@ export default function EndWorkoutDialog({
   const queryClient = useQueryClient()
   const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
   const [note, setNote] = useState("")
-  const { currentWorkout, removeCurrentWorkout, setCurrentPage, addWorkoutNote } =
-    useWorkoutManager()
+  const { currentWorkout, removeCurrentWorkout, setCurrentPage } = useWorkoutManager()
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
 
   const deleteWorkout = (closeDialog: () => void) => {
@@ -44,13 +45,12 @@ export default function EndWorkoutDialog({
         },
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
+            queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
             removeCurrentWorkout()
             setNote("")
             closeDialog()
             setCurrentPage("home")
-            queryClient.invalidateQueries({
-              queryKey: trpc.workouts.historyInfinite.infiniteQueryKey(),
-            })
           },
         },
       )
@@ -81,10 +81,10 @@ export default function EndWorkoutDialog({
             <Dialog open={showDeleteConfirmation} onOpenChange={setShowDeleteConfirmation}>
               <DialogTrigger asChild>
                 <Button
-                  variant={"outline"}
+                  variant={"destructiveOutline"}
                   disabled={putWorkoutMutation.isPending}
                   onClick={() => setShowDeleteConfirmation(true)}
-                  className="text-destructive border-destructive flex-1 text-nowrap"
+                  className="flex-1 text-nowrap"
                 >
                   Delete Workout
                 </Button>

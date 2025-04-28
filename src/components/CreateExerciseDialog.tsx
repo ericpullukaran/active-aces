@@ -8,13 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { MeasurementType } from "~/lib/db/types"
+import { MeasurementTypeLabels } from "~/lib/utils/measurement"
+import { DbExercisesMap } from "~/lib/types/workout"
+import { exerciseQueryKey } from "~/lib/utils/useExercises"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 
 export const CreateExerciseDialog: React.FC<{
   initialName?: string
   isOpen: boolean
   onClose: () => void
 }> = ({ isOpen, onClose, initialName }) => {
-  console.log("initialName", initialName)
   const [name, setName] = useState(initialName || "")
   const [description, setDescription] = useState("")
   const [primaryMuscleGroupId, setPrimaryMuscleGroupId] = useState("")
@@ -22,7 +25,7 @@ export const CreateExerciseDialog: React.FC<{
     MeasurementType.WEIGHT_REPS,
   )
   const [isCreating, setIsCreating] = useState(false)
-
+  const { addExercise } = useWorkoutManager()
   useEffect(() => {
     setName(initialName || "")
   }, [initialName, isOpen])
@@ -33,17 +36,21 @@ export const CreateExerciseDialog: React.FC<{
   const muscleGroupsQuery = useQuery(trpc.exercises.getAllMuscleGroups.queryOptions())
   const createExerciseMutation = useMutation(
     trpc.exercises.create.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [trpc.exercises.getAll.queryKey()],
+      onSuccess: (exercise) => {
+        queryClient.invalidateQueries({ queryKey: [exerciseQueryKey] })
+        if (!exercise) return
+        queryClient.setQueryData([exerciseQueryKey], (data: DbExercisesMap) => {
+          if (!data) return new Map().set(exercise.id, exercise)
+          data.set(exercise.id, exercise)
+          return data
         })
+        addExercise(exercise.id)
 
         // Reset form
         setName("")
         setDescription("")
         setPrimaryMuscleGroupId("")
         setMeasurementType(MeasurementType.WEIGHT_REPS)
-
         onClose()
       },
       onSettled: () => {
@@ -105,11 +112,24 @@ export const CreateExerciseDialog: React.FC<{
                 <SelectValue placeholder="Select measurement type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="weight-reps">Weight & Reps</SelectItem>
-                <SelectItem value="reps">Reps Only</SelectItem>
-                <SelectItem value="distance">Distance</SelectItem>
-                <SelectItem value="time">Time</SelectItem>
-                <SelectItem value="time-distance">Time & Distance</SelectItem>
+                <SelectItem value={MeasurementType.REPS}>
+                  {MeasurementTypeLabels[MeasurementType.REPS]}
+                </SelectItem>
+                <SelectItem value={MeasurementType.WEIGHT_REPS}>
+                  {MeasurementTypeLabels[MeasurementType.WEIGHT_REPS]}
+                </SelectItem>
+                <SelectItem value={MeasurementType.WEIGHT_DISTANCE}>
+                  {MeasurementTypeLabels[MeasurementType.WEIGHT_DISTANCE]}
+                </SelectItem>
+                <SelectItem value={MeasurementType.WEIGHT_DURATION}>
+                  {MeasurementTypeLabels[MeasurementType.WEIGHT_DURATION]}
+                </SelectItem>
+                <SelectItem value={MeasurementType.TIME}>
+                  {MeasurementTypeLabels[MeasurementType.TIME]}
+                </SelectItem>
+                <SelectItem value={MeasurementType.TIME_DISTANCE}>
+                  {MeasurementTypeLabels[MeasurementType.TIME_DISTANCE]}
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

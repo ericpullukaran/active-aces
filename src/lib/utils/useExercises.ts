@@ -7,11 +7,16 @@ import { DbExercise } from "~/lib/types/workout"
 export type ExerciseFilterOptions = {
   muscleGroups?: string[]
   onlyMine?: boolean
+  deleted?: boolean
 }
 
+export const exerciseQueryKey = ["exercises"] as const
 export function useExercises(searchQuery: string = "", filterOptions?: ExerciseFilterOptions) {
   const trpc = useTRPC()
-  const exercises = useQuery(trpc.exercises.getAll.queryOptions())
+  const exercises = useQuery({
+    ...trpc.exercises.getAll.queryOptions(),
+    queryKey: [exerciseQueryKey],
+  })
 
   const [filteredExercises, setFilteredExercises] = useState<[string, DbExercise][]>([])
 
@@ -63,6 +68,11 @@ export function useExercises(searchQuery: string = "", filterOptions?: ExerciseF
     // Apply creator filter if onlyMine is true
     if (filterOptions?.onlyMine) {
       results = results.filter(([_, exercise]) => exercise.creatorId !== null)
+    }
+
+    // Apply deleted filter if provided
+    if (filterOptions?.deleted !== undefined) {
+      results = results.filter(([_, exercise]) => exercise.deleted === filterOptions.deleted)
     }
 
     setFilteredExercises(results)

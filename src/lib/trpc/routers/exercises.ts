@@ -23,7 +23,9 @@ const CreateExerciseSchema = z.object({
 
 export const exercisesRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    return await exercisesService.getAllExercises(ctx.db, ctx.auth.userId)
+    return await exercisesService.getAllExercises(ctx.db, ctx.auth.userId, {
+      includeAccessoryMuscleGroups: true,
+    })
   }),
 
   getAllMuscleGroups: protectedProcedure.query(async ({ ctx }) => {
@@ -36,4 +38,10 @@ export const exercisesRouter = createTRPCRouter({
       creatorId: ctx.auth.userId,
     })
   }),
+
+  delete: protectedProcedure
+    .input(z.object({ exerciseId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return await exercisesService.deleteExercise(ctx.db, ctx.auth.userId, input.exerciseId)
+    }),
 })

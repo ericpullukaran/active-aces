@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "motion/react"
 import { ExerciseFilterOptions } from "~/lib/utils/useExercises"
 import { cn } from "~/lib/utils"
 import { CreateExerciseDialog } from "./CreateExerciseDialog"
-import { ExercisesFilterDialog, useFilters } from "./ExercisesFilterDialog"
+import { ExercisesFilterDialog, useExercisesFilters } from "./ExercisesFilterDialog"
 
 export const AddExerciseDialog: React.FC<{
   children: (props: { openDialog: () => void }) => React.ReactNode
@@ -21,7 +21,7 @@ export const AddExerciseDialog: React.FC<{
   const [isCreateExerciseOpen, setIsCreateExerciseOpen] = useState(false)
   const [initialExerciseName, setInitialExerciseName] = useState("")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
-  const { filters, setFilters, hasFiltersApplied } = useFilters()
+  const { filters, setFilters, hasFiltersApplied } = useExercisesFilters()
 
   const toggleSearch = () => {
     if (isSearching) {
@@ -46,7 +46,6 @@ export const AddExerciseDialog: React.FC<{
   }
 
   const openCreateExercise = (initialName?: string) => {
-    console.log("openCreateExercise", initialName)
     setInitialExerciseName(initialName || "")
     setIsAddExerciseOpen(false)
     setIsCreateExerciseOpen(true)

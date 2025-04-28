@@ -1,0 +1,1 @@
+ALTER TABLE `exercises` ADD `deleted` integer DEFAULT false NOT NULL;
