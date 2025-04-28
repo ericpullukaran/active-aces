@@ -3,7 +3,7 @@ import React from "react"
 import { motion } from "motion/react"
 import { Database, SquarePlus } from "lucide-react"
 import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
-import { AddExerciseModal } from "../AddExerciseModal"
+import { AddExerciseDialog } from "../AddExerciseDialog"
 
 export const ExercisesButton = () => {
   const { currentPage, currentWorkout, setCurrentPage } = useWorkoutManager()
@@ -14,7 +14,7 @@ export const ExercisesButton = () => {
   const showAddExerciseIcon = isWorkoutActive && isWorkoutPage
 
   return (
-    <AddExerciseModal>
+    <AddExerciseDialog>
       {({ openDialog }) => (
         <motion.button
           layout
@@ -51,6 +51,6 @@ export const ExercisesButton = () => {
           )}
         </motion.button>
       )}
-    </AddExerciseModal>
+    </AddExerciseDialog>
   )
 }

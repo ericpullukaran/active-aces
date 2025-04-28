@@ -27,6 +27,7 @@ import { motion } from "motion/react"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
+import MuscleGroupBadge from "./MuscleGroupBadge"
 
 type Props = {
   workout: WorkoutHistoryExercise
@@ -113,16 +114,10 @@ export default function WorkoutHistoryCard({ workout }: Props) {
           {allMuscleGroups.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {muscleGroupsToShow.map((group) => (
-                <Badge key={group} variant="outline" className="bg-primary/10">
-                  {group}
-                </Badge>
+                <MuscleGroupBadge key={group} muscleGroup={group} />
               ))}
 
-              {hasMore && (
-                <Badge variant="outline" className="bg-primary/5">
-                  +{moreCount} more
-                </Badge>
-              )}
+              {hasMore && <MuscleGroupBadge muscleGroup={`+${moreCount} more`} />}
             </div>
           )}
         </div>
