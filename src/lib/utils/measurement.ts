@@ -1,4 +1,5 @@
 import { MeasurementMetric, MeasurementType } from "~/lib/db/types"
+import { Doc } from "../db"
 
 // Measurement field labels
 export const MEASUREMENT_FIELDS = {
@@ -49,17 +50,8 @@ export function getFieldKeys(
 /**
  * Format set value for display
  */
-export function formatSetValue(set: any, metric: MeasurementMetric): string {
+export function formatSetValue(set: Doc<"exerciseSets">, metric: MeasurementMetric): string {
   if (set[metric] == null) return "-"
 
-  if (metric === "time" && set.time != null) {
-    // Format time in seconds or minutes:seconds
-    const timeInSeconds = Math.floor(set.time / 1000)
-    if (timeInSeconds < 60) return `${timeInSeconds}s`
-    const minutes = Math.floor(timeInSeconds / 60)
-    const seconds = timeInSeconds % 60
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`
-  }
-
-  return set[metric]?.toString() || "-"
+  return set[metric].toString() || "-"
 }
