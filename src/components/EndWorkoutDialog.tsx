@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog"
 import { Textarea } from "./ui/textarea"
+import { Input } from "./ui/input"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
 import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
 
@@ -25,6 +26,7 @@ export default function EndWorkoutDialog({
   const queryClient = useQueryClient()
   const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
   const [note, setNote] = useState("")
+  const [title, setTitle] = useState("")
   const { currentWorkout, removeCurrentWorkout, setCurrentPage } = useWorkoutManager()
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
 
@@ -41,13 +43,19 @@ export default function EndWorkoutDialog({
     if (currentWorkout) {
       putWorkoutMutation.mutate(
         {
-          workout: { ...currentWorkout, endTime: new Date(), ...(note !== "" && { notes: note }) },
+          workout: {
+            ...currentWorkout,
+            endTime: new Date(),
+            ...(title !== "" && { title }),
+            ...(note !== "" && { notes: note }),
+          },
         },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
             queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
             removeCurrentWorkout()
+            setTitle("")
             setNote("")
             closeDialog()
             setCurrentPage("home")
@@ -64,6 +72,15 @@ export default function EndWorkoutDialog({
         renderTrigger={({ openDialog }) => children({ openDialog })}
         renderContent={({ closeDialog }) => (
           <div className="flex flex-col gap-4 px-4">
+            <div>
+              <p className="mb-2 text-sm font-medium">Workout Title</p>
+              <Input
+                placeholder="Enter a title for your workout"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                maxLength={100}
+              />
+            </div>
             <div>
               <p className="mb-2 text-sm font-medium">Workout Notes</p>
               <Textarea
