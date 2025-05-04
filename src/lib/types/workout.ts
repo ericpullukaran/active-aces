@@ -29,6 +29,7 @@ export const WorkoutExerciseSchema = z.object({
   // Settings for the exercise
   enableAssistedReps: z.boolean().default(false),
   enableWeightedReps: z.boolean().default(false),
+  restTimeMs: z.number().optional(),
 })
 export type WorkoutExercise = z.infer<typeof WorkoutExerciseSchema>
 

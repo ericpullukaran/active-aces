@@ -1,5 +1,5 @@
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
-import { Duration } from "./Duration"
+import { Stopwatch } from "./Stopwatch"
 import { StopCircle, Tally5, Boxes } from "lucide-react"
 
 export default function WorkoutStats() {
@@ -22,14 +22,14 @@ export default function WorkoutStats() {
   )
 
   return (
-    <div className="bg-card/70 sticky top-5 z-10 mb-4 flex w-full overflow-x-scroll rounded-xl py-5 ring-4 ring-zinc-800/70 brightness-90 backdrop-blur-3xl">
+    <div className="bg-card/70 sticky top-5 z-10 mb-4 flex w-full overflow-x-scroll rounded-3xl py-5 ring-4 ring-zinc-800/70 brightness-90 backdrop-blur-3xl">
       <div className="border-card flex flex-1 flex-col items-center justify-center border-r-2">
         <div className="flex items-center gap-1 text-sm">
           <StopCircle size="1em" className="text-destructive animate-pulse" />
           <div>Duration</div>
         </div>
         <div className="text-xl font-medium tabular-nums">
-          <Duration from={currentWorkout?.startTime}></Duration>
+          <Stopwatch from={currentWorkout?.startTime}></Stopwatch>
         </div>
       </div>
       <div className="border-card flex flex-col items-center justify-center border-r-2 px-4">

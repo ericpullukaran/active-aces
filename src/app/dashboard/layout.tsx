@@ -7,6 +7,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <WhenHydrated>
       <WorkoutManagerProvider initialPage="home">
         <div className="mx-4 max-w-7xl">{children}</div>
+
         <BottomNavigation />
       </WorkoutManagerProvider>
     </WhenHydrated>

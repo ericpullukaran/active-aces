@@ -4,6 +4,7 @@ import {
   CircleDashed,
   Menu,
   NotepadText,
+  Timer,
   Trash,
 } from "lucide-react"
 import { useMemo, useState } from "react"
@@ -20,6 +21,7 @@ import {
 } from "~/components/ui/dropdown-menu"
 import ExerciseNotesDialog from "./ExerciseNotesDialog"
 import { MeasurementType } from "~/lib/db/types"
+import CustomizeTimerDialog from "./CustomizeTimerDialog"
 
 export function WorkoutExerciseHeader({
   exercise,
@@ -32,6 +34,7 @@ export function WorkoutExerciseHeader({
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showNotesDialog, setShowNotesDialog] = useState(false)
+  const [showTimerDialog, setShowTimerDialog] = useState(false)
   const { updateExerciseSettings } = useWorkoutManager()
   const completedSets = useMemo(
     () => exercise.sets.reduce((acc, set) => acc + (set.completed ? 1 : 0), 0),
@@ -73,6 +76,14 @@ export function WorkoutExerciseHeader({
         initialNotes={exercise.notes || ""}
         isOpen={showNotesDialog}
         onClose={() => setShowNotesDialog(false)}
+      />
+
+      {/* External Exercise Timer Dialog */}
+      <CustomizeTimerDialog
+        exerciseId={exercise.stableExerciseId}
+        initialTimer={exercise.metadata.defaultRestTime}
+        isOpen={showTimerDialog}
+        onClose={() => setShowTimerDialog(false)}
       />
 
       <DropdownMenu open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -130,6 +141,17 @@ export function WorkoutExerciseHeader({
           >
             <NotepadText className="mr-2 h-4 w-4" />
             {exercise.notes ? "Edit notes" : "Add notes"}
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="flex items-center px-2"
+            onClick={() => {
+              setIsPopoverOpen(false)
+              setShowTimerDialog(true)
+            }}
+          >
+            <Timer className="mr-2 h-4 w-4" />
+            Customize timer
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />

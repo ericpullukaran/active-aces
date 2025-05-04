@@ -149,6 +149,7 @@ const putWorkout = async (
             exerciseId: exercise.exerciseId,
             order: i,
             notes: exercise.notes,
+            restTime: exercise.restTimeSeconds,
             createdAt: new Date(),
           })
           .returning({ id: workoutExercises.id })

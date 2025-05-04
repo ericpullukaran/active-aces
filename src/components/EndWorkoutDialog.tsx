@@ -98,7 +98,7 @@ export default function EndWorkoutDialog({
             <Dialog open={showDeleteConfirmation} onOpenChange={setShowDeleteConfirmation}>
               <DialogTrigger asChild>
                 <Button
-                  variant={"destructiveOutline"}
+                  variant={"destructive"}
                   disabled={putWorkoutMutation.isPending}
                   onClick={() => setShowDeleteConfirmation(true)}
                   className="flex-1 text-nowrap"

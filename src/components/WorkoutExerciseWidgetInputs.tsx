@@ -51,7 +51,7 @@ type Props = {
 }
 
 export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: Props) {
-  const { updateSet, removeSet } = useWorkoutManager()
+  const { updateSet, removeSet, setTimerDurationSeconds } = useWorkoutManager()
 
   const getTrailingActions = (setId: string) =>
     exercise.sets.length > 1 ? (
@@ -147,12 +147,17 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                 <Checkbox
                   className="accent-primary h-8 w-12 rounded-full border-zinc-300 bg-transparent focus:ring-green-800"
                   checked={set.completed}
-                  onCheckedChange={(checked) =>
+                  onCheckedChange={(checked) => {
                     updateSet(exercise.stableExerciseId, set.stableSetId, {
                       completed: !!checked,
                       completedAt: !!checked ? new Date() : undefined,
                     })
-                  }
+                    if (checked) {
+                      if (exercise.restTimeMs && exercise.restTimeMs > 0) {
+                        setTimerDurationSeconds(exercise.restTimeMs / 1000)
+                      }
+                    }
+                  }}
                 />
               </motion.div>
             </SwipeableListItem>

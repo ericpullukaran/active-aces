@@ -7,6 +7,7 @@ import { cn } from "~/lib/utils"
 import { WorkoutButton } from "./WorkoutButton"
 import { ExercisesButton } from "./ExercisesButton"
 import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
+import { TimerOverlay } from "../TimerOverlay"
 
 export type AppPage = "home" | "history" | "workout" | "exercises"
 
@@ -17,11 +18,12 @@ const activeIndicatorTransition: Transition = {
   bounce: 0.3,
 }
 
-const BottomNavigation = () => {
+export default function BottomNavigation() {
   const { currentPage, setCurrentPage } = useWorkoutManager()
 
   return (
     <div className="fixed inset-x-0 bottom-10 mx-3 flex flex-col items-center gap-8">
+      <TimerOverlay />
       <motion.div
         layout
         className="bg-card/70 relative flex w-full max-w-lg items-center justify-between overflow-hidden rounded-full px-3 py-1 text-gray-300 backdrop-blur-3xl"
@@ -90,5 +92,3 @@ const NavButton = ({
     </motion.button>
   )
 }
-
-export default BottomNavigation

@@ -39,6 +39,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
           enableAssistedReps?: boolean
           enableWeightedReps?: boolean
           notes?: string
+          restTimeSeconds?: number
         },
       ) => {
         if (!workoutRef.current) return
@@ -52,11 +53,14 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
                   ...(opts.enableAssistedReps !== undefined && {
                     enableAssistedReps: opts.enableAssistedReps,
                   }),
+                  ...(opts.enableWeightedReps !== undefined && {
+                    enableWeightedReps: opts.enableWeightedReps,
+                  }),
                   ...(opts.notes !== undefined && {
                     notes: opts.notes,
                   }),
-                  ...(opts.enableWeightedReps !== undefined && {
-                    enableWeightedReps: opts.enableWeightedReps,
+                  ...(opts.restTimeSeconds !== undefined && {
+                    restTimeMs: opts.restTimeSeconds * 1000,
                   }),
                 }
               : exercise,
@@ -143,6 +147,8 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       },
       [workoutRef],
     )
+
+    const [timerDurationSeconds, setTimerDurationSeconds] = useState(0)
     return {
       // Page navigation
       currentPage,
@@ -164,6 +170,10 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       addSet,
       updateSet,
       removeSet,
+
+      // Timer properties
+      timerDurationSeconds,
+      setTimerDurationSeconds,
     }
   },
 )
