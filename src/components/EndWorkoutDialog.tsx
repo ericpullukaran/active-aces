@@ -46,7 +46,7 @@ export default function EndWorkoutDialog({
           workout: {
             ...currentWorkout,
             endTime: new Date(),
-            ...(title !== "" && { title }),
+            ...(title !== "" && { name: title }),
             ...(note !== "" && { notes: note }),
           },
         },

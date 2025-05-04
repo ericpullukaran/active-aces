@@ -4,6 +4,7 @@ import React from "react"
 import { cn } from "~/lib/utils"
 import { useWorkoutManager } from "~/components/dashboard-screen/WorkoutManagerProvider"
 import { Input } from "~/components/ui/input"
+import { TimeInput } from "~/components/ui/time-input"
 import { MeasurementMetric } from "~/lib/db/types"
 import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import { AnimatePresence, motion } from "motion/react"
@@ -16,6 +17,7 @@ import {
 } from "react-swipeable-list"
 import "react-swipeable-list/dist/styles.css"
 import { Trash2 } from "lucide-react"
+import { formatTimeValue, parseTimeToSeconds } from "~/lib/utils/dates"
 
 export const measurementToDetails: Record<
   MeasurementMetric,
@@ -101,25 +103,47 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                 <div className={cn("grid place-content-center text-center font-semibold")}>
                   {setIndex + 1}
                 </div>
-                {measurements.map((measurement) => (
-                  <Input
-                    key={measurement}
-                    disabled={set.completed}
-                    type="number"
-                    inputMode="decimal"
-                    className={cn(
-                      "no-spin-buttons w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
-                    )}
-                    onFocus={(event) => event.target.select()}
-                    {...measurementToDetails[measurement].inputProps}
-                    value={set[measurement]}
-                    onChange={(e) =>
-                      updateSet(exercise.stableExerciseId, set.stableSetId, {
-                        [measurement]: e.target.valueAsNumber,
-                      })
-                    }
-                  />
-                ))}
+                {measurements.map((measurement) => {
+                  if (measurement === "time") {
+                    return (
+                      <TimeInput
+                        key={measurement}
+                        disabled={set.completed}
+                        className={cn(
+                          "w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
+                        )}
+                        onFocus={(event) => event.target.select()}
+                        value={set[measurement] ? formatTimeValue(set[measurement]) : ""}
+                        onBlur={(value) => {
+                          const seconds = parseTimeToSeconds(value)
+                          updateSet(exercise.stableExerciseId, set.stableSetId, {
+                            [measurement]: seconds,
+                          })
+                        }}
+                      />
+                    )
+                  }
+
+                  return (
+                    <Input
+                      key={measurement}
+                      disabled={set.completed}
+                      type="number"
+                      inputMode="decimal"
+                      className={cn(
+                        "no-spin-buttons w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
+                      )}
+                      onFocus={(event) => event.target.select()}
+                      {...measurementToDetails[measurement].inputProps}
+                      value={set[measurement]}
+                      onChange={(e) =>
+                        updateSet(exercise.stableExerciseId, set.stableSetId, {
+                          [measurement]: e.target.valueAsNumber,
+                        })
+                      }
+                    />
+                  )
+                })}
                 <Checkbox
                   className="accent-primary h-8 w-12 rounded-full border-zinc-300 bg-transparent focus:ring-green-800"
                   checked={set.completed}

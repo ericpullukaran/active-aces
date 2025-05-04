@@ -3,11 +3,11 @@ import { Doc } from "../db"
 
 // Measurement field labels
 export const MEASUREMENT_FIELDS = {
-  weight: { label: "Weight" },
+  weight: { label: "Weight (kg)" },
   reps: { label: "Reps" },
   assistedReps: { label: "Assisted" },
   time: { label: "Time" },
-  distance: { label: "Distance" },
+  distance: { label: "Distance (m)" },
 } satisfies Record<MeasurementMetric, { label: string }>
 
 export const MeasurementTypeLabels = {
