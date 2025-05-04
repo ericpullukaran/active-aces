@@ -57,7 +57,7 @@ export function WorkoutExerciseHeader({
               {allSetsComplete ? (
                 <>
                   <CircleCheck className="fill-primary text-card mr-1 h-4 w-4" />
-                  <span>All sets complete</span>
+                  <span>{totalSets} sets complete</span>
                 </>
               ) : (
                 <>{`${completedSets}/${totalSets} sets`}</>
