@@ -6,6 +6,7 @@ import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation } from "@tanstack/react-query"
 import EndWorkoutDialog from "../EndWorkoutDialog"
+import { TextMorph } from "../ui/text-morph"
 
 export const WorkoutButton = () => {
   const trpc = useTRPC()
@@ -72,7 +73,7 @@ export const WorkoutButton = () => {
               {buttonContent.icon}
             </motion.div>
           )}
-          <motion.span layout>{buttonContent.text}</motion.span>
+          <TextMorph>{buttonContent.text}</TextMorph>
 
           {/* Indicator dot for workout page */}
           {currentPage === "workout" && (
