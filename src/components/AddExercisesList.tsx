@@ -7,7 +7,7 @@ import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 
 export function AddExercisesList({
   searchQuery = "",
-  filterOptions = {},
+  filterOptions = { deleted: true },
   onCreateExercise,
 }: {
   searchQuery?: string

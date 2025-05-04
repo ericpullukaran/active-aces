@@ -69,7 +69,7 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
 
   return (
     <div className="space-y-2">
-      <SwipeableList>
+      <SwipeableList className="flex flex-col gap-2">
         <AnimatePresence mode="popLayout">
           {exercise.sets.map((set, setIndex) => (
             <SwipeableListItem
@@ -121,7 +121,7 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                   />
                 ))}
                 <Checkbox
-                  className="accent-primary h-6 w-10 rounded-full border-zinc-300 bg-transparent focus:ring-green-800"
+                  className="accent-primary h-8 w-12 rounded-full border-zinc-300 bg-transparent focus:ring-green-800"
                   checked={set.completed}
                   onCheckedChange={(checked) =>
                     updateSet(exercise.stableExerciseId, set.stableSetId, {

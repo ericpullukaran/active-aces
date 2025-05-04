@@ -92,7 +92,7 @@ export function WorkoutExerciseHeader({
         <DropdownMenuContent className="w-56">
           {exercise.metadata.measurementType === MeasurementType.WEIGHT_REPS && (
             <DropdownMenuItem
-              className="flex items-center px-2 py-1.5"
+              className="flex items-center px-2"
               variant={exercise.enableAssistedReps ? "selected" : "default"}
               onClick={() =>
                 updateExerciseSettings(exercise.stableExerciseId, {
@@ -107,7 +107,7 @@ export function WorkoutExerciseHeader({
           )}
           {exercise.metadata.measurementType === MeasurementType.REPS && (
             <DropdownMenuItem
-              className="flex items-center px-2 py-1.5"
+              className="flex items-center px-2"
               variant={exercise.enableWeightedReps ? "selected" : "default"}
               onClick={() =>
                 updateExerciseSettings(exercise.stableExerciseId, {
@@ -122,7 +122,7 @@ export function WorkoutExerciseHeader({
           )}
 
           <DropdownMenuItem
-            className="flex items-center px-2 py-1.5"
+            className="flex items-center px-2"
             onClick={() => {
               setIsPopoverOpen(false)
               setShowNotesDialog(true)
