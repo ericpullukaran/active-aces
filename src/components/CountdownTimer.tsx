@@ -120,7 +120,7 @@ export const CountdownTimer = (props: {
         {isRunning ? <TimerReset size={20} /> : <X size={20} />}
       </Button>
 
-      <div className="flex-1 justify-items-end">
+      <div className="flex-1 place-items-end justify-items-end">
         <div className="flex items-end gap-2">
           <div className="ml-1 text-sm font-semibold">Timer</div>
           <div className="text-4xl font-bold tabular-nums">

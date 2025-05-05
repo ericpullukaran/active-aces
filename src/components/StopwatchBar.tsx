@@ -133,7 +133,7 @@ export const StopwatchBar = (props: {
         <X size={20} />
       </Button>
 
-      <div className="flex-1 justify-items-end">
+      <div className="flex-1 place-items-end justify-items-end">
         <div className="flex items-end gap-2">
           <div className="text-4xl font-bold tabular-nums">
             <TimeDisplay formattedTime={formattedTimeElapsed} />
