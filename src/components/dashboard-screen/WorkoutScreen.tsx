@@ -26,7 +26,7 @@ export default function WorkoutScreen() {
   return (
     <div className="relative isolate">
       <WorkoutStats />
-      <div className="isolate flex flex-col items-center gap-8 pt-10 pb-36">
+      <div className="isolate flex flex-col items-center gap-8 pt-10 pb-52">
         <AnimatePresence mode="popLayout">
           {exercisesWithMetadata.length === 0 && (
             <div className="text-muted-foreground text-center text-sm">
