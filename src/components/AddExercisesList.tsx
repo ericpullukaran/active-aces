@@ -30,7 +30,7 @@ export function AddExercisesList({
                 <div className="flex items-center">
                   <p className="flex flex-1 items-center text-sm leading-none font-medium">
                     <Plus size={16} className="mr-2" />
-                    Create "{searchQuery}"
+                    Create &quot;{searchQuery}&quot;
                   </p>
                 </div>
                 <p className="text-muted-foreground line-clamp-2 text-sm">
@@ -53,7 +53,7 @@ export function AddExercisesList({
         onClick={() => addExercise(exercise.id)}
       />
     ))
-  }, [filteredExercises, searchQuery, isLoading, onCreateExercise])
+  }, [filteredExercises, searchQuery, isLoading, onCreateExercise, addExercise])
 
   return (
     <div className="flex w-full flex-col gap-4">

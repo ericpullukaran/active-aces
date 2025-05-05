@@ -1,7 +1,7 @@
 "use client"
 import { useCallback, useState } from "react"
 import { WorkoutExerciseHeader } from "./WorkoutExerciseHeader"
-import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
+import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import WorkoutExerciseWidgetBody from "./WorkoutExerciseWidgetBody"
 import { motion } from "motion/react"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
@@ -19,7 +19,7 @@ export default function WorkoutExerciseWidget({
   }, [])
   const handleDeleteExercise = useCallback(() => {
     deleteExercise(exercise.stableExerciseId)
-  }, [deleteExercise])
+  }, [deleteExercise, exercise.stableExerciseId])
 
   return (
     <motion.div

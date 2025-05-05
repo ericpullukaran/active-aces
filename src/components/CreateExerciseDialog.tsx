@@ -9,7 +9,7 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { MeasurementType } from "~/lib/db/types"
 import { MeasurementTypeLabels } from "~/lib/utils/measurement"
-import { DbExercisesMap } from "~/lib/types/workout"
+import { type DbExercisesMap } from "~/lib/types/workout"
 import { exerciseQueryKey } from "~/lib/utils/useExercises"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 
@@ -80,7 +80,7 @@ export const CreateExerciseDialog: React.FC<{
       description="Add a new custom exercise to your library"
       isOpen={isOpen}
       onClose={onClose}
-      renderContent={({ closeDialog }) => (
+      renderContent={() => (
         <div className="flex flex-col gap-4 p-4">
           <div className="space-y-2">
             <Label htmlFor="name">Exercise Name</Label>

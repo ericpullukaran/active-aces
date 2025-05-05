@@ -1,12 +1,12 @@
 import { ExerciseCard } from "./ExerciseCard"
 import { useMemo, useState } from "react"
 import { Skeleton } from "./ui/skeleton"
-import { useExercises, ExerciseFilterOptions } from "~/lib/utils/useExercises"
+import { useExercises } from "~/lib/utils/useExercises"
 import { ListFilter } from "lucide-react"
 import { Button } from "./ui/button"
 import { cn } from "~/lib/utils"
 import { ExercisesFilterDialog, useExercisesFilters } from "./ExercisesFilterDialog"
-import { DbExercise } from "~/lib/types/workout"
+import { type DbExercise } from "~/lib/types/workout"
 import { ExerciseDialogSummary } from "./ExerciseDialogSummary"
 
 export function ExercisesList() {

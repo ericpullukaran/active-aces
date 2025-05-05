@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react"
+import { type ReactNode, useState } from "react"
 import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { Button } from "./ui/button"
 import { useTRPC } from "~/lib/trpc/client"
@@ -70,7 +70,7 @@ export default function EndWorkoutDialog({
       <ResponsiveDialog
         title="End Workout"
         renderTrigger={({ openDialog }) => children({ openDialog })}
-        renderContent={({ closeDialog }) => (
+        renderContent={() => (
           <div className="flex flex-col gap-4 px-4">
             <div>
               <p className="mb-2 text-sm font-medium">Workout Title</p>

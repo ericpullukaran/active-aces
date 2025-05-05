@@ -1,5 +1,5 @@
 "use client"
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { ReactNode, useCallback, useMemo, useState, useRef, useEffect } from "react"
 import { createTypedContext } from "~/lib/utils/context"
 import { AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
@@ -13,6 +13,8 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       useLocalStorage<PutWorkout | null>("current_workout", null)
     const [currentPage, setCurrentPage] = useState(currentWorkout ? "workout" : props.initialPage)
     const workoutRef = useUpdatedRef(currentWorkout)
+    // Ref to store the current elapsed time of the stopwatch
+    const currentStopwatchElapsedTimeRef = useRef<number>(0)
 
     const addWorkoutNote = useCallback(
       (note: string) => {
@@ -149,6 +151,59 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
     )
 
     const [timerDurationSeconds, setTimerDurationSeconds] = useState(0)
+
+    const [activeStopwatchSetInfo, setActiveStopwatchSetInfo] = useState<{
+      exerciseId: string
+      setId: string
+      initialSeconds?: number
+    } | null>(null)
+
+    // This function gets called from StopwatchBar to update the current elapsed time
+    const updateStopwatchElapsedTime = useCallback((time: number) => {
+      currentStopwatchElapsedTimeRef.current = time
+    }, [])
+
+    // This effect checks if the set that the stopwatch is tied to still exists
+    // or if it has been completed. If so, it stops the stopwatch
+    useEffect(() => {
+      if (activeStopwatchSetInfo) {
+        const set = currentWorkout?.exercises
+          .find((exercise) => exercise.stableExerciseId === activeStopwatchSetInfo.exerciseId)
+          ?.sets.find((set) => set.stableSetId === activeStopwatchSetInfo.setId)
+        if (!set || set.completed) {
+          stopStopwatch(currentStopwatchElapsedTimeRef.current)
+        }
+      }
+    }, [currentWorkout])
+
+    const stopStopwatch = useCallback(
+      (elapsedSeconds?: number) => {
+        if (activeStopwatchSetInfo && elapsedSeconds !== undefined) {
+          updateSet(activeStopwatchSetInfo.exerciseId, activeStopwatchSetInfo.setId, {
+            time: elapsedSeconds,
+          })
+        }
+        setActiveStopwatchSetInfo(null)
+      },
+      [activeStopwatchSetInfo, updateSet],
+    )
+    const startStopwatch = useCallback(
+      (props: { exerciseId: string; setId: string; initialSeconds?: number }) => {
+        // If there's an active stopwatch, stop it and save its progress
+        if (activeStopwatchSetInfo) {
+          stopStopwatch(currentStopwatchElapsedTimeRef.current)
+          currentStopwatchElapsedTimeRef.current = 0
+        }
+
+        setActiveStopwatchSetInfo({
+          exerciseId: props.exerciseId,
+          setId: props.setId,
+          initialSeconds: props.initialSeconds,
+        })
+      },
+      [activeStopwatchSetInfo, stopStopwatch],
+    )
+
     return {
       // Page navigation
       currentPage,
@@ -174,6 +229,12 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       // Timer properties
       timerDurationSeconds,
       setTimerDurationSeconds,
+
+      // Stopwatch properties
+      activeStopwatchSetInfo,
+      startStopwatch,
+      stopStopwatch,
+      updateStopwatchElapsedTime,
     }
   },
 )

@@ -1,5 +1,4 @@
-import { DbExercise } from "~/lib/types/workout"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import { type DbExercise } from "~/lib/types/workout"
 import { DrawerClose } from "./ui/drawer"
 import { DialogClose } from "./ui/dialog"
 import { MOBILE_VIEWPORT } from "~/lib/utils"

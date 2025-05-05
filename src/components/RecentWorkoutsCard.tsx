@@ -8,7 +8,6 @@ import WorkoutHistoryCard from "./WorkoutHistoryCard"
 import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
-import { AnimatePresence } from "motion/react"
 
 export const recentWorkoutsQueryKey: readonly string[] = ["recent-workouts"]
 export default function RecentWorkoutsCard() {

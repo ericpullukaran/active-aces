@@ -16,8 +16,10 @@ import {
   SwipeAction,
 } from "react-swipeable-list"
 import "react-swipeable-list/dist/styles.css"
-import { Trash2 } from "lucide-react"
+import { Pencil, Play, Trash2 } from "lucide-react"
 import { formatTimeValue, parseTimeToSeconds } from "~/lib/utils/dates"
+import { Button } from "./ui/button"
+import { WorkoutExerciseWidgetTimeInput } from "./WorkoutExerciseWidgetTimeInput"
 
 export const measurementToDetails: Record<
   MeasurementMetric,
@@ -106,20 +108,10 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                 {measurements.map((measurement) => {
                   if (measurement === "time") {
                     return (
-                      <TimeInput
+                      <WorkoutExerciseWidgetTimeInput
                         key={measurement}
-                        disabled={set.completed}
-                        className={cn(
-                          "w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
-                        )}
-                        onFocus={(event) => event.target.select()}
-                        value={set[measurement] ? formatTimeValue(set[measurement]) : ""}
-                        onBlur={(value) => {
-                          const seconds = parseTimeToSeconds(value)
-                          updateSet(exercise.stableExerciseId, set.stableSetId, {
-                            [measurement]: seconds,
-                          })
-                        }}
+                        set={set}
+                        exercise={exercise}
                       />
                     )
                   }

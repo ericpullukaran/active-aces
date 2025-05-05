@@ -1,51 +1,60 @@
-import { useEffect, useRef, useState } from "react"
 import { formatTimeValue } from "~/lib/utils/dates"
 import { useIntervalValue } from "~/lib/utils/useIntervalValue"
 import { TimeDisplay } from "./TimeDisplay"
-import { motion } from "motion/react"
-import { Pause, Play, TimerReset, X } from "lucide-react"
+import { X } from "lucide-react"
+import { TimerReset } from "lucide-react"
 import { Button } from "./ui/button"
+import { useRef, useEffect } from "react"
+import { Pause } from "lucide-react"
+import { useState } from "react"
+import { motion } from "motion/react"
+import { Play } from "lucide-react"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 
-export const CountdownTimer = (props: {
-  durationInSeconds: number
-  onComplete?: () => void
+export const StopwatchBar = (props: {
+  onComplete?: (elapsedSeconds: number) => void
   autoStart?: boolean
+  initialSeconds?: number
 }) => {
-  const { durationInSeconds, onComplete, autoStart = true } = props
+  const { updateStopwatchElapsedTime } = useWorkoutManager()
+  const { onComplete, autoStart = true, initialSeconds = 0 } = props
   const [isRunning, setIsRunning] = useState(autoStart)
   const [isPaused, setIsPaused] = useState(false)
 
-  const startTimeRef = useRef(autoStart ? Date.now() : null)
+  const initialSecondsRef = useRef(initialSeconds)
+  const startTimeRef = useRef<number | null>(null)
   const pausedAtRef = useRef<number | null>(null)
   const totalPausedTimeRef = useRef(0)
 
-  const getRemainingTime = () => {
-    if (!isRunning || !startTimeRef.current) return durationInSeconds
+  useEffect(() => {
+    initialSecondsRef.current = initialSeconds
+    if (autoStart) {
+      startTimeRef.current = Date.now() - initialSeconds * 1000
+    }
+  }, [autoStart, initialSeconds, onComplete])
+
+  const getElapsedTime = () => {
+    if (!isRunning || !startTimeRef.current) return initialSecondsRef.current
 
     const now = Date.now()
-
     const currentTime = isPaused ? pausedAtRef.current! : now
 
     const elapsedMs = currentTime - startTimeRef.current - totalPausedTimeRef.current
     const elapsedSeconds = Math.floor(elapsedMs / 1000)
-    const remainingSeconds = Math.max(0, durationInSeconds - elapsedSeconds)
 
-    return remainingSeconds
+    return elapsedSeconds
   }
 
-  const remainingSeconds = useIntervalValue(getRemainingTime, 50)
-  const formattedTimeLeft = formatTimeValue(remainingSeconds)
+  const elapsedSeconds = useIntervalValue(getElapsedTime, 50)
+  const formattedTimeElapsed = formatTimeValue(elapsedSeconds)
 
   useEffect(() => {
-    if (remainingSeconds === 0 && isRunning) {
-      reset()
-      onComplete?.()
-    }
-  }, [remainingSeconds, isRunning, onComplete])
+    updateStopwatchElapsedTime(elapsedSeconds)
+  }, [elapsedSeconds, updateStopwatchElapsedTime])
 
   const start = () => {
     if (!isRunning) {
-      startTimeRef.current = Date.now()
+      startTimeRef.current = Date.now() - initialSecondsRef.current * 1000
       totalPausedTimeRef.current = 0
       setIsRunning(true)
       setIsPaused(false)
@@ -72,6 +81,7 @@ export const CountdownTimer = (props: {
   const reset = () => {
     setIsPaused(true)
     setIsRunning(false)
+    initialSecondsRef.current = 0
     startTimeRef.current = null
     pausedAtRef.current = null
     totalPausedTimeRef.current = 0
@@ -85,14 +95,9 @@ export const CountdownTimer = (props: {
     }
   }
 
-  // If they press it once we reset, if they press it again we call onComplete
-  const toggleReset = () => {
-    if (isRunning) {
-      reset()
-    } else {
-      onComplete?.()
-      reset()
-    }
+  const finish = () => {
+    onComplete?.(elapsedSeconds)
+    reset()
   }
 
   return (
@@ -115,16 +120,23 @@ export const CountdownTimer = (props: {
         variant="ghost"
         size="icon"
         className="rounded-full bg-gray-600/70 hover:bg-gray-600/90"
-        onClick={toggleReset}
+        onClick={reset}
       >
-        {isRunning ? <TimerReset size={20} /> : <X size={20} />}
+        <TimerReset size={20} />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="rounded-full bg-gray-600/70 hover:bg-gray-600/90"
+        onClick={finish}
+      >
+        <X size={20} />
       </Button>
 
       <div className="flex-1 justify-items-end">
         <div className="flex items-end gap-2">
-          <div className="ml-1 text-sm font-semibold">Timer</div>
           <div className="text-4xl font-bold tabular-nums">
-            <TimeDisplay formattedTime={formattedTimeLeft} />
+            <TimeDisplay formattedTime={formattedTimeElapsed} />
           </div>
         </div>
       </div>

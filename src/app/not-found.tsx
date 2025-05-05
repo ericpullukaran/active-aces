@@ -3,9 +3,7 @@ import Link from "next/link"
 
 import { Button } from "~/components/ui/button"
 
-type Props = {}
-
-export default function NotFound404({}: Props) {
+export default function NotFound404() {
   return (
     <main className="bg-background grid min-h-full place-items-center px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
