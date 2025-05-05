@@ -1,5 +1,5 @@
 import { format, differenceInMinutes } from "date-fns"
-import { WorkoutHistoryExercise } from "~/lib/types/workout"
+import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 
 /**
  * Formats a workout date with the specified format string

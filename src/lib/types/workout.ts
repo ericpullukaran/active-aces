@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { Doc } from "../db"
+import { type Doc } from "../db"
 
 // Schema for a workout exercise set
 export const ExerciseSetSchema = z.object({

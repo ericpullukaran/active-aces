@@ -1,9 +1,9 @@
 "use client"
-import { ReactNode, useCallback, useMemo, useState, useRef, useEffect } from "react"
+import { type ReactNode, useCallback, useMemo, useState, useRef, useEffect } from "react"
 import { createTypedContext } from "~/lib/utils/context"
-import { AppPage } from "../navigation/BottomNavigation"
+import { type AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
-import { ExerciseSet, PutWorkout, WorkoutExercise } from "~/lib/types/workout"
+import { type ExerciseSet, type PutWorkout } from "~/lib/types/workout"
 import { useUpdatedRef } from "~/lib/utils/useUpdatedRef"
 import { defaultExerciseSet, defaultWorkout, defaultWorkoutExercise } from "~/lib/utils/defaults"
 
@@ -24,7 +24,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
           notes: note,
         })
       },
-      [workoutRef],
+      [setCurrentWorkout, workoutRef],
     )
     const startWorkout = useCallback(() => {
       if (workoutRef.current) {
@@ -32,7 +32,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
         return
       }
       setCurrentWorkout(defaultWorkout())
-    }, [workoutRef])
+    }, [setCurrentWorkout, workoutRef])
 
     const updateExerciseSettings = useCallback(
       (
@@ -69,7 +69,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
           ),
         })
       },
-      [workoutRef],
+      [setCurrentWorkout, workoutRef],
     )
     const addExercise = useCallback(
       (exerciseId: string) => {
@@ -92,7 +92,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
           ),
         })
       },
-      [workoutRef],
+      [setCurrentWorkout, workoutRef],
     )
     const currentExercises = useMemo(() => {
       return currentWorkout?.exercises.map((exercise) => exercise) ?? []
@@ -110,7 +110,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
           ),
         })
       },
-      [workoutRef],
+      [setCurrentWorkout, workoutRef],
     )
     const updateSet = useCallback(
       (stableExerciseId: string, stableSetId: string, setUpdate: Partial<ExerciseSet>) => {
@@ -130,7 +130,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
           ),
         })
       },
-      [workoutRef],
+      [setCurrentWorkout, workoutRef],
     )
     const removeSet = useCallback(
       (stableExerciseId: string, stableSetId: string) => {
@@ -147,7 +147,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
           ),
         })
       },
-      [workoutRef],
+      [setCurrentWorkout, workoutRef],
     )
 
     const [timerDurationSeconds, setTimerDurationSeconds] = useState(0)
@@ -162,19 +162,6 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
     const updateStopwatchElapsedTime = useCallback((time: number) => {
       currentStopwatchElapsedTimeRef.current = time
     }, [])
-
-    // This effect checks if the set that the stopwatch is tied to still exists
-    // or if it has been completed. If so, it stops the stopwatch
-    useEffect(() => {
-      if (activeStopwatchSetInfo) {
-        const set = currentWorkout?.exercises
-          .find((exercise) => exercise.stableExerciseId === activeStopwatchSetInfo.exerciseId)
-          ?.sets.find((set) => set.stableSetId === activeStopwatchSetInfo.setId)
-        if (!set || set.completed) {
-          stopStopwatch(currentStopwatchElapsedTimeRef.current)
-        }
-      }
-    }, [currentWorkout])
 
     const stopStopwatch = useCallback(
       (elapsedSeconds?: number) => {
@@ -203,6 +190,18 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       },
       [activeStopwatchSetInfo, stopStopwatch],
     )
+    // This effect checks if the set that the stopwatch is tied to still exists
+    // or if it has been completed. If so, it stops the stopwatch
+    useEffect(() => {
+      if (activeStopwatchSetInfo) {
+        const set = currentWorkout?.exercises
+          .find((exercise) => exercise.stableExerciseId === activeStopwatchSetInfo.exerciseId)
+          ?.sets.find((set) => set.stableSetId === activeStopwatchSetInfo.setId)
+        if (!set || set.completed) {
+          stopStopwatch(currentStopwatchElapsedTimeRef.current)
+        }
+      }
+    }, [activeStopwatchSetInfo, currentWorkout, stopStopwatch])
 
     return {
       // Page navigation

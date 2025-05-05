@@ -1,15 +1,9 @@
-import { cmp, DB, orderBy, schema } from "../db"
-import { DbExercise, DbExercisesMap } from "../types/workout"
-import { exercises, muscleGroups } from "../db/schema"
-import { MeasurementType } from "../db/types"
+import { cmp, type DB, orderBy, schema } from "../db"
+import { type DbExercise, type DbExercisesMap } from "../types/workout"
+import { exercises } from "../db/schema"
+import { type MeasurementType } from "../db/types"
 
-const getAllExercises = async (
-  db: DB,
-  userId: string,
-  opts: {
-    includeAccessoryMuscleGroups?: boolean
-  },
-): Promise<DbExercisesMap> => {
+const getAllExercises = async (db: DB, userId: string): Promise<DbExercisesMap> => {
   const exercises = await db.query.exercises.findMany({
     where: cmp.or(
       cmp.isNull(schema.exercises.creatorId),

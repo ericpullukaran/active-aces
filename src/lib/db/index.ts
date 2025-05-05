@@ -9,7 +9,7 @@ import { env } from "~/env"
 
 declare global {
   // allow global `var` declarations
-  // eslint-disable-next-line no-var
+   
   var db: ReturnType<typeof createDb> | undefined
 }
 

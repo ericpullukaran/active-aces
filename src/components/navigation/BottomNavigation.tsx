@@ -1,6 +1,6 @@
 "use client"
 import React from "react"
-import { motion, LayoutGroup, Transition } from "motion/react"
+import { motion, LayoutGroup, type Transition } from "motion/react"
 import { Home, Clock } from "lucide-react"
 import AuthButton from "../AuthButton"
 import { cn } from "~/lib/utils"

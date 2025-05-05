@@ -8,7 +8,7 @@ import {
   Trash,
 } from "lucide-react"
 import { useMemo, useState } from "react"
-import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
+import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import { Skeleton } from "~/components/ui/skeleton"
 import { Button } from "./ui/button"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"

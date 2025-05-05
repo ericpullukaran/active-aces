@@ -1,5 +1,5 @@
 "use client"
-import { AnimatePresence, motion, Transition, Variants } from "motion/react"
+import { AnimatePresence, motion, type Transition, type Variants } from "motion/react"
 import { useMemo, useId } from "react"
 import { cn } from "~/lib/utils"
 

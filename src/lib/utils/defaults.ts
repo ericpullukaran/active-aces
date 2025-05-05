@@ -1,5 +1,5 @@
 import { createPrimaryKeyId } from "../db/cuid"
-import { ExerciseSet, PutWorkout, WorkoutExercise } from "../types/workout"
+import { type ExerciseSet, type PutWorkout, type WorkoutExercise } from "../types/workout"
 
 export const defaultWorkout = (name: string = "Workout"): PutWorkout => {
   return {

@@ -1,9 +1,8 @@
 "use client"
 
 import React, { useState } from "react"
-import { Badge } from "./ui/badge"
 import WorkoutHistorySummary from "./WorkoutHistorySummary"
-import { WorkoutHistoryExercise } from "~/lib/types/workout"
+import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import { extractMuscleGroups, formatWorkoutDate } from "~/lib/utils/workout-helpers"
 import { Menu, Trash } from "lucide-react"
 import { Button } from "./ui/button"

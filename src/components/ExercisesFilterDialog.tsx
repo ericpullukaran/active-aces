@@ -6,7 +6,7 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog"
 import { Checkbox } from "./ui/checkbox"
-import { ExerciseFilterOptions } from "~/lib/utils/useExercises"
+import { type ExerciseFilterOptions } from "~/lib/utils/useExercises"
 
 export const useExercisesFilters = (
   initalFilters: ExerciseFilterOptions = {

@@ -10,7 +10,7 @@
 // Example: "Cable Lateral Raise"
 import { db } from "./index"
 import { exercises, muscleGroups, exerciseMuscleGroups } from "./schema"
-import { MeasurementType } from "./types"
+import { type MeasurementType } from "./types"
 import exercisesData from "./exercises.json"
 import muscleGroupsData from "./muscle_groups.json"
 

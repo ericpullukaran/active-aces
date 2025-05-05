@@ -197,7 +197,7 @@ async function seedUserData(userId: string, numberOfWorkouts = 10) {
     console.log(`Creating ${numberOfWorkouts} workouts...`)
 
     // Generate dates for workouts (spread over the last 30 days)
-    const workoutDates = Array.from({ length: numberOfWorkouts }, (_, i) => {
+    const workoutDates = Array.from({ length: numberOfWorkouts }, (_, _i) => {
       // Spread workouts over the last 30 days
       const daysAgo = Math.floor(Math.random() * 30)
       const hoursAgo = Math.floor(Math.random() * 24)

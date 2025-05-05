@@ -3,10 +3,9 @@ import { parseTimeToSeconds } from "~/lib/utils/dates"
 import { TimeInput } from "./ui/time-input"
 import { cn } from "~/lib/utils"
 import { Button } from "./ui/button"
-import { Play, Pause } from "lucide-react"
-import { ExerciseSet, WorkoutExercise } from "~/lib/types/workout"
+import { Play } from "lucide-react"
+import { type ExerciseSet, type WorkoutExercise } from "~/lib/types/workout"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
-import { useRef } from "react"
 
 type Props = {
   set: ExerciseSet

@@ -4,9 +4,8 @@ import React from "react"
 import { cn } from "~/lib/utils"
 import { useWorkoutManager } from "~/components/dashboard-screen/WorkoutManagerProvider"
 import { Input } from "~/components/ui/input"
-import { TimeInput } from "~/components/ui/time-input"
-import { MeasurementMetric } from "~/lib/db/types"
-import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
+import { type MeasurementMetric } from "~/lib/db/types"
+import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import { AnimatePresence, motion } from "motion/react"
 import { Checkbox } from "./ui/checkbox"
 import {
@@ -16,9 +15,7 @@ import {
   SwipeAction,
 } from "react-swipeable-list"
 import "react-swipeable-list/dist/styles.css"
-import { Pencil, Play, Trash2 } from "lucide-react"
-import { formatTimeValue, parseTimeToSeconds } from "~/lib/utils/dates"
-import { Button } from "./ui/button"
+import { Trash2 } from "lucide-react"
 import { WorkoutExerciseWidgetTimeInput } from "./WorkoutExerciseWidgetTimeInput"
 
 export const measurementToDetails: Record<

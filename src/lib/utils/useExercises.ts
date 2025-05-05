@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 import Fuse from "fuse.js"
 import { useTRPC } from "~/lib/trpc/client"
-import { DbExercise } from "~/lib/types/workout"
+import { type DbExercise } from "~/lib/types/workout"
 
 export type ExerciseFilterOptions = {
   muscleGroups?: string[]

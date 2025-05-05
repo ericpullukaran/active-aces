@@ -16,6 +16,7 @@ export const useLocalStorage = <T>(
     try {
       return SuperJSON.parse(cached) as T
     } catch (err) {
+      console.error(`Error parsing localStorage item ${key}:`, err)
       return initialValue
     }
   })

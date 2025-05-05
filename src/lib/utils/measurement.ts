@@ -1,5 +1,5 @@
-import { MeasurementMetric, MeasurementType } from "~/lib/db/types"
-import { Doc } from "../db"
+import { type MeasurementMetric, MeasurementType } from "~/lib/db/types"
+import { type Doc } from "../db"
 
 // Measurement field labels
 export const MEASUREMENT_FIELDS = {

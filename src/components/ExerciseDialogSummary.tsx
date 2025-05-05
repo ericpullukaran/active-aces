@@ -1,4 +1,4 @@
-import { DbExercise, DbExercisesMap } from "~/lib/types/workout"
+import { type DbExercise, type DbExercisesMap } from "~/lib/types/workout"
 import ResponsiveDialog from "./ui/ResponsiveDialog"
 import MuscleGroupBadge from "./MuscleGroupBadge"
 import { Dumbbell, Clock } from "lucide-react"

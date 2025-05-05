@@ -2,7 +2,7 @@
 
 import { PlusIcon, Check } from "lucide-react"
 import { Button } from "./ui/button"
-import { WorkoutExerciseWithMetadata } from "~/lib/types/workout"
+import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import WorkoutExerciseWidgetInputs from "./WorkoutExerciseWidgetInputs"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import { MEASUREMENT_FIELDS, getFieldKeys } from "~/lib/utils/measurement"

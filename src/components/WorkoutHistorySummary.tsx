@@ -6,7 +6,7 @@ import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import { MeasurementType } from "~/lib/db/types"
 import { MEASUREMENT_FIELDS, getFieldKeys, formatSetValue } from "~/lib/utils/measurement"
-import { WorkoutHistoryExercise } from "~/lib/types/workout"
+import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import {
   extractMuscleGroups,
   formatWorkoutDate,
@@ -40,7 +40,7 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
           {children}
         </div>
       )}
-      renderContent={({ closeDialog }) => (
+      renderContent={() => (
         <div className="flex flex-col gap-4 p-4">
           {/* Muscle groups */}
           <div className="flex flex-col gap-2">

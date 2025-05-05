@@ -6,7 +6,7 @@ interface TextareaProps extends React.ComponentProps<"textarea"> {
   maxLength?: number
 }
 
-function Textarea({ className, maxLength, ...props }: TextareaProps) {
+function Textarea({ className, ...props }: TextareaProps) {
   return (
     <textarea
       data-slot="textarea"

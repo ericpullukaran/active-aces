@@ -1,4 +1,4 @@
-import { useExercises, ExerciseFilterOptions } from "~/lib/utils/useExercises"
+import { useExercises, type ExerciseFilterOptions } from "~/lib/utils/useExercises"
 import { ExerciseCard } from "./ExerciseCard"
 import { Skeleton } from "./ui/skeleton"
 import { useMemo } from "react"

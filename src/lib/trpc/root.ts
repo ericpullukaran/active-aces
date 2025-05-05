@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from "./trpc"
+import { createTRPCRouter } from "./trpc"
 import { workoutsRouter } from "./routers/workouts"
 import { exercisesRouter } from "./routers/exercises"
 /**
