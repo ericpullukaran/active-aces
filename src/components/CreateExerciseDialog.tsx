@@ -4,7 +4,6 @@ import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { MeasurementType } from "~/lib/db/types"
@@ -12,6 +11,21 @@ import { MeasurementTypeLabels } from "~/lib/utils/measurement"
 import { type DbExercisesMap } from "~/lib/types/workout"
 import { exerciseQueryKey } from "~/lib/utils/useExercises"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+import { ChevronDown } from "lucide-react"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "~/components/ui/command"
 
 export const CreateExerciseDialog: React.FC<{
   initialName?: string
@@ -26,6 +40,8 @@ export const CreateExerciseDialog: React.FC<{
   )
   const [isCreating, setIsCreating] = useState(false)
   const { addExercise } = useWorkoutManager()
+  const [commandOpen, setCommandOpen] = useState(false)
+
   useEffect(() => {
     setName(initialName || "")
   }, [initialName, isOpen])
@@ -104,56 +120,88 @@ export const CreateExerciseDialog: React.FC<{
 
           <div className="space-y-2">
             <Label htmlFor="measurementType">Measurement Type</Label>
-            <Select
-              value={measurementType}
-              onValueChange={(value: MeasurementType) => setMeasurementType(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select measurement type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={MeasurementType.REPS}>
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {measurementType
+                    ? MeasurementTypeLabels[measurementType]
+                    : "Select measurement type"}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full min-w-[200px]">
+                <DropdownMenuItem onClick={() => setMeasurementType(MeasurementType.REPS)}>
                   {MeasurementTypeLabels[MeasurementType.REPS]}
-                </SelectItem>
-                <SelectItem value={MeasurementType.WEIGHT_REPS}>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setMeasurementType(MeasurementType.WEIGHT_REPS)}>
                   {MeasurementTypeLabels[MeasurementType.WEIGHT_REPS]}
-                </SelectItem>
-                <SelectItem value={MeasurementType.WEIGHT_DISTANCE}>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setMeasurementType(MeasurementType.WEIGHT_DISTANCE)}
+                >
                   {MeasurementTypeLabels[MeasurementType.WEIGHT_DISTANCE]}
-                </SelectItem>
-                <SelectItem value={MeasurementType.WEIGHT_DURATION}>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setMeasurementType(MeasurementType.WEIGHT_DURATION)}
+                >
                   {MeasurementTypeLabels[MeasurementType.WEIGHT_DURATION]}
-                </SelectItem>
-                <SelectItem value={MeasurementType.TIME}>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setMeasurementType(MeasurementType.TIME)}>
                   {MeasurementTypeLabels[MeasurementType.TIME]}
-                </SelectItem>
-                <SelectItem value={MeasurementType.TIME_DISTANCE}>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setMeasurementType(MeasurementType.TIME_DISTANCE)}>
                   {MeasurementTypeLabels[MeasurementType.TIME_DISTANCE]}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="primaryMuscleGroup">Primary Muscle Group</Label>
-            <Select value={primaryMuscleGroupId} onValueChange={setPrimaryMuscleGroupId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select primary muscle group" />
-              </SelectTrigger>
-              <SelectContent>
-                {muscleGroupsQuery.isLoading ? (
-                  <SelectItem value="" disabled>
-                    Loading muscle groups...
-                  </SelectItem>
-                ) : (
-                  muscleGroupsQuery.data?.map((group) => (
-                    <SelectItem key={group.id} value={group.id}>
-                      {group.name}
-                    </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              {!commandOpen && (
+                <Button
+                  variant="outline"
+                  className="mb-[50px] w-full justify-between"
+                  onClick={() => setCommandOpen(!commandOpen)}
+                >
+                  {primaryMuscleGroupId
+                    ? muscleGroupsQuery.data?.find((g) => g.id === primaryMuscleGroupId)?.name ||
+                      "Select primary muscle group"
+                    : "Select primary muscle group"}
+                  <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              )}
+
+              {commandOpen && (
+                <div className="bg-popover absolute z-50 mt-1 w-full rounded-md border shadow-md">
+                  <Command>
+                    <CommandInput placeholder="Search muscle groups..." />
+                    <CommandList className="max-h-[100px] overflow-y-auto">
+                      <CommandEmpty>No muscle groups found.</CommandEmpty>
+                      <CommandGroup>
+                        {muscleGroupsQuery.isLoading ? (
+                          <CommandItem disabled>Loading muscle groups...</CommandItem>
+                        ) : (
+                          muscleGroupsQuery.data?.map((group) => (
+                            <CommandItem
+                              key={group.id}
+                              onSelect={() => {
+                                setPrimaryMuscleGroupId(group.id)
+                                console.log("setting primary muscle group", group.id)
+                                setCommandOpen(false)
+                              }}
+                            >
+                              {group.name}
+                            </CommandItem>
+                          ))
+                        )}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
