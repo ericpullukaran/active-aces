@@ -4,14 +4,7 @@ import React, { useState } from "react"
 import WorkoutHistorySummary from "./WorkoutHistorySummary"
 import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import { extractMuscleGroups, formatWorkoutDate } from "~/lib/utils/workout-helpers"
-import { Menu, Trash } from "lucide-react"
 import { Button } from "./ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
@@ -36,7 +29,6 @@ export default function WorkoutHistoryCard({ workout }: Props) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const { currentPage } = useWorkoutManager()
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const deleteWorkoutMutation = useMutation(
     trpc.workouts.delete.mutationOptions({
@@ -58,11 +50,6 @@ export default function WorkoutHistoryCard({ workout }: Props) {
   const hasMore = allMuscleGroups.length > 3
   const moreCount = allMuscleGroups.length - 3
 
-  const handleDeleteWorkout = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    e.stopPropagation()
-    setShowDeleteDialog(true)
-  }
-
   const confirmDelete = () => {
     deleteWorkoutMutation.mutate(
       { id: workout.id },
@@ -78,26 +65,6 @@ export default function WorkoutHistoryCard({ workout }: Props) {
             <p className="text-lg font-medium">{workout.name}</p>
             <div className="flex items-center space-x-2">
               <span className="text-muted-foreground text-sm">{formattedDate}</span>
-              <DropdownMenu open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    scalingOnClick
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setIsPopoverOpen(!isPopoverOpen)
-                    }}
-                    variant="outline"
-                    size="icon-sm"
-                    Icon={Menu}
-                  />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuItem variant="destructive" onClick={handleDeleteWorkout}>
-                    <Trash className="mr-2 h-4 w-4" />
-                    Delete Workout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
 

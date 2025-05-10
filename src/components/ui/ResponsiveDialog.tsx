@@ -19,7 +19,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "./drawer"
-import { MOBILE_VIEWPORT } from "~/lib/utils"
+import { cn, MOBILE_VIEWPORT } from "~/lib/utils"
 
 type InternalResponsiveDialogProps = {
   isOpen: boolean
@@ -34,6 +34,7 @@ type CoreResponsiveDialogProps = {
   title: string
   isOpen?: boolean
   description?: string
+  headerAction?: React.ReactNode
   onClose?: (dismiss?: boolean) => void
 }
 
@@ -60,6 +61,7 @@ const ResponsiveDialog = (props: ResponsiveDialogProps) => {
       <ResponsiveDialogCore
         title={props.title}
         description={props.description}
+        headerAction={props.headerAction}
         isOpen={isOpen}
         closeDialog={closeDialog}
         content={props.renderContent({
@@ -84,6 +86,7 @@ type ResponsiveDialogCoreProps = {
   closeDialog: (dismiss?: boolean) => void
   title: string
   description?: string
+  headerAction?: React.ReactNode
   content: React.ReactNode | undefined
   footer?: React.ReactNode | undefined
 }
@@ -95,6 +98,7 @@ const ResponsiveDialogCore = ({
   description,
   content,
   footer,
+  headerAction,
 }: ResponsiveDialogCoreProps) => {
   const isMobile = useMediaQuery(MOBILE_VIEWPORT)
 
@@ -106,9 +110,12 @@ const ResponsiveDialogCore = ({
       onClose={() => closeDialog(true)}
     >
       <DrawerContent onClick={(e) => e.stopPropagation()} onClose={() => closeDialog(true)}>
-        <DrawerHeader className="text-center">
-          <DrawerTitle>{title}</DrawerTitle>
-          {description && <DrawerDescription>{description}</DrawerDescription>}
+        <DrawerHeader className={cn("flex flex-row items-center gap-2")}>
+          <div className={cn("flex-1 text-center", headerAction && "text-left")}>
+            <DrawerTitle>{title}</DrawerTitle>
+            {description && <DrawerDescription>{description}</DrawerDescription>}
+          </div>
+          {headerAction && <div className="ml-auto">{headerAction}</div>}
         </DrawerHeader>
         <div className="overflow-scroll">{content}</div>
         {footer && <DrawerFooter>{footer}</DrawerFooter>}
@@ -116,10 +123,17 @@ const ResponsiveDialogCore = ({
     </Drawer>
   ) : (
     <Dialog open={isOpen}>
-      <DialogContent onClick={(e) => e.stopPropagation()} onClose={() => closeDialog(true)}>
-        <DialogHeader className="text-left">
-          <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+      <DialogContent
+        hideCloseButton={!!headerAction}
+        onClick={(e) => e.stopPropagation()}
+        onClose={() => closeDialog(true)}
+      >
+        <DialogHeader className={cn("flex flex-row text-left")}>
+          <div>
+            <DialogTitle>{title}</DialogTitle>
+            {description && <DialogDescription>{description}</DialogDescription>}
+          </div>
+          {headerAction && <div className="ml-auto">{headerAction}</div>}
         </DialogHeader>
         <div className="max-h-96 overflow-scroll">{content}</div>
         {footer && <DialogFooter>{footer}</DialogFooter>}
