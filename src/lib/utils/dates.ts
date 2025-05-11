@@ -26,7 +26,7 @@ export const formatTimeValue = (timeInSeconds: number): string => {
 }
 
 /**
- * Parse invalid time string (MM:SS or HH:MM:SS) to seconds
+ * Parse valid or invalid time string (MM:SS or HH:MM:SS) to seconds
  * By invalid, I mean hours/minutes/seconds can be >60
  */
 export const parseTimeToSeconds = (timeString: string): number => {

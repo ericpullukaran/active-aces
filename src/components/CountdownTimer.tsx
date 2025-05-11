@@ -85,14 +85,9 @@ export const CountdownTimer = (props: {
     }
   }
 
-  // If they press it once we reset, if they press it again we call onComplete
-  const toggleReset = () => {
-    if (isRunning) {
-      reset()
-    } else {
-      onComplete?.()
-      reset()
-    }
+  const finish = () => {
+    onComplete?.()
+    reset()
   }
 
   return (
@@ -115,9 +110,17 @@ export const CountdownTimer = (props: {
         variant="ghost"
         size="icon"
         className="rounded-full bg-gray-600/70 hover:bg-gray-600/90"
-        onClick={toggleReset}
+        onClick={reset}
       >
-        {isRunning ? <TimerReset size={20} /> : <X size={20} />}
+        <TimerReset size={20} />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="rounded-full bg-gray-600/70 hover:bg-gray-600/90"
+        onClick={finish}
+      >
+        <X size={20} />
       </Button>
 
       <div className="flex-1 place-items-end justify-items-end">

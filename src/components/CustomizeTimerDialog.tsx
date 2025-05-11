@@ -5,7 +5,7 @@ import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { Button } from "./ui/button"
 import { TimeInput } from "./ui/time-input"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
-import { formatTimeValue } from "~/lib/utils/dates"
+import { formatTimeValue, parseTimeToSeconds } from "~/lib/utils/dates"
 
 type CustomizeTimerDialogProps = {
   exerciseId: string
@@ -48,7 +48,7 @@ export default function CustomizeTimerDialog({
             <TimeInput
               className="w-48 text-2xl"
               value={initialTimer ? formatTimeValue(initialTimer) : ""}
-              onBlur={(value) => setTimer(parseInt(value.replace(/:/g, "")))}
+              onBlur={(value) => setTimer(parseTimeToSeconds(value))}
             />
           </div>
         </div>

@@ -16,6 +16,7 @@ export function useExercises(searchQuery: string = "", filterOptions?: ExerciseF
   const exercises = useQuery({
     ...trpc.exercises.getAll.queryOptions(),
     queryKey: [exerciseQueryKey],
+    staleTime: 1000 * 60 * 60 * 24 * 15,
   })
 
   const [filteredExercises, setFilteredExercises] = useState<[string, DbExercise][]>([])

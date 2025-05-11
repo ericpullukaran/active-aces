@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // For variations of the same exercise using different equipment, I'll put the equipment in parentheses at the end:
 // Example: "Bench Press (Barbell)" instead of "Barbell Bench Press"
 // For exercise positions/angles, I'll put them at the start:

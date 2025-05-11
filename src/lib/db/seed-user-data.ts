@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { db } from "./index"
 import { exercises, workouts, workoutExercises, exerciseSets } from "./schema"
 

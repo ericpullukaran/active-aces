@@ -188,7 +188,6 @@ export const CreateExerciseDialog: React.FC<{
                               key={group.id}
                               onSelect={() => {
                                 setPrimaryMuscleGroupId(group.id)
-                                console.log("setting primary muscle group", group.id)
                                 setCommandOpen(false)
                               }}
                             >
