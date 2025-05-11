@@ -3,7 +3,7 @@ import { type ReactNode, useCallback, useMemo, useState, useRef, useEffect } fro
 import { createTypedContext } from "~/lib/utils/context"
 import { type AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
-import { type ExerciseSet, type PutWorkout } from "~/lib/types/workout"
+import { type WorkoutHistoryExercise, type ExerciseSet, type PutWorkout } from "~/lib/types/workout"
 import { useUpdatedRef } from "~/lib/utils/useUpdatedRef"
 import { defaultExerciseSet, defaultWorkout, defaultWorkoutExercise } from "~/lib/utils/defaults"
 
@@ -33,6 +33,42 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       }
       setCurrentWorkout(defaultWorkout())
     }, [setCurrentWorkout, workoutRef])
+    const forceCopyWorkout = useCallback(
+      (workout: WorkoutHistoryExercise) => {
+        setCurrentWorkout({
+          ...defaultWorkout(),
+          exercises: workout.workoutExercises.map((we) => ({
+            ...defaultWorkoutExercise(we.exercise.id),
+            ...we,
+            notes: we.notes ?? undefined,
+            sets: we.sets.map((set) => ({
+              ...defaultExerciseSet(),
+              order: set.order,
+              weight: set.weight ?? undefined,
+              reps: set.reps ?? undefined,
+              assistedReps: set.assistedReps ?? undefined,
+              distance: set.distance ?? undefined,
+              time: set.time ?? undefined,
+              completed: false,
+              completedAt: undefined,
+            })),
+          })),
+        })
+        setCurrentPage("workout")
+      },
+      [setCurrentWorkout],
+    )
+    const maybeCopyWorkout = useCallback(
+      (workout: WorkoutHistoryExercise) => {
+        if (workoutRef.current) {
+          return false
+        } else {
+          forceCopyWorkout(workout)
+          return true
+        }
+      },
+      [forceCopyWorkout, workoutRef],
+    )
 
     const updateExerciseSettings = useCallback(
       (
@@ -213,6 +249,8 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       removeCurrentWorkout,
       currentWorkout,
       startWorkout,
+      maybeCopyWorkout,
+      forceCopyWorkout,
 
       // Exercise properties
       addExercise,

@@ -12,13 +12,14 @@ import {
   formatWorkoutDate,
   calculateWorkoutDuration,
 } from "~/lib/utils/workout-helpers"
-import { Trash } from "lucide-react"
-import { DropdownMenuContent, DropdownMenuItem } from "./ui/dropdown-menu"
+import { CopyPlus, Trash } from "lucide-react"
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "./ui/dropdown-menu"
 import { DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { DropdownMenu } from "./ui/dropdown-menu"
 import { Menu } from "lucide-react"
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
 import { DialogContent } from "./ui/dialog"
+import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
@@ -32,6 +33,8 @@ type WorkoutSummaryProps = {
 export default function WorkoutHistorySummary({ workout, children }: WorkoutSummaryProps) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
+  const { maybeCopyWorkout, forceCopyWorkout } = useWorkoutManager()
+  const [showCopyConfirmation, setShowCopyConfirmation] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const deleteWorkoutMutation = useMutation(
@@ -71,24 +74,21 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
         headerAction={
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
-              <Button
-                scalingOnClick
-                onClick={(e) => {
-                  e.stopPropagation()
-                }}
-                variant="outline"
-                size="icon-sm"
-                Icon={Menu}
-              />
+              <Button scalingOnClick variant="outline" size="icon-sm" Icon={Menu} />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuItem
-                variant="destructive"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setShowDeleteDialog(true)
+                onClick={() => {
+                  if (!maybeCopyWorkout(workout)) {
+                    setShowCopyConfirmation(true)
+                  }
                 }}
               >
+                <CopyPlus className="mr-2 h-4 w-4" />
+                Copy workout
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={() => setShowDeleteDialog(true)}>
                 <Trash className="mr-2 h-4 w-4" />
                 Delete Workout
               </DropdownMenuItem>
@@ -210,6 +210,26 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
           </div>
         )}
       />
+      {/* Copy workout confirmation dialog */}
+      <Dialog open={showCopyConfirmation} onOpenChange={setShowCopyConfirmation}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Copy Workout</DialogTitle>
+            <DialogDescription>
+              Copy this workout? This will replace your current workout.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCopyConfirmation(false)}>
+              Cancel
+            </Button>
+            <Button variant="default" onClick={() => forceCopyWorkout(workout)}>
+              Copy
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete Confirmation Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent
