@@ -16,6 +16,7 @@ import { Textarea } from "./ui/textarea"
 import { Input } from "./ui/input"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
 import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
+import { getTimeOfDay } from "~/lib/utils/dates"
 
 export default function EndWorkoutDialog({
   children,
@@ -75,7 +76,7 @@ export default function EndWorkoutDialog({
             <div>
               <p className="mb-2 text-sm font-medium">Workout Title</p>
               <Input
-                placeholder="Enter a title for your workout"
+                placeholder={`${getTimeOfDay()} Workout`}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={100}

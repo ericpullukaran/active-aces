@@ -1,7 +1,8 @@
 import { createPrimaryKeyId } from "../db/cuid"
 import { type ExerciseSet, type PutWorkout, type WorkoutExercise } from "../types/workout"
+import { getTimeOfDay } from "./dates"
 
-export const defaultWorkout = (name: string = "Workout"): PutWorkout => {
+export const defaultWorkout = (name: string = `${getTimeOfDay()} Workout`): PutWorkout => {
   return {
     name,
     startTime: new Date(),

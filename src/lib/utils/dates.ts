@@ -47,3 +47,23 @@ export const parseTimeToSeconds = (timeString: string): number => {
 
   return 0
 }
+
+/**
+ * Returns a time-appropriate workout name based on the current hour.
+ */
+export const getTimeOfDay = () => {
+  const hours = new Date().getHours()
+  let timeOfDay
+
+  if (hours >= 5 && hours < 12) {
+    timeOfDay = "Morning"
+  } else if (hours >= 12 && hours < 18) {
+    timeOfDay = "Afternoon"
+  } else if (hours >= 18 && hours < 22) {
+    timeOfDay = "Evening"
+  } else if (hours >= 22 || hours < 5) {
+    timeOfDay = "Night"
+  }
+
+  return timeOfDay
+}
