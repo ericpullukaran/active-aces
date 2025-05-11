@@ -39,7 +39,7 @@ export function ExercisesList() {
       {!isLoading && exerciseElements}
 
       <Button
-        variant="outline"
+        variant={hasFiltersApplied ? "outline" : "default"}
         className={cn("fixed right-4 bottom-28 rounded-full", {
           "border-primary text-primary": hasFiltersApplied,
         })}
