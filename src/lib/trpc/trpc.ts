@@ -94,6 +94,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 
   const end = Date.now()
   const durationMs = end - start
+  // eslint-disable-next-line no-console
   console.log(`[TRPC] ${path} took ${durationMs}ms to execute`, {
     path,
     durationMs,
