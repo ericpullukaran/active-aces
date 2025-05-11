@@ -22,7 +22,11 @@ export const useLocalStorage = <T>(
   })
 
   useEffect(() => {
-    localStorage!.setItem(key, JSON.stringify(state))
+    if (localStorage) {
+      localStorage.setItem(key, SuperJSON.stringify(state))
+    } else {
+      console.error("localStorage is not available on server")
+    }
   }, [state, key])
 
   const clearState = useCallback(() => {
