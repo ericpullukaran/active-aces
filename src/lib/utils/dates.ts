@@ -59,11 +59,9 @@ export const getTimeOfDay = () => {
     timeOfDay = "Morning"
   } else if (hours >= 12 && hours < 18) {
     timeOfDay = "Afternoon"
-  } else if (hours >= 18 && hours < 22) {
+  } else if (hours >= 18 || hours < 5) {
     timeOfDay = "Evening"
-  } else if (hours >= 22 || hours < 5) {
-    timeOfDay = "Night"
   }
 
-  return timeOfDay
+  return timeOfDay ?? "Day"
 }
