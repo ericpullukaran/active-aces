@@ -67,10 +67,7 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
         title={workout.name}
         description={`${formattedDate}`}
         isOpen={isOpen}
-        onClose={() => {
-          console.log("closing")
-          setIsOpen(false)
-        }}
+        onClose={() => setIsOpen(false)}
         headerAction={
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>

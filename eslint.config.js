@@ -25,6 +25,9 @@ const config = [
       ecmaVersion: 2022,
       sourceType: "module",
     },
+    rules: {
+      "no-console": ["error", { allow: ["warn", "error"] }],
+    },
   },
   {
     // JavaScript files
