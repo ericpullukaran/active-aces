@@ -34,11 +34,11 @@ type CoreResponsiveDialogProps = {
   title: string
   isOpen?: boolean
   description?: string
-  headerAction?: React.ReactNode
   onClose?: (dismiss?: boolean) => void
 }
 
 type ResponsiveDialogProps = {
+  headerAction?: (props: InternalResponsiveDialogProps) => React.ReactNode
   renderTrigger?: (props: InternalResponsiveDialogProps) => React.ReactNode
   renderContent: (props: InternalResponsiveDialogProps) => React.ReactNode
   renderFooter?: (props: InternalResponsiveDialogProps) => React.ReactNode
@@ -61,7 +61,12 @@ const ResponsiveDialog = (props: ResponsiveDialogProps) => {
       <ResponsiveDialogCore
         title={props.title}
         description={props.description}
-        headerAction={props.headerAction}
+        headerAction={props.headerAction?.({
+          ...props,
+          isOpen,
+          openDialog,
+          closeDialog,
+        })}
         isOpen={isOpen}
         closeDialog={closeDialog}
         content={props.renderContent({

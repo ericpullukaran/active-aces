@@ -71,7 +71,7 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
         description={`${formattedDate}`}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        headerAction={
+        headerAction={() => (
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button scalingOnClick variant="outline" size="icon-sm" Icon={Menu} />
@@ -94,7 +94,7 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        }
+        )}
         renderTrigger={() => (
           <div onClick={() => setIsOpen(true)} className="cursor-pointer">
             {children}

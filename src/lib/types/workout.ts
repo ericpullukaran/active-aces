@@ -39,6 +39,7 @@ export const PutWorkoutSchema = z.object({
   startTime: z.date(),
   endTime: z.date().optional(),
   notes: z.string().optional(),
+  isTemplate: z.boolean().default(false),
   exercises: z.array(WorkoutExerciseSchema),
 })
 export type PutWorkout = z.infer<typeof PutWorkoutSchema>

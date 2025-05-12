@@ -1,24 +1,11 @@
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import WorkoutHistorySummary from "./WorkoutHistorySummary"
 import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import { extractMuscleGroups, formatWorkoutDate } from "~/lib/utils/workout-helpers"
-import { Button } from "./ui/button"
-import { useTRPC } from "~/lib/trpc/client"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog"
 import { motion } from "motion/react"
 import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
-import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
-import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
 import MuscleGroupBadge from "./MuscleGroupBadge"
 
 type Props = {
@@ -26,36 +13,15 @@ type Props = {
 }
 
 export default function WorkoutHistoryCard({ workout }: Props) {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
   const { currentPage } = useWorkoutManager()
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const deleteWorkoutMutation = useMutation(
-    trpc.workouts.delete.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
-        queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
-      },
-    }),
-  )
-
   const allMuscleGroups = React.useMemo(() => extractMuscleGroups(workout), [workout])
-
   const formattedDate = React.useMemo(
     () => formatWorkoutDate(workout.startTime, "MMM d, yyyy"),
     [workout.startTime],
   )
-
   const muscleGroupsToShow = allMuscleGroups.slice(0, 3)
   const hasMore = allMuscleGroups.length > 3
   const moreCount = allMuscleGroups.length - 3
-
-  const confirmDelete = () => {
-    deleteWorkoutMutation.mutate(
-      { id: workout.id },
-      { onSuccess: () => setShowDeleteDialog(false) },
-    )
-  }
 
   return (
     <motion.div layoutId={`${currentPage}-${workout.id}`}>
@@ -87,38 +53,6 @@ export default function WorkoutHistoryCard({ workout }: Props) {
             </div>
           )}
         </div>
-
-        {/* Delete Confirmation Dialog */}
-        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-          <DialogContent
-            onClick={(e) => e.stopPropagation()}
-            onClose={() => setShowDeleteDialog(false)}
-          >
-            <DialogHeader>
-              <DialogTitle>Delete Workout</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to delete this workout? This action cannot be undone.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="flex flex-row gap-2">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => setShowDeleteDialog(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                isLoading={deleteWorkoutMutation.isPending}
-                className="flex-1"
-                onClick={confirmDelete}
-              >
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </WorkoutHistorySummary>
     </motion.div>
   )

@@ -29,6 +29,27 @@
       "when": 1745834432493,
       "tag": "0003_watery_exodus",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1747038538780,
+      "tag": "0004_damp_champions",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1747038722280,
+      "tag": "0005_left_jigsaw",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1747038823664,
+      "tag": "0006_orange_king_bedlam",
+      "breakpoints": true
     }
   ]
 }

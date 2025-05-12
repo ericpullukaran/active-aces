@@ -17,6 +17,11 @@ import { Input } from "./ui/input"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
 import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
 import { getTimeOfDay } from "~/lib/utils/dates"
+import { Menu } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu"
+import { DropdownMenuItem } from "./ui/dropdown-menu"
+import { CopyPlus } from "lucide-react"
+import CreateTemplateDialog from "./navigation/CreateTemplateDialog"
 
 export default function EndWorkoutDialog({
   children,
@@ -30,7 +35,7 @@ export default function EndWorkoutDialog({
   const [title, setTitle] = useState("")
   const { currentWorkout, removeCurrentWorkout, setCurrentPage } = useWorkoutManager()
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-
+  const [showCreateTemplateConfirmation, setShowCreateTemplateConfirmation] = useState(false)
   const deleteWorkout = (closeDialog: () => void) => {
     if (currentWorkout) {
       removeCurrentWorkout()
@@ -71,6 +76,24 @@ export default function EndWorkoutDialog({
       <ResponsiveDialog
         title="End Workout"
         renderTrigger={({ openDialog }) => children({ openDialog })}
+        headerAction={({ closeDialog }) => (
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button scalingOnClick variant="outline" size="icon-sm" Icon={Menu} />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem
+                onClick={() => {
+                  closeDialog()
+                  setShowCreateTemplateConfirmation(true)
+                }}
+              >
+                <CopyPlus className="mr-2 h-4 w-4" />
+                Make template
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
         renderContent={() => (
           <div className="flex flex-col gap-4 px-4">
             <div>
@@ -142,6 +165,12 @@ export default function EndWorkoutDialog({
             </Button>
           </div>
         )}
+      />
+      {/* Create template dialog */}
+      <CreateTemplateDialog
+        open={showCreateTemplateConfirmation}
+        onOpenChange={setShowCreateTemplateConfirmation}
+        currentWorkout={currentWorkout}
       />
     </>
   )

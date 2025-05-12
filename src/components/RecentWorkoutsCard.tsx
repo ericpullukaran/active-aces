@@ -33,7 +33,7 @@ export default function RecentWorkoutsCard() {
   }
 
   return (
-    <div className="bg-card rounded-lg p-4">
+    <div>
       <div className="mb-3 flex items-center">
         <h3 className="flex-1 text-lg font-semibold">Recent Workouts</h3>
         <Button

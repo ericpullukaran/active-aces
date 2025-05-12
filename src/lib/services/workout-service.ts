@@ -3,28 +3,21 @@ import { type DB } from "../db"
 import { type PutWorkout } from "../types/workout"
 import { exerciseSets, workoutExercises, workouts } from "../db/schema"
 
-const getWorkoutHistory = async (
-  db: DB,
-  { userId, limit = 3 }: { userId: string; limit?: number },
-) => {
-  const workoutResults = await db.query.workouts.findMany({
-    where: (workouts) => eq(workouts.userId, userId),
-    orderBy: [desc(workouts.createdAt)],
-    limit,
-  })
-  return workoutResults
-}
-
 /**
  * Retrieves paginated workout history with exercises and muscle groups
  */
 const getWorkoutHistoryWithExercises = async (
   db: DB,
-  { userId, limit = 10, cursor }: { userId: string; limit?: number; cursor?: string },
+  {
+    userId,
+    isTemplate,
+    limit = 10,
+    cursor,
+  }: { userId: string; isTemplate: boolean; limit?: number; cursor?: string },
 ) => {
   // Get workouts by user ID, ordered by creation date
   let query = db.query.workouts.findMany({
-    where: (workout) => eq(workout.userId, userId),
+    where: (workout) => and(eq(workout.userId, userId), eq(workout.isTemplate, isTemplate)),
     orderBy: [desc(workouts.createdAt)],
     limit,
     with: {
@@ -45,14 +38,18 @@ const getWorkoutHistoryWithExercises = async (
   // If cursor is provided, we need to get items after that cursor
   if (cursor) {
     const cursorWorkout = await db.query.workouts.findFirst({
-      where: (workout) => eq(workout.id, cursor),
+      where: (workout) => and(eq(workout.id, cursor), eq(workout.isTemplate, isTemplate)),
     })
 
     if (cursorWorkout) {
       // Update the query with the cursor filter
       query = db.query.workouts.findMany({
         where: (workout) =>
-          and(eq(workout.userId, userId), lt(workout.createdAt, cursorWorkout.createdAt)),
+          and(
+            eq(workout.userId, userId),
+            eq(workout.isTemplate, isTemplate),
+            lt(workout.createdAt, cursorWorkout.createdAt),
+          ),
         orderBy: [desc(workouts.createdAt)],
         limit,
         with: {
@@ -115,8 +112,9 @@ const putWorkout = async (
       userId,
       name: workout.name,
       startTime: workout.startTime,
-      endTime: workout.endTime,
-      notes: workout.notes,
+      endTime: workout.endTime ?? null,
+      notes: workout.notes ?? null,
+      isTemplate: workout.isTemplate,
       updatedAt: new Date(),
     }
 
@@ -184,7 +182,6 @@ const deleteWorkout = async (db: DB, { id, userId }: { id: string; userId: strin
 }
 
 export const workoutService = {
-  getWorkoutHistory,
   getWorkoutHistoryWithExercises,
   putWorkout,
   deleteWorkout,

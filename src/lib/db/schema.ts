@@ -120,6 +120,7 @@ export const workouts = sqliteTable(
     startTime: custom.timestamp("start_time").notNull(),
     endTime: integer("end_time", { mode: "timestamp_ms" }),
     notes: text("notes"),
+    isTemplate: integer("is_template", { mode: "boolean" }).notNull().default(false),
     createdAt: custom.timestamp("created_at").notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp_ms" }),
   },

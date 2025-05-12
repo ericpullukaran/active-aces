@@ -7,6 +7,7 @@ export const defaultWorkout = (name: string = `${getTimeOfDay()} Workout`): PutW
     name,
     startTime: new Date(),
     exercises: [],
+    isTemplate: false,
   }
 }
 

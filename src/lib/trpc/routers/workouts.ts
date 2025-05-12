@@ -7,14 +7,16 @@ export const workoutsRouter = createTRPCRouter({
   historyInfinite: protectedProcedure
     .input(
       z.object({
+        isTemplate: z.boolean().default(false),
         limit: z.number().min(1).max(50).default(10),
         cursor: z.string().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { limit, cursor } = input
+      const { isTemplate, limit, cursor } = input
       const items = await workoutService.getWorkoutHistoryWithExercises(ctx.db, {
         userId: ctx.auth.userId,
+        isTemplate,
         limit: limit + 1,
         cursor,
       })
