@@ -13,7 +13,7 @@ export const recentWorkoutsQueryKey: readonly string[] = ["recent-workouts"]
 export default function RecentWorkoutsCard() {
   const trpc = useTRPC()
   const workoutHistory = useQuery({
-    ...trpc.workouts.historyInfinite.queryOptions({ limit: 3 }),
+    ...trpc.workouts.historyInfinite.queryOptions({ limit: 2 }),
     queryKey: [recentWorkoutsQueryKey],
   })
   const { setCurrentPage, currentPage } = useWorkoutManager()
