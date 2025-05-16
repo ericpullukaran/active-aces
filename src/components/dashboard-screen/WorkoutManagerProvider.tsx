@@ -186,10 +186,21 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       [setCurrentWorkout, workoutRef],
     )
 
-    const [timerDurationSeconds, setTimerDurationSeconds] = useState({
-      setId: "",
-      duration: 0,
-    })
+    const [timerDurationSeconds, setTimerDurationSeconds] = useState<{
+      setId: string
+      duration: number
+    } | null>(null)
+    useEffect(() => {
+      if (timerDurationSeconds && timerDurationSeconds.duration > 0) {
+        // TODO: Searching through all exercises when currentWorkout changes is not efficient
+        const set = currentWorkout?.exercises.find((exercise) =>
+          exercise.sets.find((set) => set.stableSetId === timerDurationSeconds.setId),
+        )
+        if (!set) {
+          setTimerDurationSeconds(null)
+        }
+      }
+    }, [timerDurationSeconds, currentWorkout])
 
     const [activeStopwatchSetInfo, setActiveStopwatchSetInfo] = useState<{
       exerciseId: string

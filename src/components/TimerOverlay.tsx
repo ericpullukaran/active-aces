@@ -11,7 +11,7 @@ export function TimerOverlay() {
 
   return (
     <AnimatePresence>
-      {timerDurationSeconds.duration > 0 && (
+      {timerDurationSeconds && timerDurationSeconds.duration > 0 && (
         <CountdownTimer
           key={`timer-${timerDurationSeconds.setId}`}
           durationInSeconds={timerDurationSeconds.duration}
