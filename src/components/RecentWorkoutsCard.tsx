@@ -46,6 +46,13 @@ export default function RecentWorkoutsCard() {
         </Button>
       </div>
       <div className="flex flex-col gap-3">
+        {workoutHistory.data?.items.length === 0 && (
+          <div className="bg-card h-28 rounded-lg">
+            <div className="flex h-full flex-col items-center justify-center gap-2">
+              <p className="text-muted-foreground text-center">No recent workouts!</p>
+            </div>
+          </div>
+        )}
         {workoutHistory.data?.items.map((w) => (
           <WorkoutHistoryCard key={`${currentPage}-${w.id}`} workout={w} />
         ))}
