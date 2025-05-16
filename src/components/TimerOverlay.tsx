@@ -11,17 +11,17 @@ export function TimerOverlay() {
 
   return (
     <AnimatePresence>
-      {timerDurationSeconds > 0 && (
+      {timerDurationSeconds.duration > 0 && (
         <CountdownTimer
-          key={`timer`}
-          durationInSeconds={timerDurationSeconds}
-          onComplete={() => setTimerDurationSeconds(0)}
+          key={`timer-${timerDurationSeconds.setId}`}
+          durationInSeconds={timerDurationSeconds.duration}
+          onComplete={() => setTimerDurationSeconds({ setId: "", duration: 0 })}
         />
       )}
 
       {activeStopwatchSetInfo && (
         <StopwatchBar
-          key={`stopwatch`}
+          key={`stopwatch-${activeStopwatchSetInfo.setId}`}
           initialSeconds={activeStopwatchSetInfo?.initialSeconds}
           onComplete={stopStopwatch}
           autoStart={true}

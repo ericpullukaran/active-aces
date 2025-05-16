@@ -27,6 +27,7 @@ export function ExerciseDialogSummary({ isOpen, onClose, exercise }: ExerciseDia
   const deleteExerciseMutation = useMutation(
     trpc.exercises.delete.mutationOptions({
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [exerciseQueryKey] })
         queryClient.setQueryData([exerciseQueryKey], (data: DbExercisesMap) => {
           if (!data) return new Map().set(exercise.id, { ...exercise, deleted: true })
           const newData = new Map(data)

@@ -186,7 +186,10 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
       [setCurrentWorkout, workoutRef],
     )
 
-    const [timerDurationSeconds, setTimerDurationSeconds] = useState(0)
+    const [timerDurationSeconds, setTimerDurationSeconds] = useState({
+      setId: "",
+      duration: 0,
+    })
 
     const [activeStopwatchSetInfo, setActiveStopwatchSetInfo] = useState<{
       exerciseId: string
@@ -198,7 +201,6 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
     const updateStopwatchElapsedTime = useCallback((time: number) => {
       currentStopwatchElapsedTimeRef.current = time
     }, [])
-
     const stopStopwatch = useCallback(
       (elapsedSeconds?: number) => {
         if (activeStopwatchSetInfo && elapsedSeconds !== undefined) {

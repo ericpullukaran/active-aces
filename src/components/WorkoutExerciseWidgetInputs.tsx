@@ -143,7 +143,10 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                     })
                     if (checked) {
                       if (exercise.restTimeMs && exercise.restTimeMs > 0) {
-                        setTimerDurationSeconds(exercise.restTimeMs / 1000)
+                        setTimerDurationSeconds({
+                          setId: set.stableSetId,
+                          duration: exercise.restTimeMs / 1000,
+                        })
                       }
                     }
                   }}
