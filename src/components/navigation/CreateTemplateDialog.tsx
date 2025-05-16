@@ -10,8 +10,9 @@ import {
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { useTRPC } from "~/lib/trpc/client"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type PutWorkout } from "~/lib/types/workout"
+import { templatesQueryKey } from "../TemplatesCarousel"
 
 interface CreateTemplateDialogProps {
   open: boolean
@@ -26,6 +27,7 @@ export default function CreateTemplateDialog({
 }: CreateTemplateDialogProps) {
   const [templateName, setTemplateName] = useState("")
   const trpc = useTRPC()
+  const queryClient = useQueryClient()
   const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
 
   const handleCreateTemplate = () => {
@@ -40,7 +42,10 @@ export default function CreateTemplateDialog({
         },
       },
       {
-        onSuccess: () => onOpenChange(false),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: [templatesQueryKey] })
+          onOpenChange(false)
+        },
       },
     )
   }
