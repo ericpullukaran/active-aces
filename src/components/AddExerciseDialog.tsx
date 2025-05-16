@@ -70,7 +70,7 @@ export const AddExerciseDialog: React.FC<{
       <ResponsiveDialog
         title="Add Exercise"
         description="Add a new exercise to your workout"
-        isOpen={isAddExerciseOpen}
+        open={isAddExerciseOpen}
         onClose={() => setIsAddExerciseOpen(false)}
         renderContent={() => (
           <div className="h-full p-4">

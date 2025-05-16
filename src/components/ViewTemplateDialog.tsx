@@ -84,7 +84,7 @@ export default function ViewTemplateDialog({ template, children }: ViewTemplateD
       <ResponsiveDialog
         title={template.name}
         description="Workout Template"
-        isOpen={isOpen}
+        open={isOpen}
         onClose={() => setIsOpen(false)}
         headerAction={() => (
           <DropdownMenu modal={false}>

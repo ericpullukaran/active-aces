@@ -94,7 +94,7 @@ export const CreateExerciseDialog: React.FC<{
     <ResponsiveDialog
       title="Create Exercise"
       description="Add a new custom exercise to your library"
-      isOpen={isOpen}
+      open={isOpen}
       onClose={onClose}
       renderContent={() => (
         <div className="flex flex-col gap-4 p-4">

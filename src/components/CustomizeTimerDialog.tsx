@@ -37,7 +37,7 @@ export default function CustomizeTimerDialog({
     <ResponsiveDialog
       title="Customize Timer"
       description="Set the rest timer for this exercise"
-      isOpen={isOpen}
+      open={isOpen}
       onClose={onClose}
       renderContent={() => (
         <div className="flex flex-col gap-4 p-4">

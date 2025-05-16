@@ -32,7 +32,7 @@ export default function ExerciseNotesDialog({
     <ResponsiveDialog
       title="Exercise Notes"
       description="Add notes for this exercise"
-      isOpen={isOpen}
+      open={isOpen}
       onClose={onClose}
       renderContent={() => (
         <div className="flex flex-col gap-4 p-4">

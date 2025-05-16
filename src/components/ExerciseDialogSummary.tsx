@@ -47,7 +47,7 @@ export function ExerciseDialogSummary({ isOpen, onClose, exercise }: ExerciseDia
     <>
       <ResponsiveDialog
         title={exercise.name}
-        isOpen={isOpen}
+        open={isOpen}
         onClose={onClose}
         renderContent={() => (
           <div className="flex flex-col space-y-6 px-4">

@@ -22,7 +22,7 @@ import {
 import { cn, MOBILE_VIEWPORT } from "~/lib/utils"
 
 type InternalResponsiveDialogProps = {
-  isOpen: boolean
+  open: boolean
   openDialog: () => void
   closeDialog: () => void
   title: string
@@ -32,7 +32,8 @@ type InternalResponsiveDialogProps = {
 
 type CoreResponsiveDialogProps = {
   title: string
-  isOpen?: boolean
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   description?: string
   onClose?: (dismiss?: boolean) => void
 }
@@ -47,37 +48,42 @@ type ResponsiveDialogProps = {
 const ResponsiveDialog = (props: ResponsiveDialogProps) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false)
 
-  const isOpen = props.isOpen ?? internalIsOpen
+  const open = props.open ?? internalIsOpen
 
-  const openDialog = () => setInternalIsOpen(true)
+  const openDialog = () => {
+    setInternalIsOpen(true)
+    props.onOpenChange?.(true)
+  }
+
   const closeDialog = (dismiss?: boolean) => {
     props.onClose?.(dismiss)
     setInternalIsOpen(false)
+    props.onOpenChange?.(false)
   }
 
   return (
     <>
-      {props.renderTrigger?.({ ...props, isOpen, openDialog, closeDialog })}
+      {props.renderTrigger?.({ ...props, open: open, openDialog, closeDialog })}
       <ResponsiveDialogCore
         title={props.title}
         description={props.description}
         headerAction={props.headerAction?.({
           ...props,
-          isOpen,
+          open: open,
           openDialog,
           closeDialog,
         })}
-        isOpen={isOpen}
+        isOpen={open}
         closeDialog={closeDialog}
         content={props.renderContent({
           ...props,
-          isOpen,
+          open: open,
           openDialog,
           closeDialog,
         })}
         footer={props.renderFooter?.({
           ...props,
-          isOpen,
+          open: open,
           openDialog,
           closeDialog,
         })}

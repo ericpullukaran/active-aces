@@ -70,7 +70,7 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
       <ResponsiveDialog
         title={workout.name}
         description={`${formattedDate}`}
-        isOpen={isOpen}
+        open={isOpen}
         onClose={() => setIsOpen(false)}
         headerAction={() => (
           <DropdownMenu modal={false}>

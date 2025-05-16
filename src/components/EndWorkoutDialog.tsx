@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react"
+import { type ReactNode, useState, useCallback } from "react"
 import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { Button } from "./ui/button"
 import { useTRPC } from "~/lib/trpc/client"
@@ -16,12 +16,13 @@ import { Textarea } from "./ui/textarea"
 import { Input } from "./ui/input"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
 import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
-import { getTimeOfDay } from "~/lib/utils/dates"
+import { getTimeOfDay, formatTimeValue, parseTimeToSeconds } from "~/lib/utils/dates"
 import { Menu } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { DropdownMenuItem } from "./ui/dropdown-menu"
 import { CopyPlus } from "lucide-react"
 import CreateTemplateDialog from "./navigation/CreateTemplateDialog"
+import { TimeInput } from "./ui/time-input"
 
 export default function EndWorkoutDialog({
   children,
@@ -36,6 +37,25 @@ export default function EndWorkoutDialog({
   const { currentWorkout, removeCurrentWorkout, setCurrentPage } = useWorkoutManager()
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [showCreateTemplateConfirmation, setShowCreateTemplateConfirmation] = useState(false)
+  const [durationSeconds, setDurationSeconds] = useState(0)
+
+  const calculateCurrentDuration = useCallback(() => {
+    if (currentWorkout?.startTime) {
+      const startTime = new Date(currentWorkout.startTime)
+      const currentDurationSeconds = Math.floor((new Date().getTime() - startTime.getTime()) / 1000)
+      return Math.max(1, currentDurationSeconds)
+    }
+    return 0
+  }, [currentWorkout?.startTime])
+  const handleDurationChange = (value: string) => {
+    const parsedSeconds = parseTimeToSeconds(value)
+    if (currentWorkout?.startTime) {
+      const maxDurationSeconds = calculateCurrentDuration()
+      const constrainedDuration = Math.min(Math.max(1, parsedSeconds), maxDurationSeconds)
+      setDurationSeconds(constrainedDuration)
+    }
+  }
+
   const deleteWorkout = (closeDialog: () => void) => {
     if (currentWorkout) {
       removeCurrentWorkout()
@@ -47,11 +67,12 @@ export default function EndWorkoutDialog({
 
   const endWorkout = (closeDialog: () => void) => {
     if (currentWorkout) {
+      const finalEndTime = new Date(currentWorkout.startTime.getTime() + durationSeconds * 1000)
       putWorkoutMutation.mutate(
         {
           workout: {
             ...currentWorkout,
-            endTime: new Date(),
+            endTime: finalEndTime,
             ...(title !== "" && { name: title }),
             ...(note !== "" && { notes: note }),
           },
@@ -75,7 +96,14 @@ export default function EndWorkoutDialog({
     <>
       <ResponsiveDialog
         title="End Workout"
-        renderTrigger={({ openDialog }) => children({ openDialog })}
+        renderTrigger={({ openDialog }) => {
+          return children({
+            openDialog: () => {
+              setDurationSeconds(calculateCurrentDuration())
+              openDialog()
+            },
+          })
+        }}
         headerAction={({ closeDialog }) => (
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
@@ -104,6 +132,10 @@ export default function EndWorkoutDialog({
                 onChange={(e) => setTitle(e.target.value)}
                 maxLength={100}
               />
+            </div>
+            <div>
+              <p className="mb-2 text-sm font-medium">Workout Duration</p>
+              <TimeInput value={formatTimeValue(durationSeconds)} onBlur={handleDurationChange} />
             </div>
             <div>
               <p className="mb-2 text-sm font-medium">Workout Notes</p>
