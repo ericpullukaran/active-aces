@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { motion } from "motion/react"
-import { Database, PlusCircleIcon, SquarePlus } from "lucide-react"
+import { Database, PlusCircleIcon } from "lucide-react"
 import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
 import { AddExerciseDialog } from "../AddExerciseDialog"
 
