@@ -24,6 +24,7 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
 import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
+import ReplaceWorkoutConfirmation from "./ReplaceWorkoutConfirmation"
 
 type WorkoutSummaryProps = {
   workout: WorkoutHistoryExercise
@@ -33,7 +34,7 @@ type WorkoutSummaryProps = {
 export default function WorkoutHistorySummary({ workout, children }: WorkoutSummaryProps) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
-  const { maybeCopyWorkout, forceCopyWorkout } = useWorkoutManager()
+  const { maybeCopyWorkout } = useWorkoutManager()
   const [showCopyConfirmation, setShowCopyConfirmation] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
@@ -211,24 +212,11 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
         )}
       />
       {/* Copy workout confirmation dialog */}
-      <Dialog open={showCopyConfirmation} onOpenChange={setShowCopyConfirmation}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Copy Workout</DialogTitle>
-            <DialogDescription>
-              Copy this workout? This will replace your current workout.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCopyConfirmation(false)}>
-              Cancel
-            </Button>
-            <Button variant="default" onClick={() => forceCopyWorkout(workout)}>
-              Copy
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ReplaceWorkoutConfirmation
+        open={showCopyConfirmation}
+        onOpenChange={setShowCopyConfirmation}
+        workout={workout}
+      />
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

@@ -10,7 +10,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel"
-import { Dumbbell } from "lucide-react"
 import TemplateCard from "./TemplateCard"
 
 export const templatesQueryKey: readonly string[] = ["workout-templates"]
@@ -66,18 +65,7 @@ export default function TemplatesCarousel() {
         <CarouselContent>
           {templatesQuery.data.items.map((template) => (
             <CarouselItem key={template.id} className="basis-[200px]">
-              <TemplateCard template={template}>
-                <div className="bg-card flex h-28 flex-col justify-between rounded-2xl border p-4 shadow-sm">
-                  <div>
-                    <h4 className="line-clamp-2 text-base font-medium">{template.name}</h4>
-                    <div className="text-muted-foreground mt-2 flex items-center text-sm">
-                      <Dumbbell className="mr-1 h-4 w-4" />
-                      {template.workoutExercises.length} exercise
-                      {template.workoutExercises.length !== 1 ? "s" : ""}
-                    </div>
-                  </div>
-                </div>
-              </TemplateCard>
+              <TemplateCard template={template} />
             </CarouselItem>
           ))}
         </CarouselContent>
