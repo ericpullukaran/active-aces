@@ -10,10 +10,7 @@ import {
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { useTRPC } from "~/lib/trpc/client"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { historyQueryKey } from "../dashboard-screen/HistoryScreen"
-import { recentWorkoutsQueryKey } from "../RecentWorkoutsCard"
-import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
+import { useMutation } from "@tanstack/react-query"
 import { type PutWorkout } from "~/lib/types/workout"
 
 interface CreateTemplateDialogProps {
@@ -29,9 +26,6 @@ export default function CreateTemplateDialog({
 }: CreateTemplateDialogProps) {
   const [templateName, setTemplateName] = useState("")
   const trpc = useTRPC()
-  const queryClient = useQueryClient()
-  const { removeCurrentWorkout, setCurrentPage } = useWorkoutManager()
-
   const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
 
   const handleCreateTemplate = () => {
@@ -46,13 +40,7 @@ export default function CreateTemplateDialog({
         },
       },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
-          queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
-          removeCurrentWorkout()
-          setCurrentPage("home")
-          onOpenChange(false)
-        },
+        onSuccess: () => onOpenChange(false),
       },
     )
   }
