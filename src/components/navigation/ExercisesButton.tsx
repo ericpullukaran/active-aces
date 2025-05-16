@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { motion } from "motion/react"
-import { Database, SquarePlus } from "lucide-react"
+import { Database, PlusCircleIcon, SquarePlus } from "lucide-react"
 import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
 import { AddExerciseDialog } from "../AddExerciseDialog"
 
@@ -32,7 +32,7 @@ export const ExercisesButton = () => {
             transition={{ duration: 0.3 }}
           >
             {showAddExerciseIcon ? (
-              <SquarePlus size={24} color={"#9ca3af"} />
+              <PlusCircleIcon size={24} color={"#9ca3af"} />
             ) : (
               <Database size={24} color={isExercisesPage ? "#ffffff" : "#9ca3af"} />
             )}
