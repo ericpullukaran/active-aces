@@ -1,5 +1,6 @@
+import type { Doc } from "../db"
 import { createPrimaryKeyId } from "../db/cuid"
-import { type ExerciseSet, type PutWorkout, type WorkoutExercise } from "../types/workout"
+import type { ExerciseSet, PutWorkout, WorkoutExercise } from "../types/workout"
 import { getTimeOfDay } from "./dates"
 
 export const defaultWorkout = (name: string = `${getTimeOfDay()} Workout`): PutWorkout => {
@@ -22,15 +23,39 @@ export const defaultWorkoutExercise = (exerciseId: string): WorkoutExercise => {
   }
 }
 
-export const defaultExerciseSet = (): ExerciseSet => {
+const defaultSetValues = {
+  reps: 0,
+  assistedReps: 0,
+  weight: 0,
+  distance: 0,
+  time: 0,
+  completed: false,
+} satisfies Record<
+  keyof Omit<Doc<"exerciseSets">, "id" | "order" | "workoutExerciseId" | "completedAt">,
+  unknown
+>
+export const defaultExerciseSet = (): Required<Omit<ExerciseSet, "completedAt">> => {
   return {
     stableSetId: createPrimaryKeyId(),
 
-    reps: 0,
-    assistedReps: 0,
-    weight: 0,
-    distance: 0,
-    time: 0,
-    completed: false,
+    ...defaultSetValues,
+  }
+}
+
+export const aDefaultExerciseSetWith = (
+  set: Partial<Doc<"exerciseSets">>,
+): Required<Omit<ExerciseSet, "completedAt">> => {
+  const ret = {
+    weight: set.weight ?? defaultSetValues.weight,
+    reps: set.reps ?? defaultSetValues.reps,
+    assistedReps: set.assistedReps ?? defaultSetValues.assistedReps,
+    distance: set.distance ?? defaultSetValues.distance,
+    time: set.time ?? defaultSetValues.time,
+    completed: set.completed ?? defaultSetValues.completed,
+    completedAt: set.completedAt ?? undefined,
+  } satisfies Record<keyof Omit<ExerciseSet, "stableSetId">, unknown>
+  return {
+    ...defaultExerciseSet(),
+    ...ret,
   }
 }

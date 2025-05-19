@@ -5,7 +5,12 @@ import { type AppPage } from "../navigation/BottomNavigation"
 import { useLocalStorage } from "~/lib/utils/useLocalStorage"
 import { type WorkoutHistoryExercise, type ExerciseSet, type PutWorkout } from "~/lib/types/workout"
 import { useUpdatedRef } from "~/lib/utils/useUpdatedRef"
-import { defaultExerciseSet, defaultWorkout, defaultWorkoutExercise } from "~/lib/utils/defaults"
+import {
+  aDefaultExerciseSetWith,
+  defaultExerciseSet,
+  defaultWorkout,
+  defaultWorkoutExercise,
+} from "~/lib/utils/defaults"
 
 export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
   (props: { initialPage: AppPage; children: ReactNode }) => {
@@ -42,12 +47,7 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
             ...we,
             notes: we.notes ?? undefined,
             sets: we.sets.map((set) => ({
-              ...defaultExerciseSet(),
-              weight: set.weight ?? undefined,
-              reps: set.reps ?? undefined,
-              assistedReps: set.assistedReps ?? undefined,
-              distance: set.distance ?? undefined,
-              time: set.time ?? undefined,
+              ...aDefaultExerciseSetWith(set),
               completed: false,
               completedAt: undefined,
             })),
@@ -86,7 +86,6 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
             exercise.stableExerciseId === stableExerciseId
               ? {
                   ...exercise,
-                  // Update assisted reps toggle if provided
                   ...(opts.enableAssistedReps !== undefined && {
                     enableAssistedReps: opts.enableAssistedReps,
                   }),

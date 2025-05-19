@@ -1,7 +1,8 @@
 import { and, desc, eq, lt } from "drizzle-orm"
-import { type DB } from "../db"
+import { type Doc, type DB } from "../db"
 import { type PutWorkout } from "../types/workout"
 import { exerciseSets, workoutExercises, workouts } from "../db/schema"
+import { aDefaultExerciseSetWith } from "../utils/defaults"
 
 /**
  * Retrieves paginated workout history with exercises and muscle groups
@@ -157,17 +158,17 @@ const putWorkout = async (
         // Insert sets for this exercise
         if (exercise.sets.length > 0) {
           await tx.insert(exerciseSets).values(
-            exercise.sets.map((set, j) => ({
-              workoutExerciseId,
-              order: j,
-              weight: set.weight,
-              reps: set.reps,
-              ...(set.assistedReps && set.assistedReps > 0 && { assistedReps: set.assistedReps }),
-              distance: set.distance,
-              time: set.time,
-              completed: set.completed ?? false,
-              completedAt: set.completedAt,
-            })),
+            exercise.sets.map(
+              (set, j) =>
+                ({
+                  order: j,
+                  workoutExerciseId,
+                  ...aDefaultExerciseSetWith(set),
+                  completedAt: set.completedAt ?? undefined,
+                }) satisfies {
+                  [K in keyof Omit<Doc<"exerciseSets">, "id">]: Doc<"exerciseSets">[K] | undefined
+                },
+            ),
           )
         }
       }
