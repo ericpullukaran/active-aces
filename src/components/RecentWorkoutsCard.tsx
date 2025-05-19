@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { ArrowRight } from "lucide-react"
 
 import { Button } from "./ui/button"
 import WorkoutHistoryCard from "./WorkoutHistoryCard"
@@ -37,12 +36,11 @@ export default function RecentWorkoutsCard() {
       <div className="mb-3 flex items-center">
         <h3 className="flex-1 text-lg font-semibold">Recent Workouts</h3>
         <Button
-          variant={"ghost"}
+          variant={"outline"}
           onClick={() => setCurrentPage("history")}
           className="bg-card flex text-right"
         >
           See More
-          <ArrowRight className="ml-1" />
         </Button>
       </div>
       <div className="flex flex-col gap-3">
