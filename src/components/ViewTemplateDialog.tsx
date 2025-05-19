@@ -126,8 +126,6 @@ export default function ViewTemplateDialog({ template, children }: ViewTemplateD
 
               {Array.from(exercisesByMuscleGroup.entries()).map(([muscleGroup, exercises]) => (
                 <div key={muscleGroup} className="space-y-2">
-                  <h4 className="text-primary text-sm font-medium">{muscleGroup}</h4>
-
                   {exercises.map((item, idx) => (
                     <div key={idx} className="rounded-lg border p-3">
                       <div className="flex items-center justify-between">

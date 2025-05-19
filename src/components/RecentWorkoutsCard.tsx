@@ -28,7 +28,7 @@ export default function RecentWorkoutsCard() {
   }
 
   if (workoutHistory.isLoading) {
-    return <div className="bg-card h-96 animate-pulse rounded-lg"></div>
+    return <div className="bg-card h-80 animate-pulse rounded-lg"></div>
   }
 
   return (
