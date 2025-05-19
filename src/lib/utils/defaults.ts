@@ -26,7 +26,6 @@ export const defaultExerciseSet = (): ExerciseSet => {
   return {
     stableSetId: createPrimaryKeyId(),
 
-    order: 0,
     reps: 0,
     assistedReps: 0,
     weight: 0,

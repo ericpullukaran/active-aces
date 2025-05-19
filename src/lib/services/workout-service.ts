@@ -159,7 +159,7 @@ const putWorkout = async (
           await tx.insert(exerciseSets).values(
             exercise.sets.map((set, j) => ({
               workoutExerciseId,
-              order: set.order ?? j,
+              order: j,
               weight: set.weight,
               reps: set.reps,
               ...(set.assistedReps && set.assistedReps > 0 && { assistedReps: set.assistedReps }),

@@ -6,7 +6,6 @@ export const ExerciseSetSchema = z.object({
   // A stable ID that doesn't change when items are reordered
   stableSetId: z.string(),
 
-  order: z.number(),
   weight: z.number().optional(),
   reps: z.number().optional(),
   assistedReps: z.number().optional(),

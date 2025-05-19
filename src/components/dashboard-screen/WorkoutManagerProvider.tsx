@@ -43,7 +43,6 @@ export const [WorkoutManagerProvider, useWorkoutManager] = createTypedContext(
             notes: we.notes ?? undefined,
             sets: we.sets.map((set) => ({
               ...defaultExerciseSet(),
-              order: set.order,
               weight: set.weight ?? undefined,
               reps: set.reps ?? undefined,
               assistedReps: set.assistedReps ?? undefined,
