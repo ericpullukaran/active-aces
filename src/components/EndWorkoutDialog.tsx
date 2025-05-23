@@ -21,7 +21,7 @@ import { Menu } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu"
 import { DropdownMenuItem } from "./ui/dropdown-menu"
 import { CopyPlus } from "lucide-react"
-import CreateTemplateDialog from "./navigation/CreateTemplateDialog"
+import CreateTemplateDialog from "./CreateTemplateDialog"
 import { TimeInput } from "./ui/time-input"
 
 export default function EndWorkoutDialog({
