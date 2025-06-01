@@ -5,7 +5,7 @@ import React, { useState } from "react"
 import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { Button } from "./ui/button"
 import { Textarea } from "./ui/textarea"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import { workoutActions } from "~/lib/stores/workoutStore"
 
 type ExerciseNotesDialogProps = {
   exerciseId: string
@@ -21,10 +21,9 @@ export default function ExerciseNotesDialog({
   onClose,
 }: ExerciseNotesDialogProps) {
   const [notes, setNotes] = useState(initialNotes)
-  const { updateExerciseSettings } = useWorkoutManager()
 
   const handleSave = () => {
-    updateExerciseSettings(exerciseId, { notes })
+    workoutActions.updateExerciseNotes(exerciseId, notes)
     onClose()
   }
 

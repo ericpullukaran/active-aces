@@ -9,14 +9,14 @@ import { Pause } from "lucide-react"
 import { useState } from "react"
 import { motion } from "motion/react"
 import { Play } from "lucide-react"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import { useTimer } from "./dashboard-screen/TimerProvider"
 
 export const StopwatchBar = (props: {
   onComplete?: (elapsedSeconds: number) => void
   autoStart?: boolean
   initialSeconds?: number
 }) => {
-  const { updateStopwatchElapsedTime } = useWorkoutManager()
+  const { updateStopwatchElapsedTime } = useTimer()
   const { onComplete, autoStart = true, initialSeconds = 0 } = props
   const [isRunning, setIsRunning] = useState(autoStart)
   const [isPaused, setIsPaused] = useState(false)

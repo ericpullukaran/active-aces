@@ -6,8 +6,9 @@ import AuthButton from "../AuthButton"
 import { cn } from "~/lib/utils"
 import { WorkoutButton } from "./WorkoutButton"
 import { ExercisesButton } from "./ExercisesButton"
-import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
 import { TimerOverlay } from "../TimerOverlay"
+import { useSnapshot } from "valtio"
+import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
 
 export type AppPage = "home" | "history" | "workout" | "exercises"
 
@@ -19,30 +20,27 @@ const activeIndicatorTransition: Transition = {
 }
 
 export default function BottomNavigation() {
-  const { currentPage, setCurrentPage } = useWorkoutManager()
-
   return (
     <div className="fixed inset-x-0 bottom-10 mx-3 flex flex-col items-center gap-8">
       <TimerOverlay />
       <motion.div
-        layout
+        layoutRoot
+        style={{ originY: "top" }}
         className="bg-card/70 relative flex w-full max-w-lg items-center justify-between overflow-hidden rounded-full px-3 py-1 text-gray-300 backdrop-blur-3xl"
       >
-        <LayoutGroup>
+        <LayoutGroup id="bottom-navigation">
           {/* Home Button */}
           <NavButton
             Icon={Home}
             page="home"
-            currentPage={currentPage}
-            onClick={() => setCurrentPage("home")}
+            onClick={() => navigationActions.setCurrentPage("home")}
           />
 
           {/* History Button */}
           <NavButton
             Icon={Clock}
             page="history"
-            currentPage={currentPage}
-            onClick={() => setCurrentPage("history")}
+            onClick={() => navigationActions.setCurrentPage("history")}
           />
 
           {/* Dynamic Middle Button */}
@@ -54,6 +52,7 @@ export default function BottomNavigation() {
           {/* Profile Button */}
           <motion.button
             layout
+            style={{ originY: "top" }}
             className="relative flex h-14 w-10 flex-col items-center justify-center p-2"
           >
             <AuthButton />
@@ -67,17 +66,19 @@ export default function BottomNavigation() {
 const NavButton = ({
   Icon,
   page,
-  currentPage,
   onClick,
 }: {
   Icon: React.ComponentType<{ className?: string }>
   page: AppPage
-  currentPage: AppPage
   onClick: () => void
 }) => {
+  const observableNavigation = useSnapshot(navigationStore)
+  const currentPage = observableNavigation.currentPage
+
   return (
     <motion.button
       layout
+      style={{ originY: "top" }}
       className="relative flex h-14 w-10 flex-col items-center justify-center p-2"
       onClick={onClick}
     >

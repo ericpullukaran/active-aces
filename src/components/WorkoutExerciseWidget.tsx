@@ -4,22 +4,27 @@ import { WorkoutExerciseHeader } from "./WorkoutExerciseHeader"
 import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import WorkoutExerciseWidgetBody from "./WorkoutExerciseWidgetBody"
 import { motion } from "motion/react"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import AnimatedVisibility from "~/lib/utils/AnimatedVisibility"
+import { workoutStore } from "~/lib/stores/workoutStore"
+import { useSnapshot } from "valtio"
 
 export default function WorkoutExerciseWidget({
   exercise,
+  exerciseIndex,
 }: {
   exercise: WorkoutExerciseWithMetadata
+  exerciseIndex: number
 }) {
   const [collapsed, setCollapsed] = useState(false)
-  const { currentWorkout, deleteExercise } = useWorkoutManager()
+  const snap = useSnapshot(workoutStore)
+
+  // We need to observer & re-calculate height for the widget when the height changes
+  // i.e. when the user adds a set or removes a set
+  const setCount = snap.currentWorkout?.exercises[exerciseIndex]?.sets.length
+
   const collapseExercise = useCallback(() => {
     setCollapsed((prev) => !prev)
   }, [])
-  const handleDeleteExercise = useCallback(() => {
-    deleteExercise(exercise.stableExerciseId)
-  }, [deleteExercise, exercise.stableExerciseId])
 
   return (
     <motion.div
@@ -30,14 +35,13 @@ export default function WorkoutExerciseWidget({
       className="bg-card w-full max-w-lg rounded-xl"
     >
       {/* header */}
-      <WorkoutExerciseHeader
-        exercise={exercise}
-        collapseExercise={collapseExercise}
-        deleteExercise={handleDeleteExercise}
-      />
+      <WorkoutExerciseHeader exercise={exercise} collapseExercise={collapseExercise} />
       {/* body */}
-      <AnimatedVisibility isVisible={!collapsed} dependency={currentWorkout}>
-        <WorkoutExerciseWidgetBody exercise={exercise} />
+      <AnimatedVisibility isVisible={!collapsed} dependency={setCount}>
+        <WorkoutExerciseWidgetBody
+          stableExerciseId={exercise.stableExerciseId}
+          exerciseMeta={exercise.metadata}
+        />
       </AnimatedVisibility>
     </motion.div>
   )

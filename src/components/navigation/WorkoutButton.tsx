@@ -2,18 +2,21 @@
 import React from "react"
 import { motion } from "motion/react"
 import { Square, Play, Loader2 } from "lucide-react"
-import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation } from "@tanstack/react-query"
 import EndWorkoutDialog from "../EndWorkoutDialog"
 import { TextMorph } from "../ui/text-morph"
+import { workoutActions } from "~/lib/stores/workoutStore"
+import { useSnapshot } from "valtio"
+import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
+import { useIsWorkoutActive } from "~/lib/utils/useIsWorkoutActive"
 
 export const WorkoutButton = () => {
   const trpc = useTRPC()
   const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
-  const { currentPage, currentWorkout, setCurrentPage, startWorkout } = useWorkoutManager()
-  const isWorkoutActive = currentWorkout !== null
-  const isWorkoutPage = currentPage === "workout"
+  const observableNavigation = useSnapshot(navigationStore)
+  const isWorkoutActive = useIsWorkoutActive()
+  const isWorkoutPage = observableNavigation.currentPage === "workout"
 
   const workoutRunningInBackground = isWorkoutActive && !isWorkoutPage
   const workoutRunningInForeground = isWorkoutActive && isWorkoutPage
@@ -21,13 +24,13 @@ export const WorkoutButton = () => {
   const toggleWorkoutState = (openDialog: () => void) => {
     if (workoutRunningInBackground) {
       // If returning to a paused workout
-      setCurrentPage("workout")
+      navigationActions.setCurrentPage("workout")
     } else if (workoutRunningInForeground) {
       // Stop workout
       openDialog()
     } else {
-      setCurrentPage("workout")
-      startWorkout()
+      navigationActions.setCurrentPage("workout")
+      workoutActions.startWorkout()
     }
   }
 
@@ -56,6 +59,7 @@ export const WorkoutButton = () => {
       {({ openDialog }) => (
         <motion.button
           layout
+          style={{ originY: "top" }}
           onClick={() => toggleWorkoutState(openDialog)}
           className="relative flex h-10 min-w-24 items-center justify-center gap-1 rounded-full px-6 py-2 font-bold text-white"
           animate={{
@@ -76,7 +80,7 @@ export const WorkoutButton = () => {
           <TextMorph>{buttonContent.text}</TextMorph>
 
           {/* Indicator dot for workout page */}
-          {currentPage === "workout" && (
+          {observableNavigation.currentPage === "workout" && (
             <motion.div
               className="absolute -bottom-4 h-2 w-2 rounded-full bg-white shadow-lg shadow-white/50 blur-xs"
               transition={{

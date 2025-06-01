@@ -4,8 +4,8 @@ import React, { useState } from "react"
 import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { Button } from "./ui/button"
 import { TimeInput } from "./ui/time-input"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import { formatTimeValue, parseTimeToSeconds } from "~/lib/utils/dates"
+import { workoutActions } from "~/lib/stores/workoutStore"
 
 type CustomizeTimerDialogProps = {
   exerciseId: string
@@ -21,15 +21,14 @@ export default function CustomizeTimerDialog({
   onClose,
 }: CustomizeTimerDialogProps) {
   const [timer, setTimer] = useState(initialTimer ?? 0)
-  const { updateExerciseSettings } = useWorkoutManager()
 
   const handleSave = () => {
-    updateExerciseSettings(exerciseId, { restTimeSeconds: timer })
+    workoutActions.updateExerciseRestTime(exerciseId, timer)
     onClose()
   }
 
   const handleClear = () => {
-    updateExerciseSettings(exerciseId, { restTimeSeconds: undefined })
+    workoutActions.updateExerciseRestTime(exerciseId, undefined)
     onClose()
   }
 
