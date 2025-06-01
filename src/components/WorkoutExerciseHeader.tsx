@@ -6,6 +6,7 @@ import {
   NotepadText,
   Timer,
   Trash,
+  History,
 } from "lucide-react"
 import { useMemo, useState } from "react"
 import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
@@ -23,13 +24,16 @@ import { MeasurementType } from "~/lib/db/types"
 import CustomizeTimerDialog from "./CustomizeTimerDialog"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
+import { AnimatePresence, motion } from "motion/react"
 
 export function WorkoutExerciseHeader({
   exercise,
   collapseExercise,
+  isPrefilling,
 }: {
   exercise: WorkoutExerciseWithMetadata
   collapseExercise: () => void
+  isPrefilling?: boolean
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showNotesDialog, setShowNotesDialog] = useState(false)
@@ -57,8 +61,8 @@ export function WorkoutExerciseHeader({
       >
         <div>
           {exercise.metadata.name || <Skeleton className="h-6 w-20" />}
-          <div>
-            <p className="flex items-center text-sm text-zinc-400">
+          <div className={"text-muted-foreground flex items-center gap-2 text-sm"}>
+            <p className="flex items-center">
               {allSetsComplete ? (
                 <>
                   <CircleCheck className="fill-primary text-card mr-1 h-4 w-4" />
@@ -68,6 +72,20 @@ export function WorkoutExerciseHeader({
                 <>{`${completedSets}/${totalSets} sets`}</>
               )}
             </p>
+            <AnimatePresence>
+              {isPrefilling && (
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                >
+                  <div className="flex items-center">
+                    <History className="mr-1 h-3 w-3" />
+                    Prefilling...
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

@@ -74,6 +74,65 @@ const getWorkoutHistoryWithExercises = async (
 }
 
 /**
+ * Gets the previous set metrics for a specific exercise, looking back through workout history
+ * to find the most recent data for each set position
+ */
+const getPreviousSetMetrics = async (
+  db: DB,
+  {
+    exerciseId,
+    numberOfSets,
+    userId,
+  }: {
+    exerciseId: string
+    numberOfSets: number
+    userId: string
+  },
+) => {
+  // Find all recent workouts that contain this exercise (excluding templates)
+  const recentWorkouts = await db.query.workouts.findMany({
+    where: (workout) => and(eq(workout.userId, userId), eq(workout.isTemplate, false)),
+    orderBy: [desc(workouts.startTime)],
+    limit: 50,
+    with: {
+      workoutExercises: {
+        where: (workoutExercise) => eq(workoutExercise.exerciseId, exerciseId),
+        orderBy: [workoutExercises.order],
+        with: {
+          sets: {
+            orderBy: [exerciseSets.order],
+          },
+        },
+      },
+    },
+  })
+
+  const workoutsWithExercise = recentWorkouts.filter(
+    (workout) => workout.workoutExercises.length > 0,
+  )
+
+  // Create array of the requested length, filled with most recent set data for each position
+  const result: (Doc<"exerciseSets"> | null)[] = []
+
+  for (let setIndex = 0; setIndex < numberOfSets; setIndex++) {
+    let foundSet: Doc<"exerciseSets"> | null = null
+
+    // Look through workouts from most recent to oldest to find data for this set position
+    for (const workout of workoutsWithExercise) {
+      const workoutExercise = workout.workoutExercises[0]
+      if (workoutExercise && setIndex < workoutExercise.sets.length) {
+        foundSet = workoutExercise.sets[setIndex]
+        break // Found the most recent data for this set position
+      }
+    }
+
+    result.push(foundSet)
+  }
+
+  return result
+}
+
+/**
  * Creates or updates a workout in the database
  */
 const putWorkout = async (
@@ -184,6 +243,7 @@ const deleteWorkout = async (db: DB, { id, userId }: { id: string; userId: strin
 
 export const workoutService = {
   getWorkoutHistoryWithExercises,
+  getPreviousSetMetrics,
   putWorkout,
   deleteWorkout,
 }

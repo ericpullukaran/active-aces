@@ -59,3 +59,15 @@ export const aDefaultExerciseSetWith = (
     ...ret,
   }
 }
+
+export const isSetADefaultSet = (set: ExerciseSet): boolean => {
+  const defaultComparison = {
+    weight: set.weight === defaultSetValues.weight,
+    reps: set.reps === defaultSetValues.reps,
+    assistedReps: set.assistedReps === defaultSetValues.assistedReps,
+    distance: set.distance === defaultSetValues.distance,
+    time: set.time === defaultSetValues.time,
+    completed: !set.completed,
+  } satisfies Record<keyof typeof defaultSetValues, boolean>
+  return Object.values(defaultComparison).every(Boolean)
+}

@@ -33,6 +33,23 @@ export const workoutsRouter = createTRPCRouter({
       }
     }),
 
+  getPreviousSetMetrics: protectedProcedure
+    .input(
+      z.object({
+        exerciseId: z.string(),
+        // Number of sets to look up; Will return array of this length with nulls if they
+        // haven't done it before.
+        numberOfSets: z.number().min(1).max(20),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await workoutService.getPreviousSetMetrics(ctx.db, {
+        exerciseId: input.exerciseId,
+        numberOfSets: input.numberOfSets,
+        userId: ctx.auth.userId,
+      })
+    }),
+
   put: protectedProcedure
     .input(
       z.object({

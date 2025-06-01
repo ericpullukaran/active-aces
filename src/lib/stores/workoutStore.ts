@@ -10,10 +10,12 @@ import {
   defaultExerciseSet,
   defaultWorkout,
   defaultWorkoutExercise,
+  isSetADefaultSet,
 } from "../utils/defaults"
 import { navigationActions } from "./navigationStore"
 import SuperJSON from "superjson"
 import { devtools } from "valtio/utils"
+import { type Doc } from "../db"
 
 const WORKOUT_STORAGE_KEY = "current_workout"
 const loadWorkoutFromStorage = (): PutWorkout | null => {
@@ -150,8 +152,23 @@ export const workoutActions = {
     const set = exercise.sets.find((s: ExerciseSet) => s.stableSetId === stableSetId)
     if (!set) return
 
-    // Directly mutate the set properties
     Object.assign(set, setUpdate)
+  },
+
+  prefillExerciseSets: (
+    stableExerciseId: string,
+    previousSetMetrics: (Doc<"exerciseSets"> | null)[],
+  ) => {
+    const exercise = findExercise(stableExerciseId)
+    if (!exercise) return
+
+    exercise.sets.forEach((set, index) => {
+      // Only prefill sets that aren't completed and have previous data
+      const previousSet = previousSetMetrics[index]
+      if (isSetADefaultSet(set) && previousSet) {
+        Object.assign(set, extractPrefillableFields(previousSet))
+      }
+    })
   },
 
   removeSet: (stableExerciseId: string, stableSetId: string) => {
@@ -159,4 +176,14 @@ export const workoutActions = {
     if (!exercise) return
     exercise.sets = exercise.sets.filter((set) => set.stableSetId !== stableSetId)
   },
+}
+
+const extractPrefillableFields = (previousSet: Doc<"exerciseSets">): Partial<ExerciseSet> => {
+  return {
+    weight: previousSet.weight ?? undefined,
+    reps: previousSet.reps ?? undefined,
+    assistedReps: previousSet.assistedReps ?? undefined,
+    distance: previousSet.distance ?? undefined,
+    time: previousSet.time ?? undefined,
+  } satisfies Omit<ExerciseSet, "stableSetId">
 }
