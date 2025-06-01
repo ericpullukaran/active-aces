@@ -92,7 +92,7 @@ export default function ExerciseHistoryDialog({
           </div>
 
           {/* Navigation Header */}
-          <div className="flex items-center justify-between px-4 pb-5">
+          <div className="flex items-center justify-between px-4 pb-10">
             <Button
               variant="outline"
               size="icon"
