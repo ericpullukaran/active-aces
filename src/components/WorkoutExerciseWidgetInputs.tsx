@@ -2,10 +2,9 @@
 
 import React from "react"
 import { cn } from "~/lib/utils"
-import { useWorkoutManager } from "~/components/dashboard-screen/WorkoutManagerProvider"
+import { useTimer } from "~/components/dashboard-screen/TimerProvider"
 import { Input } from "~/components/ui/input"
 import { type MeasurementMetric } from "~/lib/db/types"
-import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import { AnimatePresence, motion } from "motion/react"
 import { Checkbox } from "./ui/checkbox"
 import {
@@ -17,6 +16,8 @@ import {
 import "react-swipeable-list/dist/styles.css"
 import { Trash2 } from "lucide-react"
 import { WorkoutExerciseWidgetTimeInput } from "./WorkoutExerciseWidgetTimeInput"
+import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
+import { useSnapshot } from "valtio"
 
 export const measurementToDetails: Record<
   MeasurementMetric,
@@ -45,20 +46,26 @@ export const measurementToDetails: Record<
 }
 
 type Props = {
+  stableExerciseId: string
   measurements: MeasurementMetric[]
-  exercise: WorkoutExerciseWithMetadata
 }
 
-export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: Props) {
-  const { updateSet, removeSet, setTimerDurationSeconds } = useWorkoutManager()
+export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurements }: Props) {
+  const { setTimerDurationSeconds } = useTimer()
+  const snap = useSnapshot(workoutStore)
+  const exercise = snap.currentWorkout?.exercises.find(
+    (ex) => ex.stableExerciseId === stableExerciseId,
+  )
 
-  const getTrailingActions = (setId: string) =>
+  if (!exercise) return null
+
+  const getTrailingActions = (stableSetId: string) =>
     exercise.sets.length > 1 ? (
       <TrailingActions>
         <SwipeAction
           destructive
           onClick={() => {
-            removeSet(exercise.stableExerciseId, setId)
+            workoutActions.removeSet(stableExerciseId, stableSetId)
           }}
         >
           <div className="bg-destructive flex h-full items-center justify-center px-4">
@@ -108,7 +115,7 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                       <WorkoutExerciseWidgetTimeInput
                         key={measurement}
                         set={set}
-                        exercise={exercise}
+                        stableExerciseId={stableExerciseId}
                       />
                     )
                   }
@@ -126,7 +133,7 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                       {...measurementToDetails[measurement].inputProps}
                       value={set[measurement]}
                       onChange={(e) =>
-                        updateSet(exercise.stableExerciseId, set.stableSetId, {
+                        workoutActions.updateSet(stableExerciseId, set.stableSetId, {
                           [measurement]: e.target.valueAsNumber,
                         })
                       }
@@ -137,7 +144,7 @@ export default function WorkoutExerciseWidgetInputs({ measurements, exercise }: 
                   className="accent-primary h-8 w-12 rounded-full border-zinc-300 bg-transparent focus:ring-green-800"
                   checked={set.completed}
                   onCheckedChange={(checked) => {
-                    updateSet(exercise.stableExerciseId, set.stableSetId, {
+                    workoutActions.updateSet(stableExerciseId, set.stableSetId, {
                       completed: !!checked,
                       completedAt: !!checked ? new Date() : undefined,
                     })

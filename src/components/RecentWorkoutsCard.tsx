@@ -6,7 +6,8 @@ import { Button } from "./ui/button"
 import WorkoutHistoryCard from "./WorkoutHistoryCard"
 import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
+import { useSnapshot } from "valtio"
 
 export const recentWorkoutsQueryKey: readonly string[] = ["recent-workouts"]
 export default function RecentWorkoutsCard() {
@@ -15,7 +16,7 @@ export default function RecentWorkoutsCard() {
     ...trpc.workouts.historyInfinite.queryOptions({ limit: 2 }),
     queryKey: [recentWorkoutsQueryKey],
   })
-  const { setCurrentPage, currentPage } = useWorkoutManager()
+  const observableNavigation = useSnapshot(navigationStore)
 
   if (workoutHistory.isError) {
     return (
@@ -37,7 +38,7 @@ export default function RecentWorkoutsCard() {
         <h3 className="flex-1 text-lg font-semibold">Recent Workouts</h3>
         <Button
           variant={"outline"}
-          onClick={() => setCurrentPage("history")}
+          onClick={() => navigationActions.setCurrentPage("history")}
           className="bg-card flex text-right"
         >
           See More
@@ -52,7 +53,7 @@ export default function RecentWorkoutsCard() {
           </div>
         )}
         {workoutHistory.data?.items.map((w) => (
-          <WorkoutHistoryCard key={`${currentPage}-${w.id}`} workout={w} />
+          <WorkoutHistoryCard key={`${observableNavigation.currentPage}-${w.id}`} workout={w} />
         ))}
       </div>
     </div>

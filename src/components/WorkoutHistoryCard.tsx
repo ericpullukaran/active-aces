@@ -5,15 +5,16 @@ import WorkoutHistorySummary from "./WorkoutHistorySummary"
 import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import { extractMuscleGroups, formatWorkoutDate } from "~/lib/utils/workout-helpers"
 import { motion } from "motion/react"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import MuscleGroupBadge from "./MuscleGroupBadge"
+import { navigationStore } from "~/lib/stores/navigationStore"
+import { useSnapshot } from "valtio"
 
 type Props = {
   workout: WorkoutHistoryExercise
 }
 
 export default function WorkoutHistoryCard({ workout }: Props) {
-  const { currentPage } = useWorkoutManager()
+  const observableNavigation = useSnapshot(navigationStore)
   const allMuscleGroups = React.useMemo(() => extractMuscleGroups(workout), [workout])
   const formattedDate = React.useMemo(
     () => formatWorkoutDate(workout.startTime, "MMM d, yyyy"),
@@ -24,7 +25,7 @@ export default function WorkoutHistoryCard({ workout }: Props) {
   const moreCount = allMuscleGroups.length - 3
 
   return (
-    <motion.div layoutId={`${currentPage}-${workout.id}`}>
+    <motion.div layoutId={`${observableNavigation.currentPage}-${workout.id}`}>
       <WorkoutHistorySummary workout={workout}>
         <div className="hover:border-primary bg-card relative flex flex-col space-y-2 rounded-xl border p-4 text-left transition-all">
           <div className="flex items-center justify-between">

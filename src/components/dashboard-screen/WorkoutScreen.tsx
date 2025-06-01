@@ -1,28 +1,13 @@
-import React, { useMemo } from "react"
+import React from "react"
 import WorkoutExerciseWidget from "../WorkoutExerciseWidget"
-import { useWorkoutManager } from "./WorkoutManagerProvider"
 import { AnimatePresence } from "motion/react"
 import WorkoutStats from "../WorkoutStats"
-import { useExercises } from "~/lib/utils/useExercises"
 import { TextShimmer } from "../ui/text-shimer"
 import ArrowIcon from "../ui/ArrowIcon"
+import { useWorkoutExercises } from "~/lib/utils/useWorkoutExercises"
 
 export default function WorkoutScreen() {
-  const { currentExercises } = useWorkoutManager()
-  const { isLoading, filteredExercises } = useExercises()
-
-  const exercisesWithMetadata = useMemo(() => {
-    if (!filteredExercises.length) return []
-
-    return currentExercises
-      .map((workoutExercise) => {
-        const dbExercise = filteredExercises.find(([_, e]) => e.id === workoutExercise.exerciseId)
-        if (!dbExercise) return null
-        const [_, exercise] = dbExercise
-        return { ...workoutExercise, metadata: exercise }
-      })
-      .filter((e) => e !== null)
-  }, [currentExercises, filteredExercises])
+  const { isLoading, exercises } = useWorkoutExercises()
 
   return (
     <div className="relative isolate">
@@ -30,15 +15,21 @@ export default function WorkoutScreen() {
       <div className="isolate flex flex-col items-center gap-8 pt-10 pb-52">
         <AnimatePresence mode="popLayout">
           {isLoading && <TextShimmer className="text-center text-sm">Loading...</TextShimmer>}
-          {!isLoading && exercisesWithMetadata.length === 0 && (
+          {!isLoading && exercises.length === 0 && (
             <div className="text-muted-foreground fixed bottom-30 flex w-full cursor-pointer items-start justify-center gap-2 rounded-3xl text-center text-sm">
               Add an exercise to get started!
               <ArrowIcon className="fill-muted-foreground h-16 pt-2" />
             </div>
           )}
-          {exercisesWithMetadata.map((exercise) => (
-            <WorkoutExerciseWidget key={exercise.stableExerciseId} exercise={exercise} />
-          ))}
+          {exercises.map((exercise, exerciseIndex) => {
+            return (
+              <WorkoutExerciseWidget
+                key={exercise.stableExerciseId}
+                exercise={exercise}
+                exerciseIndex={exerciseIndex}
+              />
+            )
+          })}
         </AnimatePresence>
       </div>
     </div>

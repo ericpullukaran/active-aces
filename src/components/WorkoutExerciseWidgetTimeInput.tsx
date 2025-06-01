@@ -4,20 +4,21 @@ import { TimeInput } from "./ui/time-input"
 import { cn } from "~/lib/utils"
 import { Button } from "./ui/button"
 import { Play } from "lucide-react"
-import { type ExerciseSet, type WorkoutExercise } from "~/lib/types/workout"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
+import { type ExerciseSet } from "~/lib/types/workout"
+import { useTimer } from "./dashboard-screen/TimerProvider"
+import { workoutActions } from "~/lib/stores/workoutStore"
 
 type Props = {
   set: ExerciseSet
-  exercise: WorkoutExercise
+  stableExerciseId: string
 }
 
-export function WorkoutExerciseWidgetTimeInput({ set, exercise }: Props) {
-  const { updateSet, startStopwatch, activeStopwatchSetInfo: activeSetInfo } = useWorkoutManager()
+export function WorkoutExerciseWidgetTimeInput({ set, stableExerciseId }: Props) {
+  const { startStopwatch, activeStopwatchSetInfo: activeSetInfo } = useTimer()
 
   const isActiveSet =
     activeSetInfo &&
-    activeSetInfo.exerciseId === exercise.stableExerciseId &&
+    activeSetInfo.stableExerciseId === stableExerciseId &&
     activeSetInfo.setId === set.stableSetId
 
   const isThisSetActive = !!isActiveSet
@@ -34,7 +35,7 @@ export function WorkoutExerciseWidgetTimeInput({ set, exercise }: Props) {
             e.stopPropagation()
             if (!isActiveSet) {
               startStopwatch({
-                exerciseId: exercise.stableExerciseId,
+                stableExerciseId,
                 setId: set.stableSetId,
                 initialSeconds: set.time,
               })
@@ -53,7 +54,7 @@ export function WorkoutExerciseWidgetTimeInput({ set, exercise }: Props) {
         value={set["time"] ? formatTimeValue(set["time"]) : ""}
         onBlur={(value) => {
           const seconds = parseTimeToSeconds(value)
-          updateSet(exercise.stableExerciseId, set.stableSetId, {
+          workoutActions.updateSet(stableExerciseId, set.stableSetId, {
             time: seconds,
           })
         }}

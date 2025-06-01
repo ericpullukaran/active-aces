@@ -19,13 +19,13 @@ import { AnimatePresence, motion } from "motion/react"
 interface CreateTemplateDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentWorkout: PutWorkout | null
+  workout: PutWorkout | null
 }
 
 export default function CreateTemplateDialog({
   open,
   onOpenChange,
-  currentWorkout,
+  workout,
 }: CreateTemplateDialogProps) {
   const [templateName, setTemplateName] = useState("")
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false)
@@ -34,12 +34,12 @@ export default function CreateTemplateDialog({
   const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
 
   const handleCreateTemplate = () => {
-    if (!currentWorkout) return
+    if (!workout) return
 
     putWorkoutMutation.mutate(
       {
         workout: {
-          ...currentWorkout,
+          ...workout,
           name: templateName || "Untitled Template",
           isTemplate: true,
         },

@@ -11,7 +11,6 @@ import { useMemo, useState } from "react"
 import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import { Skeleton } from "~/components/ui/skeleton"
 import { Button } from "./ui/button"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,26 +21,29 @@ import {
 import ExerciseNotesDialog from "./ExerciseNotesDialog"
 import { MeasurementType } from "~/lib/db/types"
 import CustomizeTimerDialog from "./CustomizeTimerDialog"
+import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
+import { useSnapshot } from "valtio"
 
 export function WorkoutExerciseHeader({
   exercise,
   collapseExercise,
-  deleteExercise,
 }: {
   exercise: WorkoutExerciseWithMetadata
   collapseExercise: () => void
-  deleteExercise: () => void
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showNotesDialog, setShowNotesDialog] = useState(false)
   const [showTimerDialog, setShowTimerDialog] = useState(false)
-  const { updateExerciseSettings } = useWorkoutManager()
-  const completedSets = useMemo(
-    () => exercise.sets.reduce((acc, set) => acc + (set.completed ? 1 : 0), 0),
-    [exercise.sets],
+  const snap = useSnapshot(workoutStore)
+  const observableExercise = snap.currentWorkout?.exercises.find(
+    (ex) => ex.stableExerciseId === exercise.stableExerciseId,
   )
 
-  const totalSets = exercise.sets.length
+  const completedSets = useMemo(
+    () => observableExercise?.sets.reduce((acc, set) => acc + (set.completed ? 1 : 0), 0),
+    [observableExercise?.sets],
+  )
+  const totalSets = observableExercise?.sets.length || 0
 
   const allSetsComplete = totalSets > 0 && completedSets === totalSets
 
@@ -104,31 +106,37 @@ export function WorkoutExerciseHeader({
           {exercise.metadata.measurementType === MeasurementType.WEIGHT_REPS && (
             <DropdownMenuItem
               className="flex items-center px-2"
-              variant={exercise.enableAssistedReps ? "selected" : "default"}
+              variant={observableExercise?.enableAssistedReps ? "selected" : "default"}
               onClick={() =>
-                updateExerciseSettings(exercise.stableExerciseId, {
-                  enableAssistedReps: !exercise.enableAssistedReps,
-                })
+                workoutActions.updateExerciseAssistedReps(
+                  exercise.stableExerciseId,
+                  !observableExercise?.enableAssistedReps,
+                )
               }
             >
-              {!exercise.enableAssistedReps && <CircleDashed className="mr-2 h-4 w-4" />}
-              {exercise.enableAssistedReps && <CircleCheckBigIcon className="mr-2 h-4 w-4" />}
-              {exercise.enableAssistedReps ? "Assisted reps" : "Enable assisted reps"}
+              {!observableExercise?.enableAssistedReps && <CircleDashed className="mr-2 h-4 w-4" />}
+              {observableExercise?.enableAssistedReps && (
+                <CircleCheckBigIcon className="mr-2 h-4 w-4" />
+              )}
+              {observableExercise?.enableAssistedReps ? "Assisted reps" : "Enable assisted reps"}
             </DropdownMenuItem>
           )}
           {exercise.metadata.measurementType === MeasurementType.REPS && (
             <DropdownMenuItem
               className="flex items-center px-2"
-              variant={exercise.enableWeightedReps ? "selected" : "default"}
+              variant={observableExercise?.enableWeightedReps ? "selected" : "default"}
               onClick={() =>
-                updateExerciseSettings(exercise.stableExerciseId, {
-                  enableWeightedReps: !exercise.enableWeightedReps,
-                })
+                workoutActions.updateExerciseWeightedReps(
+                  exercise.stableExerciseId,
+                  !observableExercise?.enableWeightedReps,
+                )
               }
             >
-              {!exercise.enableWeightedReps && <CircleDashed className="mr-2 h-4 w-4" />}
-              {exercise.enableWeightedReps && <CircleCheckBigIcon className="mr-2 h-4 w-4" />}
-              {exercise.enableWeightedReps ? "Weighted reps" : "Enable Weighted reps"}
+              {!observableExercise?.enableWeightedReps && <CircleDashed className="mr-2 h-4 w-4" />}
+              {observableExercise?.enableWeightedReps && (
+                <CircleCheckBigIcon className="mr-2 h-4 w-4" />
+              )}
+              {observableExercise?.enableWeightedReps ? "Weighted reps" : "Enable Weighted reps"}
             </DropdownMenuItem>
           )}
 
@@ -140,7 +148,7 @@ export function WorkoutExerciseHeader({
             }}
           >
             <NotepadText className="mr-2 h-4 w-4" />
-            {exercise.notes ? "Edit notes" : "Add notes"}
+            {observableExercise?.notes ? "Edit notes" : "Add notes"}
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -155,7 +163,10 @@ export function WorkoutExerciseHeader({
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={deleteExercise}>
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => workoutActions.deleteExercise(exercise.stableExerciseId)}
+          >
             <Trash className="mr-2 h-4 w-4" />
             Delete Exercise
           </DropdownMenuItem>

@@ -2,21 +2,31 @@
 
 import { PlusIcon, Check } from "lucide-react"
 import { Button } from "./ui/button"
-import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
+import { type DbExercise } from "~/lib/types/workout"
 import WorkoutExerciseWidgetInputs from "./WorkoutExerciseWidgetInputs"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import { MEASUREMENT_FIELDS, getFieldKeys } from "~/lib/utils/measurement"
+import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
+import { memo } from "react"
+import { useSnapshot } from "valtio"
 
-export default function WorkoutExerciseWidgetBody({
-  exercise,
+export default memo(function WorkoutExerciseWidgetBody({
+  stableExerciseId,
+  exerciseMeta,
 }: {
-  exercise: WorkoutExerciseWithMetadata
+  stableExerciseId: string
+  exerciseMeta: DbExercise
 }) {
-  const { addSet } = useWorkoutManager()
-  const measurementType = exercise.metadata.measurementType
+  const snap = useSnapshot(workoutStore)
+  const observableExercise = snap.currentWorkout?.exercises.find(
+    (ex) => ex.stableExerciseId === stableExerciseId,
+  )
+
+  if (!observableExercise) return null
+
+  const measurementType = exerciseMeta.measurementType
   const fieldKeys = getFieldKeys(measurementType, {
-    enableAssistedReps: exercise.enableAssistedReps,
-    enableWeightedReps: exercise.enableWeightedReps,
+    enableAssistedReps: observableExercise.enableAssistedReps,
+    enableWeightedReps: observableExercise.enableWeightedReps,
   })
 
   return (
@@ -41,7 +51,7 @@ export default function WorkoutExerciseWidgetBody({
 
       {/* Sets rows */}
       <div className="space-y-2">
-        <WorkoutExerciseWidgetInputs measurements={fieldKeys} exercise={exercise} />
+        <WorkoutExerciseWidgetInputs stableExerciseId={stableExerciseId} measurements={fieldKeys} />
       </div>
 
       {/* Add set button */}
@@ -49,11 +59,11 @@ export default function WorkoutExerciseWidgetBody({
         size="sm"
         variant="outline"
         className="mt-4 w-full gap-1"
-        onClick={() => addSet(exercise.stableExerciseId)}
+        onClick={() => workoutActions.addSet(observableExercise.stableExerciseId)}
       >
         <PlusIcon size={16} />
         Add set
       </Button>
     </div>
   )
-}
+})

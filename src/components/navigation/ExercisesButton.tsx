@@ -2,14 +2,16 @@
 import React from "react"
 import { motion } from "motion/react"
 import { Database, PlusCircleIcon } from "lucide-react"
-import { useWorkoutManager } from "../dashboard-screen/WorkoutManagerProvider"
 import { AddExerciseDialog } from "../AddExerciseDialog"
+import { useSnapshot } from "valtio"
+import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
+import { useIsWorkoutActive } from "~/lib/utils/useIsWorkoutActive"
 
 export const ExercisesButton = () => {
-  const { currentPage, currentWorkout, setCurrentPage } = useWorkoutManager()
-  const isWorkoutActive = currentWorkout !== null
-  const isWorkoutPage = currentPage === "workout"
-  const isExercisesPage = currentPage === "exercises"
+  const observableNavigation = useSnapshot(navigationStore)
+  const isWorkoutActive = useIsWorkoutActive()
+  const isWorkoutPage = observableNavigation.currentPage === "workout"
+  const isExercisesPage = observableNavigation.currentPage === "exercises"
 
   const showAddExerciseIcon = isWorkoutActive && isWorkoutPage
 
@@ -18,10 +20,11 @@ export const ExercisesButton = () => {
       {({ openDialog }) => (
         <motion.button
           layout
+          style={{ originY: "top" }}
           className="relative flex h-14 w-10 flex-col items-center justify-center p-2"
           onClick={() => {
             if (!isWorkoutActive || (isWorkoutActive && !isWorkoutPage)) {
-              setCurrentPage("exercises")
+              navigationActions.setCurrentPage("exercises")
             } else {
               openDialog()
             }

@@ -10,7 +10,6 @@ import { MeasurementType } from "~/lib/db/types"
 import { MeasurementTypeLabels } from "~/lib/utils/measurement"
 import { type DbExercisesMap } from "~/lib/types/workout"
 import { exerciseQueryKey } from "~/lib/utils/useExercises"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +25,8 @@ import {
   CommandItem,
   CommandList,
 } from "~/components/ui/command"
+import { workoutActions } from "~/lib/stores/workoutStore"
+import { defaultWorkoutExercise } from "~/lib/utils/defaults"
 
 export const CreateExerciseDialog: React.FC<{
   initialName?: string
@@ -39,7 +40,6 @@ export const CreateExerciseDialog: React.FC<{
     MeasurementType.WEIGHT_REPS,
   )
   const [isCreating, setIsCreating] = useState(false)
-  const { addExercise } = useWorkoutManager()
   const [commandOpen, setCommandOpen] = useState(false)
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export const CreateExerciseDialog: React.FC<{
           data.set(exercise.id, exercise)
           return data
         })
-        addExercise(exercise.id)
+        workoutActions.addExercise(defaultWorkoutExercise(exercise.id))
 
         // Reset form
         setName("")

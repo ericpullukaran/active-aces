@@ -19,12 +19,12 @@ import { DropdownMenu } from "./ui/dropdown-menu"
 import { Menu } from "lucide-react"
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
 import { DialogContent } from "./ui/dialog"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
 import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
 import ReplaceWorkoutConfirmation from "./ReplaceWorkoutConfirmation"
+import { workoutActions } from "~/lib/stores/workoutStore"
 
 type WorkoutSummaryProps = {
   workout: WorkoutHistoryExercise
@@ -34,7 +34,6 @@ type WorkoutSummaryProps = {
 export default function WorkoutHistorySummary({ workout, children }: WorkoutSummaryProps) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
-  const { maybeCopyWorkout } = useWorkoutManager()
   const [showCopyConfirmation, setShowCopyConfirmation] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
@@ -80,7 +79,7 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
             <DropdownMenuContent className="w-56">
               <DropdownMenuItem
                 onClick={() => {
-                  if (!maybeCopyWorkout(workout)) {
+                  if (!workoutActions.maybeCopyWorkout(workout)) {
                     setShowCopyConfirmation(true)
                   }
                 }}

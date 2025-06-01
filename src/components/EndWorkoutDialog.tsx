@@ -3,7 +3,6 @@ import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { Button } from "./ui/button"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import {
   Dialog,
   DialogContent,
@@ -23,6 +22,9 @@ import { DropdownMenuItem } from "./ui/dropdown-menu"
 import { CopyPlus } from "lucide-react"
 import CreateTemplateDialog from "./CreateTemplateDialog"
 import { TimeInput } from "./ui/time-input"
+import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
+import { navigationActions } from "~/lib/stores/navigationStore"
+import { useIsWorkoutActive } from "~/lib/utils/useIsWorkoutActive"
 
 export default function EndWorkoutDialog({
   children,
@@ -34,22 +36,22 @@ export default function EndWorkoutDialog({
   const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
   const [note, setNote] = useState("")
   const [title, setTitle] = useState("")
-  const { currentWorkout, removeCurrentWorkout, setCurrentPage } = useWorkoutManager()
+  const isWorkoutActive = useIsWorkoutActive()
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [showCreateTemplateConfirmation, setShowCreateTemplateConfirmation] = useState(false)
   const [durationSeconds, setDurationSeconds] = useState(0)
 
   const calculateCurrentDuration = useCallback(() => {
-    if (currentWorkout?.startTime) {
-      const startTime = new Date(currentWorkout.startTime)
+    if (workoutStore.currentWorkout?.startTime) {
+      const startTime = new Date(workoutStore.currentWorkout.startTime)
       const currentDurationSeconds = Math.floor((new Date().getTime() - startTime.getTime()) / 1000)
       return Math.max(1, currentDurationSeconds)
     }
     return 0
-  }, [currentWorkout?.startTime])
+  }, [])
   const handleDurationChange = (value: string) => {
     const parsedSeconds = parseTimeToSeconds(value)
-    if (currentWorkout?.startTime) {
+    if (workoutStore.currentWorkout?.startTime) {
       const maxDurationSeconds = calculateCurrentDuration()
       const constrainedDuration = Math.min(Math.max(1, parsedSeconds), maxDurationSeconds)
       setDurationSeconds(constrainedDuration)
@@ -57,21 +59,23 @@ export default function EndWorkoutDialog({
   }
 
   const deleteWorkout = (closeDialog: () => void) => {
-    if (currentWorkout) {
-      removeCurrentWorkout()
-      setCurrentPage("home")
+    if (isWorkoutActive) {
+      workoutActions.removeCurrentWorkout()
+      navigationActions.setCurrentPage("home")
     }
     closeDialog()
     setShowDeleteConfirmation(false)
   }
 
   const endWorkout = (closeDialog: () => void) => {
-    if (currentWorkout) {
-      const finalEndTime = new Date(currentWorkout.startTime.getTime() + durationSeconds * 1000)
+    if (workoutStore.currentWorkout) {
+      const finalEndTime = new Date(
+        workoutStore.currentWorkout.startTime.getTime() + durationSeconds * 1000,
+      )
       putWorkoutMutation.mutate(
         {
           workout: {
-            ...currentWorkout,
+            ...workoutStore.currentWorkout,
             endTime: finalEndTime,
             ...(title !== "" && { name: title }),
             ...(note !== "" && { notes: note }),
@@ -81,11 +85,11 @@ export default function EndWorkoutDialog({
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
             queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
-            removeCurrentWorkout()
+            workoutActions.removeCurrentWorkout()
             setTitle("")
             setNote("")
             closeDialog()
-            setCurrentPage("home")
+            navigationActions.setCurrentPage("home")
           },
         },
       )
@@ -202,7 +206,7 @@ export default function EndWorkoutDialog({
       <CreateTemplateDialog
         open={showCreateTemplateConfirmation}
         onOpenChange={setShowCreateTemplateConfirmation}
-        currentWorkout={currentWorkout}
+        workout={workoutStore.currentWorkout}
       />
     </>
   )

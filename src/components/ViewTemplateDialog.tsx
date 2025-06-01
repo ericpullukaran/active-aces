@@ -21,11 +21,11 @@ import {
 } from "./ui/dropdown-menu"
 import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import { extractMuscleGroups } from "~/lib/utils/workout-helpers"
-import { useWorkoutManager } from "./dashboard-screen/WorkoutManagerProvider"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { templatesQueryKey } from "./TemplatesCarousel"
 import ReplaceWorkoutConfirmation from "./ReplaceWorkoutConfirmation"
+import { workoutActions } from "~/lib/stores/workoutStore"
 
 interface ViewTemplateDialogProps {
   template: WorkoutHistoryExercise
@@ -35,7 +35,6 @@ interface ViewTemplateDialogProps {
 export default function ViewTemplateDialog({ template, children }: ViewTemplateDialogProps) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
-  const { maybeCopyWorkout } = useWorkoutManager()
   const [isOpen, setIsOpen] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showUseTemplateConfirmation, setShowUseTemplateConfirmation] = useState(false)
@@ -149,7 +148,7 @@ export default function ViewTemplateDialog({ template, children }: ViewTemplateD
             <Button
               variant="default"
               onClick={() => {
-                if (maybeCopyWorkout(template)) {
+                if (workoutActions.maybeCopyWorkout(template)) {
                   closeDialog()
                 } else {
                   setShowUseTemplateConfirmation(true)
