@@ -6,7 +6,6 @@ import {
   type WorkoutHistoryExercise,
 } from "~/lib/types/workout"
 import {
-  aDefaultExerciseSetWith,
   defaultExerciseSet,
   defaultWorkout,
   defaultWorkoutExercise,
@@ -80,8 +79,9 @@ export const workoutActions = {
         ...defaultWorkoutExercise(we.exercise.id),
         ...we,
         notes: we.notes ?? undefined,
-        sets: we.sets.map((set) => ({
-          ...aDefaultExerciseSetWith(set),
+        sets: we.sets.map((_) => ({
+          // We dont prefill the set values
+          ...defaultExerciseSet(),
           completed: false,
           completedAt: undefined,
         })),
