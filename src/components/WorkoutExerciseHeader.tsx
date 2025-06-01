@@ -25,6 +25,7 @@ import CustomizeTimerDialog from "./CustomizeTimerDialog"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
 import { AnimatePresence, motion } from "motion/react"
+import ExerciseHistoryDialog from "./ExerciseHistoryDialog"
 
 export function WorkoutExerciseHeader({
   exercise,
@@ -38,6 +39,7 @@ export function WorkoutExerciseHeader({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showNotesDialog, setShowNotesDialog] = useState(false)
   const [showTimerDialog, setShowTimerDialog] = useState(false)
+  const [showHistoryDialog, setShowHistoryDialog] = useState(false)
   const snap = useSnapshot(workoutStore)
   const observableExercise = snap.currentWorkout?.exercises.find(
     (ex) => ex.stableExerciseId === exercise.stableExerciseId,
@@ -104,6 +106,13 @@ export function WorkoutExerciseHeader({
         initialTimer={exercise.metadata.defaultRestTime}
         isOpen={showTimerDialog}
         onClose={() => setShowTimerDialog(false)}
+      />
+
+      {/* External Exercise History Dialog */}
+      <ExerciseHistoryDialog
+        exerciseId={exercise.exerciseId}
+        isOpen={showHistoryDialog}
+        onClose={() => setShowHistoryDialog(false)}
       />
 
       <DropdownMenu open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -178,6 +187,17 @@ export function WorkoutExerciseHeader({
           >
             <Timer className="mr-2 h-4 w-4" />
             Customize timer
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="flex items-center px-2"
+            onClick={() => {
+              setIsPopoverOpen(false)
+              setShowHistoryDialog(true)
+            }}
+          >
+            <History className="mr-2 h-4 w-4" />
+            History
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />

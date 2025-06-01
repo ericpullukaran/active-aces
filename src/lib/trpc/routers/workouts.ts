@@ -33,6 +33,21 @@ export const workoutsRouter = createTRPCRouter({
       }
     }),
 
+  getExerciseHistory: protectedProcedure
+    .input(
+      z.object({
+        exerciseId: z.string(),
+        limit: z.number().min(1).max(50).default(10),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return await workoutService.getExerciseHistory(ctx.db, {
+        exerciseId: input.exerciseId,
+        userId: ctx.auth.userId,
+        limit: input.limit,
+      })
+    }),
+
   getPreviousSetMetrics: protectedProcedure
     .input(
       z.object({

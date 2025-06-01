@@ -1,4 +1,4 @@
-import { and, desc, eq, lt } from "drizzle-orm"
+import { and, desc, eq, lt, exists } from "drizzle-orm"
 import { type Doc, type DB } from "../db"
 import { type PutWorkout } from "../types/workout"
 import { exerciseSets, workoutExercises, workouts } from "../db/schema"
@@ -89,9 +89,23 @@ const getPreviousSetMetrics = async (
     userId: string
   },
 ) => {
-  // Find all recent workouts that contain this exercise (excluding templates)
   const recentWorkouts = await db.query.workouts.findMany({
-    where: (workout) => and(eq(workout.userId, userId), eq(workout.isTemplate, false)),
+    where: (workout) =>
+      and(
+        eq(workout.userId, userId),
+        eq(workout.isTemplate, false),
+        exists(
+          db
+            .select()
+            .from(workoutExercises)
+            .where(
+              and(
+                eq(workoutExercises.workoutId, workout.id),
+                eq(workoutExercises.exerciseId, exerciseId),
+              ),
+            ),
+        ),
+      ),
     orderBy: [desc(workouts.startTime)],
     limit: 50,
     with: {
@@ -107,10 +121,6 @@ const getPreviousSetMetrics = async (
     },
   })
 
-  const workoutsWithExercise = recentWorkouts.filter(
-    (workout) => workout.workoutExercises.length > 0,
-  )
-
   // Create array of the requested length, filled with most recent set data for each position
   const result: (Doc<"exerciseSets"> | null)[] = []
 
@@ -118,7 +128,7 @@ const getPreviousSetMetrics = async (
     let foundSet: Doc<"exerciseSets"> | null = null
 
     // Look through workouts from most recent to oldest to find data for this set position
-    for (const workout of workoutsWithExercise) {
+    for (const workout of recentWorkouts) {
       const workoutExercise = workout.workoutExercises[0]
       if (workoutExercise && setIndex < workoutExercise.sets.length) {
         foundSet = workoutExercise.sets[setIndex]
@@ -130,6 +140,67 @@ const getPreviousSetMetrics = async (
   }
 
   return result
+}
+
+/**
+ * Gets exercise history - previous workouts containing a specific exercise
+ */
+const getExerciseHistory = async (
+  db: DB,
+  {
+    exerciseId,
+    userId,
+    limit = 10,
+  }: {
+    exerciseId: string
+    userId: string
+    limit?: number
+  },
+) => {
+  const workoutsWithExercise = await db.query.workouts.findMany({
+    where: (workout) =>
+      and(
+        eq(workout.userId, userId),
+        eq(workout.isTemplate, false),
+        exists(
+          db
+            .select()
+            .from(workoutExercises)
+            .where(
+              and(
+                eq(workoutExercises.workoutId, workout.id),
+                eq(workoutExercises.exerciseId, exerciseId),
+              ),
+            ),
+        ),
+      ),
+    orderBy: [desc(workouts.startTime)],
+    limit,
+    with: {
+      workoutExercises: {
+        where: (workoutExercise) => eq(workoutExercise.exerciseId, exerciseId),
+        orderBy: [workoutExercises.order],
+        with: {
+          sets: {
+            orderBy: [exerciseSets.order],
+          },
+          exercise: {
+            with: {
+              primaryMuscleGroup: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  return workoutsWithExercise.map((workout) => ({
+    id: workout.id,
+    name: workout.name,
+    startTime: workout.startTime,
+    endTime: workout.endTime,
+    workoutExercise: workout.workoutExercises[0]!,
+  }))
 }
 
 /**
@@ -244,6 +315,7 @@ const deleteWorkout = async (db: DB, { id, userId }: { id: string; userId: strin
 export const workoutService = {
   getWorkoutHistoryWithExercises,
   getPreviousSetMetrics,
+  getExerciseHistory,
   putWorkout,
   deleteWorkout,
 }
