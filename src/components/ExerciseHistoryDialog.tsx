@@ -7,6 +7,7 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { getChartConfigForSets } from "~/lib/utils/chartConfigs"
+import SlideTransition from "./ui/SlideTransition"
 
 type ExerciseHistoryDialogProps = {
   exerciseId: string
@@ -92,42 +93,46 @@ export default function ExerciseHistoryDialog({
           </div>
 
           {/* Navigation Header */}
-          <div className="flex items-center justify-between px-4 pb-10">
+          <div className="relative isolate flex items-center justify-between px-4 pb-10">
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
               onClick={() => navigateWorkout("prev")}
               disabled={currentWorkoutIndex === (exerciseHistoryQuery.data?.length ?? 0) - 1}
               title="Go to older workout"
+              className="z-10"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2">
-                <h3 className="font-medium">{currentWorkout?.name}</h3>
-                {currentWorkoutIndex === 0 && (
-                  <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-                    Latest
-                  </span>
-                )}
+            <SlideTransition currentIndex={currentWorkoutIndex} className="z-0 w-full">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <h3 className="font-medium">{currentWorkout?.name}</h3>
+                  {currentWorkoutIndex === 0 && (
+                    <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+                      Latest
+                    </span>
+                  )}
+                </div>
+                <p className="text-muted-foreground text-sm">
+                  {currentWorkout && new Date(currentWorkout.startTime).toLocaleDateString()}
+                  {" • "}
+                  Session {currentWorkoutIndex + 1} of {exerciseHistoryQuery.data?.length}
+                  {exerciseHistoryQuery.data && exerciseHistoryQuery.data.length > 1 && (
+                    <span className="mt-1 block text-xs">← Older • Newer →</span>
+                  )}
+                </p>
               </div>
-              <p className="text-muted-foreground text-sm">
-                {currentWorkout && new Date(currentWorkout.startTime).toLocaleDateString()}
-                {" • "}
-                Session {currentWorkoutIndex + 1} of {exerciseHistoryQuery.data?.length}
-                {exerciseHistoryQuery.data && exerciseHistoryQuery.data.length > 1 && (
-                  <span className="mt-1 block text-xs">← Older • Newer →</span>
-                )}
-              </p>
-            </div>
+            </SlideTransition>
 
             <Button
-              variant="outline"
+              variant="secondary"
               size="icon"
               onClick={() => navigateWorkout("next")}
               disabled={currentWorkoutIndex === 0}
               title="Go to newer workout"
+              className="z-10"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
