@@ -95,8 +95,8 @@ export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurem
                     "bg-green-950": set.completed,
                   },
                   {
-                    "rounded-t-lg": setIndex === 0 || !exercise.sets[setIndex - 1]?.completed,
-                    "rounded-b-lg":
+                    "rounded-t-2xl": setIndex === 0 || !exercise.sets[setIndex - 1]?.completed,
+                    "rounded-b-2xl":
                       exercise.sets.length - 1 === setIndex ||
                       !exercise.sets[setIndex + 1]?.completed,
                     "bg-green-950": set.completed,
