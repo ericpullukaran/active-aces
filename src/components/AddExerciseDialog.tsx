@@ -42,7 +42,6 @@ export const AddExerciseDialog: React.FC<{
 
   const clearSearch = () => {
     setSearchQuery("")
-    setIsSearching(false)
   }
 
   const openCreateExercise = (initialName?: string) => {
