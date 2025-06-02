@@ -108,7 +108,12 @@ export default function ExerciseHistoryDialog({
               <ChevronLeft className="h-4 w-4" />
             </Button>
 
-            <SlideTransition currentIndex={currentWorkoutIndex} className="z-0 w-full">
+            <SlideTransition
+              currentIndex={currentWorkoutIndex}
+              className="z-0 w-full"
+              onSwipeLeft={() => navigateWorkout("next")}
+              onSwipeRight={() => navigateWorkout("prev")}
+            >
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2">
                   <h3 className="font-medium">{currentWorkout?.name}</h3>
