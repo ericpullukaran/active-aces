@@ -3,7 +3,6 @@ import {
   CircleCheckBigIcon,
   CircleDashed,
   Menu,
-  NotepadText,
   Timer,
   Trash,
   History,
@@ -19,7 +18,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
-import ExerciseNotesDialog from "./ExerciseNotesDialog"
 import { MeasurementType } from "~/lib/db/types"
 import CustomizeTimerDialog from "./CustomizeTimerDialog"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
@@ -37,7 +35,6 @@ export function WorkoutExerciseHeader({
   isPrefilling?: boolean
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-  const [showNotesDialog, setShowNotesDialog] = useState(false)
   const [showTimerDialog, setShowTimerDialog] = useState(false)
   const [showHistoryDialog, setShowHistoryDialog] = useState(false)
   const snap = useSnapshot(workoutStore)
@@ -91,14 +88,6 @@ export function WorkoutExerciseHeader({
           </div>
         </div>
       </div>
-
-      {/* External Exercise Notes Dialog */}
-      <ExerciseNotesDialog
-        exerciseId={exercise.stableExerciseId}
-        initialNotes={exercise.notes || ""}
-        isOpen={showNotesDialog}
-        onClose={() => setShowNotesDialog(false)}
-      />
 
       {/* External Exercise Timer Dialog */}
       <CustomizeTimerDialog
@@ -166,17 +155,6 @@ export function WorkoutExerciseHeader({
               {observableExercise?.enableWeightedReps ? "Weighted reps" : "Enable Weighted reps"}
             </DropdownMenuItem>
           )}
-
-          <DropdownMenuItem
-            className="flex items-center px-2"
-            onClick={() => {
-              setIsPopoverOpen(false)
-              setShowNotesDialog(true)
-            }}
-          >
-            <NotepadText className="mr-2 h-4 w-4" />
-            {observableExercise?.notes ? "Edit notes" : "Add notes"}
-          </DropdownMenuItem>
 
           <DropdownMenuItem
             className="flex items-center px-2"

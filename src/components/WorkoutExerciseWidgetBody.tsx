@@ -1,13 +1,14 @@
 "use client"
 
-import { PlusIcon, Check } from "lucide-react"
+import { PlusIcon, Check, NotepadText, PenBox } from "lucide-react"
 import { Button } from "./ui/button"
 import { type DbExercise } from "~/lib/types/workout"
 import WorkoutExerciseWidgetInputs from "./WorkoutExerciseWidgetInputs"
 import { MEASUREMENT_FIELDS, getFieldKeys } from "~/lib/utils/measurement"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
-import { memo } from "react"
+import { memo, useState } from "react"
 import { useSnapshot } from "valtio"
+import ExerciseNotesDialog from "./ExerciseNotesDialog"
 
 export default memo(function WorkoutExerciseWidgetBody({
   stableExerciseId,
@@ -16,6 +17,7 @@ export default memo(function WorkoutExerciseWidgetBody({
   stableExerciseId: string
   exerciseMeta: DbExercise
 }) {
+  const [showNotesDialog, setShowNotesDialog] = useState(false)
   const snap = useSnapshot(workoutStore)
   const observableExercise = snap.currentWorkout?.exercises.find(
     (ex) => ex.stableExerciseId === stableExerciseId,
@@ -54,16 +56,39 @@ export default memo(function WorkoutExerciseWidgetBody({
         <WorkoutExerciseWidgetInputs stableExerciseId={stableExerciseId} measurements={fieldKeys} />
       </div>
 
-      {/* Add set button */}
-      <Button
-        size="sm"
-        variant="outline"
-        className="mt-4 w-full gap-1"
-        onClick={() => workoutActions.addSet(observableExercise.stableExerciseId)}
-      >
-        <PlusIcon size={16} />
-        Add set
-      </Button>
+      {/* Add notes and set */}
+      <div className="flex items-center gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          className="mt-4 w-full gap-1"
+          onClick={() => setShowNotesDialog(true)}
+        >
+          {!observableExercise?.notes ? (
+            <NotepadText className="mr-2 h-4 w-4" />
+          ) : (
+            <PenBox className="mr-2 h-4 w-4" />
+          )}
+          {observableExercise?.notes ? "Edit notes" : "Add notes"}
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          className="mt-4 w-full gap-1"
+          onClick={() => workoutActions.addSet(observableExercise.stableExerciseId)}
+        >
+          <PlusIcon className="mr-2 h-4 w-4" />
+          Add set
+        </Button>
+      </div>
+
+      {/* External Exercise Notes Dialog */}
+      <ExerciseNotesDialog
+        exerciseId={observableExercise.stableExerciseId}
+        initialNotes={observableExercise.notes || ""}
+        isOpen={showNotesDialog}
+        onClose={() => setShowNotesDialog(false)}
+      />
     </div>
   )
 })
