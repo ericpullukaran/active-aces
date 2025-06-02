@@ -163,13 +163,27 @@ export const workoutActions = {
     const exercise = findExercise(stableExerciseId)
     if (!exercise) return
 
+    let enableAssistedReps = false
+    let enableWeightedReps = false
     exercise.sets.forEach((set, index) => {
-      // Only prefill sets that aren't completed and have previous data
       const previousSet = previousSetMetrics[index]
-      if (isSetADefaultSet(set) && previousSet) {
+      if (!previousSet) {
+        return
+      }
+      // Only prefill sets that aren't completed and don't previous data
+      if (isSetADefaultSet(set)) {
         Object.assign(set, extractPrefillableFields(previousSet))
       }
+      if (previousSet.assistedReps && previousSet.assistedReps > 0) {
+        enableAssistedReps = true
+      }
+      if (previousSet.weight && previousSet.weight > 0) {
+        enableWeightedReps = true
+      }
     })
+
+    exercise.enableAssistedReps = enableAssistedReps
+    exercise.enableWeightedReps = enableWeightedReps
   },
 
   removeSet: (stableExerciseId: string, stableSetId: string) => {

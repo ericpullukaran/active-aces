@@ -153,6 +153,87 @@ const weightRepsConfig: ChartTypeConfig = {
   },
 }
 
+const repsConfig: ChartTypeConfig = {
+  renderChart: (data, config, fieldKeys) => (
+    <ChartContainer config={config} className="min-h-[250px] w-full">
+      <LineChart
+        accessibilityLayer
+        data={data}
+        margin={{ left: 24, right: 24, top: 30, bottom: 12 }}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="setNumber" tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip
+          cursor={false}
+          content={({ active, payload, label }) => {
+            return repsConfig.renderTooltip(
+              active ?? false,
+              (payload as TooltipPayload[]) ?? [],
+              label,
+              fieldKeys,
+            )
+          }}
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+        {fieldKeys.map((key) => (
+          <Line
+            key={key}
+            dataKey={key}
+            type="linear"
+            stroke={CHART_COLORS[key]}
+            strokeWidth={2}
+            dot={{ fill: CHART_COLORS[key], strokeWidth: 2, r: 4 }}
+            animationDuration={300}
+            animationEasing="ease-out"
+          >
+            <LabelList
+              dataKey={key}
+              position="top"
+              offset={12}
+              className="fill-foreground"
+              formatter={(value: number) => {
+                if (key === "weight") return `${value}kg`
+                if (key === "reps") return `${value}`
+              }}
+            />
+          </Line>
+        ))}
+      </LineChart>
+    </ChartContainer>
+  ),
+
+  renderTooltip: (active, payload, label, fieldKeys) => {
+    if (!active || !payload || payload.length === 0) return null
+
+    const data = payload[0].payload
+    return (
+      <div className="bg-background rounded-lg border p-3 shadow-lg">
+        <p className="mb-2 font-medium">{data.setLabel}</p>
+        <div className="space-y-1">
+          {fieldKeys.map((key) => {
+            const value = data[key] as number
+            if (value <= 0) return null
+
+            const payloadItem = payload.find((p) => p.dataKey === key)
+            const unit = key === "weight" ? "kg" : ""
+
+            return (
+              <div key={key} className="flex justify-between gap-4">
+                <div className="h-2 w-2" style={{ backgroundColor: payloadItem?.color }}></div>
+                <span className="text-muted-foreground">{MEASUREMENT_FIELDS[key].label}:</span>
+                <span className="font-medium">
+                  {value}
+                  {unit}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  },
+}
+
 // No-op configuration for unsupported types
 const noOpConfig: ChartTypeConfig = {
   renderChart: () => (
@@ -165,7 +246,7 @@ const noOpConfig: ChartTypeConfig = {
 
 const CHART_CONFIGS = {
   [MeasurementType.WEIGHT_REPS]: weightRepsConfig,
-  [MeasurementType.REPS]: noOpConfig,
+  [MeasurementType.REPS]: repsConfig,
   [MeasurementType.TIME]: noOpConfig,
   [MeasurementType.TIME_DISTANCE]: noOpConfig,
   [MeasurementType.WEIGHT_DURATION]: noOpConfig,

@@ -85,6 +85,7 @@ export default function EndWorkoutDialog({
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
             queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
+            queryClient.invalidateQueries({ queryKey: ["previous-set-metrics"] })
             workoutActions.removeCurrentWorkout()
             setTitle("")
             setNote("")
