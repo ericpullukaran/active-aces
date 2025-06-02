@@ -69,6 +69,9 @@ export default function ExerciseHistoryDialog({
     return chartResult.renderChart()
   }
 
+  const isFirstWorkout = currentWorkoutIndex === 0
+  const isLastWorkout = currentWorkoutIndex === (exerciseHistoryQuery.data?.length ?? 0) - 1
+
   return (
     <ResponsiveDialog
       title="Exercise History"
@@ -95,10 +98,10 @@ export default function ExerciseHistoryDialog({
           {/* Navigation Header */}
           <div className="relative isolate flex items-center justify-between px-4 pb-10">
             <Button
-              variant="secondary"
+              variant={isLastWorkout ? "ghost" : "secondary"}
               size="icon"
               onClick={() => navigateWorkout("prev")}
-              disabled={currentWorkoutIndex === (exerciseHistoryQuery.data?.length ?? 0) - 1}
+              disabled={isLastWorkout}
               title="Go to older workout"
               className="z-10"
             >
@@ -127,10 +130,10 @@ export default function ExerciseHistoryDialog({
             </SlideTransition>
 
             <Button
-              variant="secondary"
+              variant={isFirstWorkout ? "ghost" : "secondary"}
               size="icon"
               onClick={() => navigateWorkout("next")}
-              disabled={currentWorkoutIndex === 0}
+              disabled={isFirstWorkout}
               title="Go to newer workout"
               className="z-10"
             >
