@@ -78,7 +78,8 @@ export const workoutActions = {
       exercises: workout.workoutExercises.map((we) => ({
         ...defaultWorkoutExercise(we.exercise.id),
         ...we,
-        notes: we.notes ?? undefined,
+        // We dont prefill the notes
+        notes: undefined,
         sets: we.sets.map((_) => ({
           // We dont prefill the set values
           ...defaultExerciseSet(),
