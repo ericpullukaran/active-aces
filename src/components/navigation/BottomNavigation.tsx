@@ -26,7 +26,7 @@ export default function BottomNavigation() {
       <motion.div
         layoutRoot
         style={{ originY: "top" }}
-        className="bg-card/70 relative flex w-full max-w-lg items-center justify-between overflow-hidden rounded-full px-3 py-1 text-gray-300 backdrop-blur-3xl"
+        className="bg-secondary/60 relative flex w-full max-w-lg items-center justify-between overflow-hidden rounded-full px-3 py-1 text-gray-300 backdrop-blur-3xl"
       >
         <LayoutGroup id="bottom-navigation">
           {/* Home Button */}
