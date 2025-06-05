@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
-
 import { cn } from "~/lib/utils"
 
 function Drawer({
@@ -14,6 +13,7 @@ function Drawer({
       {...props}
       data-slot="drawer"
       shouldScaleBackground={shouldScaleBackground}
+      repositionInputs={false}
       onOpenChange={(open) => {
         if (!open) {
           props.onClose?.()
