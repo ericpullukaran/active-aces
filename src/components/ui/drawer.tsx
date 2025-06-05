@@ -5,6 +5,125 @@ import { Drawer as DrawerPrimitive } from "vaul"
 
 import { cn } from "~/lib/utils"
 
+// Simplified iOS detection
+const isIOS = () => {
+  return typeof window !== "undefined" && /iPad|iPhone|iPod/.test(window.navigator.userAgent)
+}
+
+// Track active drawers to prevent multiple scroll locks
+let activeDrawerCount = 0
+let restoreScroll: (() => void) | null = null
+
+// Hook to prevent iOS input focus scrolling - inspired by Adobe React Aria
+function useIOSInputFocusFix() {
+  React.useEffect(() => {
+    if (!isIOS()) return
+
+    activeDrawerCount++
+
+    const handleFocus = (e: FocusEvent) => {
+      const target = e.target as HTMLElement
+
+      // Check if it's an input that will open keyboard and is in our drawer
+      if (willOpenKeyboard(target) && target.closest('[data-slot="drawer-content"]')) {
+        // Adobe's transform trick - much more reliable than opacity
+        target.style.transform = "translateY(-2000px)"
+
+        requestAnimationFrame(() => {
+          target.style.transform = ""
+
+          // Scroll the input into view within the drawer if needed
+          scrollIntoDrawerView(target)
+        })
+      }
+    }
+
+    // Setup scroll prevention only for first drawer
+    if (activeDrawerCount === 1) {
+      restoreScroll = setupScrollPrevention()
+    }
+
+    document.addEventListener("focus", handleFocus, true)
+
+    return () => {
+      activeDrawerCount--
+      document.removeEventListener("focus", handleFocus, true)
+
+      // Restore scroll only when last drawer closes
+      if (activeDrawerCount === 0 && restoreScroll) {
+        restoreScroll()
+        restoreScroll = null
+      }
+    }
+  }, [])
+}
+
+// Check if element will open virtual keyboard
+function willOpenKeyboard(target: Element): boolean {
+  const nonTextInputTypes = new Set([
+    "checkbox",
+    "radio",
+    "range",
+    "color",
+    "file",
+    "image",
+    "button",
+    "submit",
+    "reset",
+  ])
+
+  return (
+    (target instanceof HTMLInputElement && !nonTextInputTypes.has(target.type)) ||
+    target instanceof HTMLTextAreaElement ||
+    (target instanceof HTMLElement && target.isContentEditable)
+  )
+}
+
+// Setup scroll prevention for iOS
+function setupScrollPrevention(): () => void {
+  const originalScrollY = window.pageYOffset
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+  // Store original styles
+  const originalBodyStyle = document.body.style.cssText
+  const originalDocumentStyle = document.documentElement.style.cssText
+
+  // Apply scroll lock styles
+  document.documentElement.style.paddingRight = `${scrollbarWidth}px`
+  document.documentElement.style.overflow = "hidden"
+  document.body.style.marginTop = `-${originalScrollY}px`
+  document.body.style.position = "fixed"
+  document.body.style.width = "100%"
+
+  // Scroll to top
+  window.scrollTo(0, 0)
+
+  // Return restore function
+  return () => {
+    document.body.style.cssText = originalBodyStyle
+    document.documentElement.style.cssText = originalDocumentStyle
+    window.scrollTo(0, originalScrollY)
+  }
+}
+
+// Scroll input into view within the drawer container
+function scrollIntoDrawerView(target: Element) {
+  const drawer = target.closest('[data-slot="drawer-content"]')
+  if (!drawer) return
+
+  const scrollContainer = drawer.querySelector(".overflow-scroll")
+  if (scrollContainer && scrollContainer !== target) {
+    const containerRect = scrollContainer.getBoundingClientRect()
+    const targetRect = target.getBoundingClientRect()
+
+    if (targetRect.bottom > containerRect.bottom) {
+      scrollContainer.scrollTop += targetRect.bottom - containerRect.bottom + 20
+    } else if (targetRect.top < containerRect.top) {
+      scrollContainer.scrollTop -= containerRect.top - targetRect.top + 20
+    }
+  }
+}
+
 function Drawer({
   shouldScaleBackground = true,
   ...props
@@ -62,6 +181,9 @@ function DrawerContent({
   onClose,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Content> & { onClose?: () => void }) {
+  // Apply iOS input focus fix
+  useIOSInputFocusFix()
+
   return (
     <DrawerPortal data-slot="drawer-portal">
       <DrawerOverlay onClose={onClose} />
