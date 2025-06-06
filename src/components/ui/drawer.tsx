@@ -8,6 +8,26 @@ function Drawer({
   shouldScaleBackground = true,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+  const [initialScrollPosition, setInitialScrollPosition] = React.useState(0)
+  const [prevOpen, setPrevOpen] = React.useState(props.open)
+
+  // Very hacky, but works for now 😔
+  // Handle scroll position restoration to prevent unwanted scrolling in IOS
+  // When the drawer opens on mobile and the virtual keyboard appears, it can cause
+  // the background content to scroll. We capture the initial scroll position
+  // when opening and restore it when closing to maintain the user's place.
+  React.useEffect(() => {
+    if (props.open !== prevOpen) {
+      if (props.open) {
+        const currentScrollY = window.scrollY
+        setInitialScrollPosition(currentScrollY)
+      } else if (prevOpen) {
+        window.scrollTo({ top: initialScrollPosition, behavior: "smooth" })
+      }
+      setPrevOpen(props.open)
+    }
+  }, [props.open, prevOpen, initialScrollPosition])
+
   return (
     <DrawerPrimitive.Root
       {...props}
@@ -15,7 +35,11 @@ function Drawer({
       shouldScaleBackground={shouldScaleBackground}
       repositionInputs={false}
       onOpenChange={(open) => {
-        if (!open) {
+        if (open) {
+          const currentScrollY = window.scrollY
+          setInitialScrollPosition(currentScrollY)
+        } else {
+          window.scrollTo({ top: initialScrollPosition, behavior: "smooth" })
           props.onClose?.()
         }
       }}
