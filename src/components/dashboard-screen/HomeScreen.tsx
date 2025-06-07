@@ -3,9 +3,12 @@ import { useSession } from "@clerk/nextjs"
 import RecentWorkoutsCard from "../RecentWorkoutsCard"
 import TemplatesCarousel from "../TemplatesCarousel"
 import { getTimeOfDay } from "~/lib/utils/dates"
+import { useExercises } from "~/lib/utils/useExercises"
 
 export function HomeScreen() {
   const { session } = useSession()
+  // Preload exercises
+  useExercises()
 
   return (
     <div className="flex flex-col gap-8 pb-28">

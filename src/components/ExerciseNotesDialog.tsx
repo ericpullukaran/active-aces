@@ -37,7 +37,7 @@ export default function ExerciseNotesDialog({
 
   useEffect(() => {
     if (isOpen && setNumber) {
-      const setNotation = `${!initialNotes.endsWith("\n") ? "\n" : ""}[Set ${setNumber}]: `
+      const setNotation = `${initialNotes !== "" && !initialNotes.endsWith("\n") ? "\n" : ""}[Set ${setNumber}]: `
       const newNotes = initialNotes + setNotation
       setNotes(newNotes)
     } else if (isOpen && !setNumber) {
