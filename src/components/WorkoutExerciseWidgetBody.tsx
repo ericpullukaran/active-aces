@@ -9,6 +9,7 @@ import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
 import { memo, useState } from "react"
 import { useSnapshot } from "valtio"
 import ExerciseNotesDialog from "./ExerciseNotesDialog"
+import { LayoutGroup, motion } from "motion/react"
 
 export default memo(function WorkoutExerciseWidgetBody({
   stableExerciseId,
@@ -51,36 +52,36 @@ export default memo(function WorkoutExerciseWidgetBody({
         ))}
       </div>
 
-      {/* Sets rows */}
-      <div className="space-y-2">
+      <LayoutGroup>
+        {/* Sets rows */}
         <WorkoutExerciseWidgetInputs stableExerciseId={stableExerciseId} measurements={fieldKeys} />
-      </div>
 
-      {/* Add notes and set */}
-      <div className="flex items-center gap-2">
-        <Button
-          size="sm"
-          variant="outline"
-          className="mt-4 w-full gap-1"
-          onClick={() => setShowNotesDialog(true)}
-        >
-          {!observableExercise?.notes ? (
-            <NotepadText className="mr-2 h-4 w-4" />
-          ) : (
-            <PenBox className="mr-2 h-4 w-4" />
-          )}
-          {observableExercise?.notes ? "Edit notes" : "Add notes"}
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="mt-4 w-full gap-1"
-          onClick={() => workoutActions.addSet(observableExercise.stableExerciseId)}
-        >
-          <PlusIcon className="mr-2 h-4 w-4" />
-          Add set
-        </Button>
-      </div>
+        {/* Add notes and set */}
+        <motion.div className="flex items-center gap-2" layout>
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-4 w-full gap-1"
+            onClick={() => setShowNotesDialog(true)}
+          >
+            {!observableExercise?.notes ? (
+              <NotepadText className="mr-2 h-4 w-4" />
+            ) : (
+              <PenBox className="mr-2 h-4 w-4" />
+            )}
+            {observableExercise?.notes ? "Edit notes" : "Add notes"}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-4 w-full gap-1"
+            onClick={() => workoutActions.addSet(observableExercise.stableExerciseId)}
+          >
+            <PlusIcon className="mr-2 h-4 w-4" />
+            Add set
+          </Button>
+        </motion.div>
+      </LayoutGroup>
 
       {/* External Exercise Notes Dialog */}
       <ExerciseNotesDialog

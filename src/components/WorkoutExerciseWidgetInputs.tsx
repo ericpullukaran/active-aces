@@ -7,12 +7,7 @@ import { Input } from "~/components/ui/input"
 import { type MeasurementMetric } from "~/lib/db/types"
 import { AnimatePresence, motion } from "motion/react"
 import { Checkbox } from "./ui/checkbox"
-import {
-  SwipeableList,
-  SwipeableListItem,
-  TrailingActions,
-  SwipeAction,
-} from "react-swipeable-list"
+import { SwipeableListItem, TrailingActions, SwipeAction } from "react-swipeable-list"
 import "react-swipeable-list/dist/styles.css"
 import { Trash2 } from "lucide-react"
 import { WorkoutExerciseWidgetTimeInput } from "./WorkoutExerciseWidgetTimeInput"
@@ -76,19 +71,21 @@ export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurem
     ) : null
 
   return (
-    <div className="space-y-2">
-      <SwipeableList className="flex flex-col gap-2">
-        <AnimatePresence mode="popLayout">
-          {exercise.sets.map((set, setIndex) => (
+    <motion.div layout className="flex flex-col gap-2">
+      <AnimatePresence mode="popLayout">
+        {exercise.sets.map((set, setIndex) => (
+          <motion.div
+            layout
+            key={set.stableSetId}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             <SwipeableListItem
               key={set.stableSetId}
               threshold={0.5}
               trailingActions={getTrailingActions(set.stableSetId)}
             >
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                layoutId={set.stableSetId}
+              <div
                 className={cn(
                   "grid w-full items-center gap-2 tabular-nums transition-colors",
                   {
@@ -158,11 +155,11 @@ export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurem
                     }
                   }}
                 />
-              </motion.div>
+              </div>
             </SwipeableListItem>
-          ))}
-        </AnimatePresence>
-      </SwipeableList>
-    </div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </motion.div>
   )
 }

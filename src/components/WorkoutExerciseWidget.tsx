@@ -3,13 +3,13 @@ import { useCallback, useState, useEffect } from "react"
 import { WorkoutExerciseHeader } from "./WorkoutExerciseHeader"
 import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import WorkoutExerciseWidgetBody from "./WorkoutExerciseWidgetBody"
-import { motion } from "motion/react"
-import AnimatedVisibility from "~/lib/utils/AnimatedVisibility"
+import { motion, MotionConfig } from "motion/react"
 import { workoutStore, workoutActions } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
 import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
 import { type TRPCQueryKey } from "@trpc/tanstack-react-query"
+import useMeasure from "react-use-measure"
 
 const MIN_SETS_TO_PREFILL = 6
 
@@ -21,6 +21,7 @@ export default function WorkoutExerciseWidget({
   exerciseIndex: number
 }) {
   const [collapsed, setCollapsed] = useState(false)
+  const [elementRef, bounds] = useMeasure()
   const snap = useSnapshot(workoutStore)
   const trpc = useTRPC()
 
@@ -57,26 +58,34 @@ export default function WorkoutExerciseWidget({
   }, [])
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      layout
-      layoutId={exercise.stableExerciseId}
-      className="bg-card w-full max-w-lg rounded-xl"
-    >
-      {/* header */}
-      <WorkoutExerciseHeader
-        exercise={exercise}
-        collapseExercise={collapseExercise}
-        isPrefilling={isLoading}
-      />
-      {/* body */}
-      <AnimatedVisibility isVisible={!collapsed} dependency={setCount}>
-        <WorkoutExerciseWidgetBody
-          stableExerciseId={exercise.stableExerciseId}
-          exerciseMeta={exercise.metadata}
+    <MotionConfig transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}>
+      <motion.div
+        layout
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        layoutId={exercise.stableExerciseId}
+        className="bg-card w-full max-w-lg rounded-xl"
+      >
+        {/* header */}
+        <WorkoutExerciseHeader
+          exercise={exercise}
+          collapseExercise={collapseExercise}
+          isPrefilling={isLoading}
         />
-      </AnimatedVisibility>
-    </motion.div>
+        {/* body */}
+        <motion.div
+          layout
+          animate={{ height: collapsed ? 0 : bounds.height }}
+          style={{ overflow: "hidden" }}
+        >
+          <div ref={elementRef}>
+            <WorkoutExerciseWidgetBody
+              stableExerciseId={exercise.stableExerciseId}
+              exerciseMeta={exercise.metadata}
+            />
+          </div>
+        </motion.div>
+      </motion.div>
+    </MotionConfig>
   )
 }
