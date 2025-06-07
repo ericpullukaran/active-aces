@@ -191,6 +191,11 @@ export const workoutActions = {
     if (!exercise) return
     exercise.sets = exercise.sets.filter((set) => set.stableSetId !== stableSetId)
   },
+
+  reorderExercises: (reorderedExercises: WorkoutExercise[]) => {
+    if (!workoutStore.currentWorkout) return
+    workoutStore.currentWorkout.exercises = reorderedExercises
+  },
 }
 
 const extractPrefillableFields = (previousSet: Doc<"exerciseSets">): Partial<ExerciseSet> => {

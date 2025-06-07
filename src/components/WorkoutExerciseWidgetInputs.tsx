@@ -120,7 +120,7 @@ export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurem
                   }}
                 >
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     className={cn(
                       "hover:bg-opacity-20 grid cursor-pointer place-content-center rounded-md text-center font-semibold transition-colors hover:bg-gray-200",
                     )}

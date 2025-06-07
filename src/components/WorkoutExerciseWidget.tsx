@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect } from "react"
 import { WorkoutExerciseHeader } from "./WorkoutExerciseHeader"
 import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
 import WorkoutExerciseWidgetBody from "./WorkoutExerciseWidgetBody"
-import { motion, MotionConfig } from "motion/react"
+import { motion, MotionConfig, type DragControls } from "motion/react"
 import { workoutStore, workoutActions } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
 import { useTRPC } from "~/lib/trpc/client"
@@ -16,9 +16,11 @@ const MIN_SETS_TO_PREFILL = 6
 export default function WorkoutExerciseWidget({
   exercise,
   exerciseIndex,
+  dragControls,
 }: {
   exercise: WorkoutExerciseWithMetadata
   exerciseIndex: number
+  dragControls?: DragControls
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const [elementRef, bounds] = useMeasure()
@@ -65,12 +67,14 @@ export default function WorkoutExerciseWidget({
         animate={{ opacity: 1, y: 0 }}
         layoutId={exercise.stableExerciseId}
         className="bg-card w-full max-w-lg rounded-xl"
+        style={{ borderRadius: "12px" }}
       >
         {/* header */}
         <WorkoutExerciseHeader
           exercise={exercise}
           collapseExercise={collapseExercise}
           isPrefilling={isLoading}
+          dragControls={dragControls}
         />
         {/* body */}
         <motion.div
