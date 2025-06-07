@@ -13,6 +13,8 @@ import { Trash2 } from "lucide-react"
 import { WorkoutExerciseWidgetTimeInput } from "./WorkoutExerciseWidgetTimeInput"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
+import ExerciseNotesDialog from "./ExerciseNotesDialog"
+import { Button } from "./ui/button"
 
 export const measurementToDetails: Record<
   MeasurementMetric,
@@ -48,11 +50,24 @@ type Props = {
 export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurements }: Props) {
   const { setTimerDurationSeconds } = useTimer()
   const snap = useSnapshot(workoutStore)
+  const [isNotesDialogOpen, setIsNotesDialogOpen] = React.useState(false)
+  const [clickedSetNumber, setClickedSetNumber] = React.useState<number | null>(null)
+
   const exercise = snap.currentWorkout?.exercises.find(
     (ex) => ex.stableExerciseId === stableExerciseId,
   )
 
   if (!exercise) return null
+
+  const handleSetNumberClick = (setNumber: number) => {
+    setClickedSetNumber(setNumber)
+    setIsNotesDialogOpen(true)
+  }
+
+  const handleNotesDialogClose = () => {
+    setIsNotesDialogOpen(false)
+    setClickedSetNumber(null)
+  }
 
   const getTrailingActions = (stableSetId: string) =>
     exercise.sets.length > 1 ? (
@@ -71,95 +86,111 @@ export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurem
     ) : null
 
   return (
-    <motion.div layout className="flex flex-col gap-2">
-      <AnimatePresence mode="popLayout">
-        {exercise.sets.map((set, setIndex) => (
-          <motion.div
-            layout
-            key={set.stableSetId}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <SwipeableListItem
+    <>
+      <motion.div layout className="flex flex-col gap-2">
+        <AnimatePresence mode="popLayout">
+          {exercise.sets.map((set, setIndex) => (
+            <motion.div
+              layout
               key={set.stableSetId}
-              threshold={0.5}
-              trailingActions={getTrailingActions(set.stableSetId)}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
             >
-              <div
-                className={cn(
-                  "grid w-full items-center gap-2 tabular-nums transition-colors",
-                  {
-                    "bg-green-950": set.completed,
-                  },
-                  {
-                    "rounded-t-2xl": setIndex === 0 || !exercise.sets[setIndex - 1]?.completed,
-                    "rounded-b-2xl":
-                      exercise.sets.length - 1 === setIndex ||
-                      !exercise.sets[setIndex + 1]?.completed,
-                    "bg-green-950": set.completed,
-                  },
-                )}
-                style={{
-                  gridTemplateColumns: `3rem ${measurements.map(() => "1fr").join(" ")} 3rem`,
-                }}
+              <SwipeableListItem
+                key={set.stableSetId}
+                threshold={0.5}
+                trailingActions={getTrailingActions(set.stableSetId)}
               >
-                <div className={cn("grid place-content-center text-center font-semibold")}>
-                  {setIndex + 1}
-                </div>
-                {measurements.map((measurement) => {
-                  if (measurement === "time") {
+                <div
+                  className={cn(
+                    "grid w-full items-center gap-2 tabular-nums transition-colors",
+                    {
+                      "bg-green-950": set.completed,
+                    },
+                    {
+                      "rounded-t-2xl": setIndex === 0 || !exercise.sets[setIndex - 1]?.completed,
+                      "rounded-b-2xl":
+                        exercise.sets.length - 1 === setIndex ||
+                        !exercise.sets[setIndex + 1]?.completed,
+                      "bg-green-950": set.completed,
+                    },
+                  )}
+                  style={{
+                    gridTemplateColumns: `3rem ${measurements.map(() => "1fr").join(" ")} 3rem`,
+                  }}
+                >
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "hover:bg-opacity-20 grid cursor-pointer place-content-center rounded-md text-center font-semibold transition-colors hover:bg-gray-200",
+                    )}
+                    onClick={() => handleSetNumberClick(setIndex + 1)}
+                  >
+                    {setIndex + 1}
+                  </Button>
+                  {measurements.map((measurement) => {
+                    if (measurement === "time") {
+                      return (
+                        <WorkoutExerciseWidgetTimeInput
+                          key={measurement}
+                          set={set}
+                          stableExerciseId={stableExerciseId}
+                        />
+                      )
+                    }
+
                     return (
-                      <WorkoutExerciseWidgetTimeInput
+                      <Input
                         key={measurement}
-                        set={set}
-                        stableExerciseId={stableExerciseId}
+                        disabled={set.completed}
+                        type="number"
+                        inputMode="decimal"
+                        className={cn(
+                          "no-spin-buttons w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
+                        )}
+                        onFocus={(event) => event.target.select()}
+                        {...measurementToDetails[measurement].inputProps}
+                        value={set[measurement]}
+                        onChange={(e) =>
+                          workoutActions.updateSet(stableExerciseId, set.stableSetId, {
+                            [measurement]: e.target.valueAsNumber,
+                          })
+                        }
                       />
                     )
-                  }
+                  })}
+                  <Checkbox
+                    className="accent-primary h-8 w-12 rounded-full border-zinc-300 bg-transparent focus:ring-green-800"
+                    checked={set.completed}
+                    onCheckedChange={(checked) => {
+                      workoutActions.updateSet(stableExerciseId, set.stableSetId, {
+                        completed: !!checked,
+                        completedAt: !!checked ? new Date() : undefined,
+                      })
+                      if (checked) {
+                        if (exercise.restTimeMs && exercise.restTimeMs > 0) {
+                          setTimerDurationSeconds({
+                            setId: set.stableSetId,
+                            duration: exercise.restTimeMs / 1000,
+                          })
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              </SwipeableListItem>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
 
-                  return (
-                    <Input
-                      key={measurement}
-                      disabled={set.completed}
-                      type="number"
-                      inputMode="decimal"
-                      className={cn(
-                        "no-spin-buttons w-full rounded-md border-none bg-transparent p-2 text-center focus:ring-transparent",
-                      )}
-                      onFocus={(event) => event.target.select()}
-                      {...measurementToDetails[measurement].inputProps}
-                      value={set[measurement]}
-                      onChange={(e) =>
-                        workoutActions.updateSet(stableExerciseId, set.stableSetId, {
-                          [measurement]: e.target.valueAsNumber,
-                        })
-                      }
-                    />
-                  )
-                })}
-                <Checkbox
-                  className="accent-primary h-8 w-12 rounded-full border-zinc-300 bg-transparent focus:ring-green-800"
-                  checked={set.completed}
-                  onCheckedChange={(checked) => {
-                    workoutActions.updateSet(stableExerciseId, set.stableSetId, {
-                      completed: !!checked,
-                      completedAt: !!checked ? new Date() : undefined,
-                    })
-                    if (checked) {
-                      if (exercise.restTimeMs && exercise.restTimeMs > 0) {
-                        setTimerDurationSeconds({
-                          setId: set.stableSetId,
-                          duration: exercise.restTimeMs / 1000,
-                        })
-                      }
-                    }
-                  }}
-                />
-              </div>
-            </SwipeableListItem>
-          </motion.div>
-        ))}
-      </AnimatePresence>
-    </motion.div>
+      <ExerciseNotesDialog
+        exerciseId={stableExerciseId}
+        initialNotes={exercise.notes || ""}
+        isOpen={isNotesDialogOpen}
+        onClose={handleNotesDialogClose}
+        setNumber={clickedSetNumber}
+      />
+    </>
   )
 }
