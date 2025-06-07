@@ -22,11 +22,6 @@ export default function ExerciseNotesDialog({
 }: ExerciseNotesDialogProps) {
   const [notes, setNotes] = useState(initialNotes)
 
-  const handleSave = () => {
-    workoutActions.updateExerciseNotes(exerciseId, notes)
-    onClose()
-  }
-
   const handleClose = () => {
     workoutActions.updateExerciseNotes(exerciseId, notes)
     onClose()
