@@ -27,15 +27,17 @@ export default function ExerciseNotesDialog({
     onClose()
   }
 
+  const handleClose = () => {
+    workoutActions.updateExerciseNotes(exerciseId, notes)
+    onClose()
+  }
+
   return (
     <ResponsiveDialog
       title="Exercise Notes"
       description="Add notes for this exercise"
       open={isOpen}
-      onClose={() => {
-        workoutActions.updateExerciseNotes(exerciseId, notes)
-        onClose()
-      }}
+      onClose={handleClose}
       renderContent={() => (
         <div className="flex flex-col gap-4 p-4">
           <Textarea
@@ -48,7 +50,7 @@ export default function ExerciseNotesDialog({
         </div>
       )}
       renderFooter={() => (
-        <Button variant="outline" onClick={onClose} className="flex-1">
+        <Button variant="outline" onClick={handleClose} className="flex-1">
           Close
         </Button>
       )}
