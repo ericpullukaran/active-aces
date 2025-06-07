@@ -42,6 +42,7 @@ export const AddExerciseDialog: React.FC<{
 
   const clearSearch = () => {
     setSearchQuery("")
+    searchInputRef.current?.focus()
   }
 
   const openCreateExercise = (initialName?: string) => {
