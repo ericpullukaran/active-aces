@@ -32,7 +32,10 @@ export default function ExerciseNotesDialog({
       title="Exercise Notes"
       description="Add notes for this exercise"
       open={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        workoutActions.updateExerciseNotes(exerciseId, notes)
+        onClose()
+      }}
       renderContent={() => (
         <div className="flex flex-col gap-4 p-4">
           <Textarea
@@ -45,14 +48,9 @@ export default function ExerciseNotesDialog({
         </div>
       )}
       renderFooter={() => (
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={onClose} className="flex-1">
-            Cancel
-          </Button>
-          <Button variant="default" onClick={handleSave} className="flex-1">
-            Save
-          </Button>
-        </div>
+        <Button variant="outline" onClick={onClose} className="flex-1">
+          Close
+        </Button>
       )}
     />
   )
