@@ -103,13 +103,13 @@ export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurem
               >
                 <div
                   className={cn(
-                    "grid w-full items-center gap-2 tabular-nums transition-colors",
+                    "grid w-full items-center gap-2 rounded-tr-2xl rounded-br-2xl tabular-nums transition-colors",
                     {
                       "bg-green-950": set.completed,
                     },
                     {
-                      "rounded-t-2xl": setIndex === 0 || !exercise.sets[setIndex - 1]?.completed,
-                      "rounded-b-2xl":
+                      "rounded-tl-2xl": setIndex === 0 || !exercise.sets[setIndex - 1]?.completed,
+                      "rounded-bl-2xl":
                         exercise.sets.length - 1 === setIndex ||
                         !exercise.sets[setIndex + 1]?.completed,
                       "bg-green-950": set.completed,
@@ -120,7 +120,7 @@ export default function WorkoutExerciseWidgetInputs({ stableExerciseId, measurem
                   }}
                 >
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     className={cn(
                       "hover:bg-opacity-20 grid cursor-pointer place-content-center rounded-md text-center font-semibold transition-colors hover:bg-gray-200",
                     )}
