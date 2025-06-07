@@ -96,7 +96,7 @@ export default function ExerciseHistoryDialog({
           </div>
 
           {/* Navigation Header */}
-          <div className="relative isolate flex items-center justify-between px-4 pb-10">
+          <div className="relative isolate flex items-center justify-between px-4 pb-16">
             <Button
               variant={isLastWorkout ? "ghost" : "secondary"}
               size="icon"
