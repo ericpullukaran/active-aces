@@ -72,8 +72,9 @@ export const AddExerciseDialog: React.FC<{
         description="Add a new exercise to your workout"
         open={isAddExerciseOpen}
         onClose={() => setIsAddExerciseOpen(false)}
+        forceDrawerFullHeight={true}
         renderContent={() => (
-          <div className="h-full p-4">
+          <div className="p-4">
             <AnimatePresence>
               {isSearching && (
                 <motion.div

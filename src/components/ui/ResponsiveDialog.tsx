@@ -36,6 +36,7 @@ type CoreResponsiveDialogProps = {
   onOpenChange?: (open: boolean) => void
   description?: string
   onClose?: (dismiss?: boolean) => void
+  forceDrawerFullHeight?: boolean
 }
 
 type ResponsiveDialogProps = {
@@ -67,6 +68,7 @@ const ResponsiveDialog = (props: ResponsiveDialogProps) => {
       <ResponsiveDialogCore
         title={props.title}
         description={props.description}
+        forceDrawerFullHeight={props.forceDrawerFullHeight}
         headerAction={props.headerAction?.({
           ...props,
           open: open,
@@ -100,6 +102,7 @@ type ResponsiveDialogCoreProps = {
   headerAction?: React.ReactNode
   content: React.ReactNode | undefined
   footer?: React.ReactNode | undefined
+  forceDrawerFullHeight?: boolean
 }
 
 const ResponsiveDialogCore = ({
@@ -110,6 +113,7 @@ const ResponsiveDialogCore = ({
   content,
   footer,
   headerAction,
+  forceDrawerFullHeight,
 }: ResponsiveDialogCoreProps) => {
   const isMobile = useMediaQuery(MOBILE_VIEWPORT)
 
@@ -120,7 +124,11 @@ const ResponsiveDialogCore = ({
       preventScrollRestoration={false}
       onClose={() => closeDialog(true)}
     >
-      <DrawerContent onClick={(e) => e.stopPropagation()} onClose={() => closeDialog(true)}>
+      <DrawerContent
+        onClick={(e) => e.stopPropagation()}
+        onClose={() => closeDialog(true)}
+        className={cn({ "h-full": forceDrawerFullHeight })}
+      >
         <DrawerHeader className={cn("flex flex-row items-center gap-2")}>
           <div className={cn("flex-1 text-center", headerAction && "text-left")}>
             <DrawerTitle>{title}</DrawerTitle>
