@@ -6,6 +6,7 @@ import {
   Timer,
   Trash,
   History,
+  GripVertical,
 } from "lucide-react"
 import { useMemo, useState } from "react"
 import { type WorkoutExerciseWithMetadata } from "~/lib/types/workout"
@@ -22,17 +23,19 @@ import { MeasurementType } from "~/lib/db/types"
 import CustomizeTimerDialog from "./CustomizeTimerDialog"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence, motion, type DragControls } from "motion/react"
 import ExerciseHistoryDialog from "./ExerciseHistoryDialog"
 
 export function WorkoutExerciseHeader({
   exercise,
   collapseExercise,
   isPrefilling,
+  dragControls,
 }: {
   exercise: WorkoutExerciseWithMetadata
   collapseExercise: () => void
   isPrefilling?: boolean
+  dragControls?: DragControls
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const [showTimerDialog, setShowTimerDialog] = useState(false)
@@ -58,7 +61,19 @@ export function WorkoutExerciseHeader({
         role="button"
         tabIndex={0}
       >
-        <div>
+        {/* Drag Handle */}
+        {dragControls && (
+          <Button
+            onPointerDown={(e) => dragControls.start(e)}
+            className="mr-3 flex cursor-grab items-center justify-center rounded p-1 hover:bg-gray-100 active:cursor-grabbing"
+            style={{ touchAction: "none" }}
+            variant={"ghost"}
+          >
+            <GripVertical className="h-4 w-4 text-gray-400" />
+          </Button>
+        )}
+
+        <div className="flex-1">
           {exercise.metadata.name || <Skeleton className="h-6 w-20" />}
           <div className={"text-muted-foreground flex items-center gap-2 text-sm"}>
             <p className="flex items-center">
