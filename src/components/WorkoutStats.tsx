@@ -70,7 +70,7 @@ function StopwatchDisplay() {
 
 export default function WorkoutStats() {
   return (
-    <div className="bg-card/50 sticky top-5 z-10 mb-4 flex w-full overflow-x-scroll rounded-3xl py-5 ring-4 ring-zinc-800/70 brightness-90 backdrop-blur-3xl">
+    <div className="bg-secondary/50 sticky top-5 z-10 mb-4 flex w-full overflow-x-scroll rounded-3xl py-5 ring-4 ring-zinc-700/50 brightness-90 backdrop-blur-3xl">
       <StopwatchDisplay />
       <SetsStats />
       <VolumeStats />
