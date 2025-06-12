@@ -5,6 +5,7 @@ import * as React from "react"
 import { Slot, Slottable } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority"
 import { Loader2 } from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
 
 import { cn } from "~/lib/utils"
 
@@ -47,6 +48,51 @@ const buttonVariants = cva(
     },
   },
 )
+
+// Helper function to get loading overlay background based on variant
+const getLoadingOverlayBg = (variant: string | null | undefined = "default") => {
+  switch (variant) {
+    case "default":
+      return "bg-primary/80"
+    case "destructive":
+      return "bg-destructive/80"
+    case "destructiveOutline":
+      return "bg-destructive/80"
+    case "outline":
+      return "bg-accent/80"
+    case "secondary":
+      return "bg-secondary/80"
+    case "tertiary":
+      return "bg-zinc-100/80"
+    case "ghost":
+      return "bg-accent/80"
+    default:
+      return "bg-primary/80"
+  }
+}
+
+// Helper function to get loading text color based on variant
+const getLoadingTextColor = (variant: string | null | undefined = "default") => {
+  switch (variant) {
+    case "default":
+      return "text-primary-foreground"
+    case "destructive":
+      return "text-destructive-foreground"
+    case "destructiveOutline":
+      return "text-white"
+    case "outline":
+      return "text-accent-foreground"
+    case "secondary":
+      return "text-secondary-foreground"
+    case "tertiary":
+      return "text-zinc-800"
+    case "ghost":
+      return "text-accent-foreground"
+    default:
+      return "text-primary-foreground"
+  }
+}
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     Omit<VariantProps<typeof buttonVariants>, "disabled"> {
@@ -72,6 +118,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const Comp = asChild ? Slot : "button"
+
+    const isContentTooShort = React.useMemo(() => {
+      if (typeof children === "string") {
+        return children.length <= 7 // If text is 6 characters or less, only show spinner
+      }
+      return false
+    }, [children])
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, disabled: props.disabled }), className, {
@@ -86,25 +140,28 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
         <Slottable>{children}</Slottable>
 
+        {/* Loading Overlay */}
         {variant !== "link" && (
-          <span
-            className={cn(
-              "pointer-events-none absolute inset-0 grid place-items-center transition",
-              {
-                "backdrop-blur-0 scale-50 opacity-0": !isLoading,
-                "backdrop-blur-xxs": isLoading,
-              },
+          <AnimatePresence>
+            {isLoading && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+                className={cn(
+                  "absolute inset-0 flex items-center justify-center gap-2 rounded-xl backdrop-blur-sm",
+                  getLoadingOverlayBg(variant),
+                  getLoadingTextColor(variant),
+                )}
+              >
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {size !== "icon" && size !== "icon-sm" && !isContentTooShort && (
+                  <span className="text-sm font-medium">Loading</span>
+                )}
+              </motion.div>
             )}
-          >
-            <span
-              className={cn(
-                "bg-accent",
-                buttonVariants({ variant, size }),
-                "bg-opacity-70 absolute inset-0 border-none",
-              )}
-            />
-            <Loader2 className="h-4 w-4 animate-spin text-current" />
-          </span>
+          </AnimatePresence>
         )}
       </Comp>
     )
