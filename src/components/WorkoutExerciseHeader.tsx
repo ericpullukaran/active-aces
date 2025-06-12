@@ -63,13 +63,14 @@ export function WorkoutExerciseHeader({
       >
         {/* Drag Handle */}
         {dragControls && (
-          <div
+          <Button
             onPointerDown={(e) => dragControls.start(e)}
             className="mr-3 flex cursor-grab items-center justify-center rounded p-1 hover:bg-gray-100 active:cursor-grabbing"
             style={{ touchAction: "none" }}
+            variant={"ghost"}
           >
             <GripVertical className="h-4 w-4 text-gray-400" />
-          </div>
+          </Button>
         )}
 
         <div className="flex-1">
