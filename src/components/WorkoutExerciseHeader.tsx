@@ -24,7 +24,8 @@ import CustomizeTimerDialog from "./CustomizeTimerDialog"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
 import { AnimatePresence, motion, type DragControls } from "motion/react"
-import ExerciseHistoryDialog from "./ExerciseHistoryDialog"
+import ResponsiveDialog from "./ui/ResponsiveDialog"
+import ExerciseDetailDialog from "./ExerciseDetailDialog"
 
 export function WorkoutExerciseHeader({
   exercise,
@@ -104,7 +105,7 @@ export function WorkoutExerciseHeader({
         </div>
       </div>
 
-      {/* External Exercise Timer Dialog */}
+      {/* Exercise Timer Dialog */}
       <CustomizeTimerDialog
         exerciseId={exercise.stableExerciseId}
         initialTimer={exercise.metadata.defaultRestTime}
@@ -112,11 +113,21 @@ export function WorkoutExerciseHeader({
         onClose={() => setShowTimerDialog(false)}
       />
 
-      {/* External Exercise History Dialog */}
-      <ExerciseHistoryDialog
-        exercise={exercise.metadata}
-        isOpen={showHistoryDialog}
+      {/* Exercise History Dialog */}
+      <ResponsiveDialog
+        title="Exercise History"
+        open={showHistoryDialog}
         onClose={() => setShowHistoryDialog(false)}
+        renderContent={() => (
+          <div className="p-4">
+            <ExerciseDetailDialog
+              exercise={exercise.metadata}
+              isOpen={showHistoryDialog}
+              onClose={() => setShowHistoryDialog(false)}
+              initialTab="history"
+            />
+          </div>
+        )}
       />
 
       <DropdownMenu open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
