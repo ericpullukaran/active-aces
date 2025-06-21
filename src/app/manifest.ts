@@ -7,6 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "A fitness and gym tracking platform",
     start_url: "/dashboard",
     display: "standalone",
+    orientation: "portrait",
     background_color: "#000000",
     theme_color: "#000000",
     icons: [

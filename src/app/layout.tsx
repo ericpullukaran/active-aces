@@ -7,6 +7,7 @@ import { env } from "~/env"
 import { headers } from "next/headers"
 import { cn } from "~/lib/utils"
 import { TRPCProvider } from "~/lib/trpc/client"
+import { DesktopWarning } from "~/components/DesktopWarning"
 
 export async function generateViewport(): Promise<Viewport> {
   const userAgent = (await headers()).get("user-agent")
@@ -17,7 +18,10 @@ export async function generateViewport(): Promise<Viewport> {
         initialScale: 1,
         maximumScale: 1, // disables auto-zoom on ios safari
       }
-    : {}
+    : {
+        width: "device-width",
+        initialScale: 1,
+      }
 }
 
 export const metadata: Metadata = {
@@ -90,7 +94,10 @@ export default function RootLayout({
           signUpFallbackRedirectUrl="/dashboard"
           publishableKey={env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
         >
-          <TRPCProvider>{children}</TRPCProvider>
+          <TRPCProvider>
+            <DesktopWarning />
+            {children}
+          </TRPCProvider>
         </ClerkProvider>
       </body>
     </html>

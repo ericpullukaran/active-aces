@@ -95,6 +95,30 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Lock screen orientation to portrait */
+  html {
+    transform-origin: left top;
+    -webkit-transform-origin: left top;
+    -ms-transform-origin: left top;
+  }
+
+  @media screen and (orientation: landscape) and (max-height: 768px) {
+    html {
+      /* Force portrait mode on mobile devices */
+      transform: rotate(90deg);
+      -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      transform-origin: left top;
+      -webkit-transform-origin: left top;
+      -ms-transform-origin: left top;
+      width: 100vh;
+      overflow-x: hidden;
+      position: absolute;
+      top: 100%;
+      left: 0;
+    }
+  }
 }
 
 /* Adds a space between the unit and the value */
