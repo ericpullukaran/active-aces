@@ -7,7 +7,7 @@ import { Button } from "./ui/button"
 import { cn } from "~/lib/utils"
 import { ExercisesFilterDialog, useExercisesFilters } from "./ExercisesFilterDialog"
 import { type DbExercise } from "~/lib/types/workout"
-import { ExerciseDialogSummary } from "./ExerciseDialogSummary"
+import ExerciseDetailDialog from "./ExerciseDetailDialog"
 
 export function ExercisesList() {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -55,10 +55,11 @@ export function ExercisesList() {
       />
 
       {selectedExercise && (
-        <ExerciseDialogSummary
+        <ExerciseDetailDialog
           isOpen={!!selectedExercise}
           onClose={() => setSelectedExercise(null)}
           exercise={selectedExercise}
+          initialTab="details"
         />
       )}
     </div>

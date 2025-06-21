@@ -114,7 +114,7 @@ export function WorkoutExerciseHeader({
 
       {/* External Exercise History Dialog */}
       <ExerciseHistoryDialog
-        exerciseId={exercise.exerciseId}
+        exercise={exercise.metadata}
         isOpen={showHistoryDialog}
         onClose={() => setShowHistoryDialog(false)}
       />

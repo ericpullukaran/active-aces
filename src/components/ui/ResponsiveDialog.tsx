@@ -136,7 +136,7 @@ const ResponsiveDialogCore = ({
           </div>
           {headerAction && <div className="ml-auto">{headerAction}</div>}
         </DrawerHeader>
-        <div className="overflow-scroll">{content}</div>
+        <div className="overflow-y-scroll">{content}</div>
         {footer && <DrawerFooter>{footer}</DrawerFooter>}
       </DrawerContent>
     </Drawer>
