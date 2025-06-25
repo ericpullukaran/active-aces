@@ -8,6 +8,7 @@ import { createQueryClient } from "./query-client"
 import { env } from "~/env"
 import { type AppRouter } from "./root"
 import { createTRPCContext } from "@trpc/tanstack-react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 const {
   TRPCProvider: TRPCProviderTanstack,
@@ -51,6 +52,7 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <TRPCProviderTanstack trpcClient={trpcClient} queryClient={queryClient}>
         {props.children}
+        <ReactQueryDevtools initialIsOpen={false} />
       </TRPCProviderTanstack>
     </QueryClientProvider>
   )

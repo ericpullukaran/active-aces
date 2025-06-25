@@ -13,8 +13,6 @@ import {
 } from "./ui/dialog"
 import { Textarea } from "./ui/textarea"
 import { Input } from "./ui/input"
-import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
-import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
 import { getTimeOfDay, formatTimeValue, parseTimeToSeconds } from "~/lib/utils/dates"
 import { Menu } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu"
@@ -33,7 +31,18 @@ export default function EndWorkoutDialog({
 }) {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
-  const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
+  const putWorkoutMutation = useMutation(
+    trpc.workouts.put.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: trpc.workouts.history.pathKey(),
+          refetchType: "all",
+        })
+        workoutActions.removeCurrentWorkout()
+        navigationActions.setCurrentPage("home")
+      },
+    }),
+  )
   const [note, setNote] = useState("")
   const [title, setTitle] = useState("")
   const isWorkoutActive = useIsWorkoutActive()
@@ -83,14 +92,9 @@ export default function EndWorkoutDialog({
         },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
-            queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
-            queryClient.invalidateQueries({ queryKey: ["previous-set-metrics"] })
-            workoutActions.removeCurrentWorkout()
             setTitle("")
             setNote("")
             closeDialog()
-            navigationActions.setCurrentPage("home")
           },
         },
       )

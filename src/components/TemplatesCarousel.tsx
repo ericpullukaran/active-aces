@@ -1,8 +1,6 @@
 "use client"
 
 import React from "react"
-import { useTRPC } from "~/lib/trpc/client"
-import { useQuery } from "@tanstack/react-query"
 import {
   Carousel,
   CarouselContent,
@@ -11,18 +9,11 @@ import {
   CarouselPrevious,
 } from "./ui/carousel"
 import TemplateCard from "./TemplateCard"
-
-export const templatesQueryKey: readonly string[] = ["workout-templates"]
+import { useInfiniteTemplates } from "~/lib/utils/useInfiniteTemplate"
 
 export default function TemplatesCarousel() {
-  const trpc = useTRPC()
-
-  const templatesQuery = useQuery({
-    ...trpc.workouts.historyInfinite.queryOptions({
-      limit: 10,
-      isTemplate: true,
-    }),
-    queryKey: [templatesQueryKey],
+  const templatesQuery = useInfiniteTemplates({
+    limit: 10,
   })
 
   if (templatesQuery.isError) {
@@ -39,7 +30,7 @@ export default function TemplatesCarousel() {
     return <div className="bg-card h-28 animate-pulse rounded-lg"></div>
   }
 
-  if (!templatesQuery.data?.items.length) {
+  if (!templatesQuery.templates.length) {
     return (
       <div>
         <h3 className="mb-3 text-lg font-semibold">Workout Templates</h3>
@@ -58,12 +49,12 @@ export default function TemplatesCarousel() {
       <Carousel
         opts={{
           align: "start",
-          loop: templatesQuery.data.items.length > 3,
+          loop: templatesQuery.templates.length > 3,
         }}
         className="w-full"
       >
         <CarouselContent>
-          {templatesQuery.data.items.map((template) => (
+          {templatesQuery.templates.map((template) => (
             <CarouselItem key={template.id} className="basis-[200px]">
               <TemplateCard template={template} />
             </CarouselItem>

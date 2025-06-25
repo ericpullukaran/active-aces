@@ -4,21 +4,15 @@ import React from "react"
 
 import { Button } from "./ui/button"
 import WorkoutHistoryCard from "./WorkoutHistoryCard"
-import { useTRPC } from "~/lib/trpc/client"
-import { useQuery } from "@tanstack/react-query"
 import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
 import { useSnapshot } from "valtio"
+import { useInfiniteHistory } from "~/lib/utils/useInfiniteHistory"
 
-export const recentWorkoutsQueryKey: readonly string[] = ["recent-workouts"]
 export default function RecentWorkoutsCard() {
-  const trpc = useTRPC()
-  const workoutHistory = useQuery({
-    ...trpc.workouts.historyInfinite.queryOptions({ limit: 2 }),
-    queryKey: [recentWorkoutsQueryKey],
-  })
+  const workoutHistoryQuery = useInfiniteHistory({ limit: 2 })
   const observableNavigation = useSnapshot(navigationStore)
 
-  if (workoutHistory.isError) {
+  if (workoutHistoryQuery.isError) {
     return (
       <div className="bg-card h-96 animate-pulse rounded-lg">
         <div className="flex h-full flex-col justify-center">
@@ -28,7 +22,7 @@ export default function RecentWorkoutsCard() {
     )
   }
 
-  if (workoutHistory.isLoading) {
+  if (workoutHistoryQuery.isLoading) {
     return <div className="bg-card h-80 animate-pulse rounded-lg"></div>
   }
 
@@ -45,14 +39,14 @@ export default function RecentWorkoutsCard() {
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        {workoutHistory.data?.items.length === 0 && (
+        {workoutHistoryQuery.workouts.length === 0 && (
           <div className="bg-card h-28 rounded-lg">
             <div className="flex h-full flex-col items-center justify-center gap-2">
               <p className="text-muted-foreground text-center">No recent workouts!</p>
             </div>
           </div>
         )}
-        {workoutHistory.data?.items.map((w) => (
+        {workoutHistoryQuery.workouts.map((w) => (
           <WorkoutHistoryCard key={`${observableNavigation.currentPage}-${w.id}`} workout={w} />
         ))}
       </div>

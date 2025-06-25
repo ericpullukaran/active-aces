@@ -10,12 +10,10 @@ export type ExerciseFilterOptions = {
   deleted?: boolean
 }
 
-export const exerciseQueryKey = ["exercises"] as const
 export function useExercises(searchQuery: string = "", filterOptions?: ExerciseFilterOptions) {
   const trpc = useTRPC()
   const exercises = useQuery({
-    ...trpc.exercises.getAll.queryOptions(),
-    queryKey: [exerciseQueryKey],
+    ...trpc.exercises.all.queryOptions(),
     staleTime: 1000 * 60 * 60 * 24 * 15,
   })
 

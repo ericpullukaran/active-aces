@@ -12,7 +12,6 @@ import { Input } from "./ui/input"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type PutWorkout } from "~/lib/types/workout"
-import { templatesQueryKey } from "./TemplatesCarousel"
 import { CheckCircleIcon } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 
@@ -27,11 +26,20 @@ export default function CreateTemplateDialog({
   onOpenChange,
   workout,
 }: CreateTemplateDialogProps) {
-  const [templateName, setTemplateName] = useState("")
-  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false)
   const trpc = useTRPC()
   const queryClient = useQueryClient()
-  const putWorkoutMutation = useMutation(trpc.workouts.put.mutationOptions())
+  const [templateName, setTemplateName] = useState("")
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false)
+  const putWorkoutMutation = useMutation(
+    trpc.workouts.put.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: trpc.workouts.history.infiniteTemplates.pathKey(),
+          refetchType: "all",
+        })
+      },
+    }),
+  )
 
   const handleCreateTemplate = () => {
     if (!workout) return
@@ -46,10 +54,8 @@ export default function CreateTemplateDialog({
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: [templatesQueryKey] })
           setShowSuccessOverlay(true)
-
-          // Close the overlay and dialog after 2 seconds
+          // Close after 2 seconds
           setTimeout(() => {
             setShowSuccessOverlay(false)
             onOpenChange(false)

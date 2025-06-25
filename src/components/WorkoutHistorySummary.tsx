@@ -21,8 +21,6 @@ import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } fr
 import { DialogContent } from "./ui/dialog"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { historyQueryKey } from "./dashboard-screen/HistoryScreen"
-import { recentWorkoutsQueryKey } from "./RecentWorkoutsCard"
 import ReplaceWorkoutConfirmation from "./ReplaceWorkoutConfirmation"
 import { workoutActions } from "~/lib/stores/workoutStore"
 
@@ -40,8 +38,10 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
   const deleteWorkoutMutation = useMutation(
     trpc.workouts.delete.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [historyQueryKey] })
-        queryClient.invalidateQueries({ queryKey: [recentWorkoutsQueryKey] })
+        queryClient.invalidateQueries({
+          queryKey: trpc.workouts.history.pathKey(),
+          refetchType: "all",
+        })
       },
     }),
   )

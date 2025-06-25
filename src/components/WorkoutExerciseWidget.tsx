@@ -8,7 +8,6 @@ import { workoutStore, workoutActions } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
 import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
-import { type TRPCQueryKey } from "@trpc/tanstack-react-query"
 import useMeasure from "react-use-measure"
 
 const MIN_SETS_TO_PREFILL = 6
@@ -36,15 +35,10 @@ export default function WorkoutExerciseWidget({
     isSuccess,
     isLoading,
   } = useQuery({
-    ...trpc.workouts.getPreviousSetMetrics.queryOptions({
+    ...trpc.workouts.history.getPreviousSetMetrics.queryOptions({
       exerciseId: exercise.metadata.id,
       numberOfSets: currentSetsNeeded,
     }),
-    queryKey: [
-      "previous-set-metrics",
-      exercise.exerciseId,
-      currentSetsNeeded,
-    ] as unknown as TRPCQueryKey,
     enabled: !!setCount,
     staleTime: 1000 * 60 * 5,
   })

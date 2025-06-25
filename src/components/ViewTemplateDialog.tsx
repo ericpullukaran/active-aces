@@ -23,7 +23,6 @@ import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import { extractMuscleGroups } from "~/lib/utils/workout-helpers"
 import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { templatesQueryKey } from "./TemplatesCarousel"
 import ReplaceWorkoutConfirmation from "./ReplaceWorkoutConfirmation"
 import { workoutActions } from "~/lib/stores/workoutStore"
 
@@ -41,7 +40,10 @@ export default function ViewTemplateDialog({ template, children }: ViewTemplateD
   const deleteTemplateMutation = useMutation(
     trpc.workouts.delete.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [templatesQueryKey] })
+        queryClient.invalidateQueries({
+          queryKey: trpc.workouts.history.infiniteTemplates.pathKey(),
+          refetchType: "all",
+        })
       },
     }),
   )

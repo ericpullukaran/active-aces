@@ -28,8 +28,6 @@ import {
   DialogTitle,
 } from "./ui/dialog"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { exerciseQueryKey } from "~/lib/utils/useExercises"
-import { type DbExercisesMap } from "~/lib/types/workout"
 import { AnimatePresence, motion } from "motion/react"
 import {
   useTabAnimation,
@@ -58,15 +56,15 @@ export default function ExerciseDetailDialog({
   onClose,
   initialTab = "details",
 }: ExerciseDetailDialogProps) {
-  const [currentWorkoutIndex, setCurrentWorkoutIndex] = useState(0)
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const trpc = useTRPC()
   const queryClient = useQueryClient()
+  const [currentWorkoutIndex, setCurrentWorkoutIndex] = useState(0)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const { activeTab, setActiveTab, direction } = useTabAnimation(tabs, initialTab)
 
   const exerciseHistoryQuery = useQuery(
-    trpc.workouts.getExerciseHistory.queryOptions({
+    trpc.workouts.history.exercise.queryOptions({
       exerciseId: exercise.id,
       limit: 10,
     }),
@@ -75,15 +73,11 @@ export default function ExerciseDetailDialog({
   const deleteExerciseMutation = useMutation(
     trpc.exercises.delete.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [exerciseQueryKey] })
-        queryClient.setQueryData([exerciseQueryKey], (data: DbExercisesMap) => {
-          if (!data) return new Map().set(exercise.id, { ...exercise, deleted: true })
-          const newData = new Map(data)
-          newData.set(exercise.id, { ...exercise, deleted: true })
-          return newData
+        queryClient.invalidateQueries({ queryKey: trpc.exercises.all.queryKey() })
+        queryClient.setQueryData(trpc.exercises.all.queryKey(), (data) => {
+          if (!data) return new Map([[exercise.id, { ...exercise, deleted: true }]])
+          return new Map(data).set(exercise.id, { ...exercise, deleted: true })
         })
-        setShowDeleteDialog(false)
-        onClose()
       },
     }),
   )
@@ -130,7 +124,15 @@ export default function ExerciseDetailDialog({
   const isLastWorkout = currentWorkoutIndex === (exerciseHistoryQuery.data?.length ?? 0) - 1
 
   const confirmDelete = () => {
-    deleteExerciseMutation.mutate({ exerciseId: exercise.id })
+    deleteExerciseMutation.mutate(
+      { exerciseId: exercise.id },
+      {
+        onSuccess: () => {
+          setShowDeleteDialog(false)
+          onClose()
+        },
+      },
+    )
   }
 
   const renderDetailsTab = () => (

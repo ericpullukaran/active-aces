@@ -30,7 +30,7 @@ export const ExercisesFilterDialog: React.FC<{
 }> = ({ isOpen, onClose, filters, onApplyFilters }) => {
   const [localFilters, setLocalFilters] = useState<ExerciseFilterOptions>(filters)
   const trpc = useTRPC()
-  const muscleGroupsQuery = useQuery(trpc.exercises.getAllMuscleGroups.queryOptions())
+  const muscleGroupsQuery = useQuery(trpc.exercises.allMuscleGroups.queryOptions())
 
   useEffect(() => {
     if (isOpen) {

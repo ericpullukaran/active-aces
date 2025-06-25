@@ -22,11 +22,11 @@ const CreateExerciseSchema = z.object({
 })
 
 export const exercisesRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  all: protectedProcedure.query(async ({ ctx }) => {
     return await exercisesService.getAllExercises(ctx.db, ctx.auth.userId)
   }),
 
-  getAllMuscleGroups: protectedProcedure.query(async ({ ctx }) => {
+  allMuscleGroups: protectedProcedure.query(async ({ ctx }) => {
     return await exercisesService.getAllMuscleGroups(ctx.db)
   }),
 

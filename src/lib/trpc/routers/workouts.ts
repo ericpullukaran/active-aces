@@ -2,68 +2,10 @@ import { workoutService } from "~/lib/services/workout-service"
 import { createTRPCRouter, protectedProcedure } from "../trpc"
 import { z } from "zod"
 import { PutWorkoutSchema } from "~/lib/types/workout"
+import { workoutsHistoryRouter } from "./workoutsHistory"
 
 export const workoutsRouter = createTRPCRouter({
-  historyInfinite: protectedProcedure
-    .input(
-      z.object({
-        isTemplate: z.boolean().default(false),
-        limit: z.number().min(1).max(50).default(10),
-        cursor: z.string().optional(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { isTemplate, limit, cursor } = input
-      const items = await workoutService.getWorkoutHistoryWithExercises(ctx.db, {
-        userId: ctx.auth.userId,
-        isTemplate,
-        limit: limit + 1,
-        cursor,
-      })
-
-      let nextCursor: string | undefined = undefined
-      if (items.length > limit) {
-        const nextItem = items.pop()
-        nextCursor = nextItem?.id
-      }
-
-      return {
-        items,
-        nextCursor,
-      }
-    }),
-
-  getExerciseHistory: protectedProcedure
-    .input(
-      z.object({
-        exerciseId: z.string(),
-        limit: z.number().min(1).max(50).default(10),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      return await workoutService.getExerciseHistory(ctx.db, {
-        exerciseId: input.exerciseId,
-        userId: ctx.auth.userId,
-        limit: input.limit,
-      })
-    }),
-
-  getPreviousSetMetrics: protectedProcedure
-    .input(
-      z.object({
-        exerciseId: z.string(),
-        // Number of sets to look up; Will return array of this length with nulls if they
-        // haven't done it before.
-        numberOfSets: z.number().min(1).max(20),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      return await workoutService.getPreviousSetMetrics(ctx.db, {
-        exerciseId: input.exerciseId,
-        numberOfSets: input.numberOfSets,
-        userId: ctx.auth.userId,
-      })
-    }),
+  history: workoutsHistoryRouter,
 
   put: protectedProcedure
     .input(

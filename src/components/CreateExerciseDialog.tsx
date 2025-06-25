@@ -8,8 +8,6 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { MeasurementType } from "~/lib/db/types"
 import { MeasurementTypeLabels } from "~/lib/utils/measurement"
-import { type DbExercisesMap } from "~/lib/types/workout"
-import { exerciseQueryKey } from "~/lib/utils/useExercises"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +31,8 @@ export const CreateExerciseDialog: React.FC<{
   isOpen: boolean
   onClose: () => void
 }> = ({ isOpen, onClose, initialName }) => {
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
   const [name, setName] = useState(initialName || "")
   const [description, setDescription] = useState("")
   const [primaryMuscleGroupId, setPrimaryMuscleGroupId] = useState("")
@@ -46,31 +46,16 @@ export const CreateExerciseDialog: React.FC<{
     setName(initialName || "")
   }, [initialName, isOpen])
 
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
-
-  const muscleGroupsQuery = useQuery(trpc.exercises.getAllMuscleGroups.queryOptions())
+  const muscleGroupsQuery = useQuery(trpc.exercises.allMuscleGroups.queryOptions())
   const createExerciseMutation = useMutation(
     trpc.exercises.create.mutationOptions({
       onSuccess: (exercise) => {
-        queryClient.invalidateQueries({ queryKey: [exerciseQueryKey] })
         if (!exercise) return
-        queryClient.setQueryData([exerciseQueryKey], (data: DbExercisesMap) => {
-          if (!data) return new Map().set(exercise.id, exercise)
-          data.set(exercise.id, exercise)
-          return data
+        queryClient.setQueryData(trpc.exercises.all.queryKey(), (data) => {
+          if (!data) return new Map([[exercise.id, exercise]])
+          return new Map(data).set(exercise.id, exercise)
         })
         workoutActions.addExercise(defaultWorkoutExercise(exercise.id))
-
-        // Reset form
-        setName("")
-        setDescription("")
-        setPrimaryMuscleGroupId("")
-        setMeasurementType(MeasurementType.WEIGHT_REPS)
-        onClose()
-      },
-      onSettled: () => {
-        setIsCreating(false)
       },
     }),
   )
@@ -82,12 +67,27 @@ export const CreateExerciseDialog: React.FC<{
 
     setIsCreating(true)
 
-    createExerciseMutation.mutate({
-      name,
-      description: description || undefined,
-      measurementType,
-      primaryMuscleGroupId: primaryMuscleGroupId || undefined,
-    })
+    createExerciseMutation.mutate(
+      {
+        name,
+        description: description || undefined,
+        measurementType,
+        primaryMuscleGroupId: primaryMuscleGroupId || undefined,
+      },
+      {
+        onSuccess: () => {
+          // Reset form
+          setName("")
+          setDescription("")
+          setPrimaryMuscleGroupId("")
+          setMeasurementType(MeasurementType.WEIGHT_REPS)
+          onClose()
+        },
+        onSettled: () => {
+          setIsCreating(false)
+        },
+      },
+    )
   }
 
   return (
