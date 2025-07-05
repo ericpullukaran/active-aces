@@ -74,6 +74,7 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
       client={queryClient}
       persistOptions={{
         persister,
+        buster: env.VERCEL_GIT_COMMIT_SHA,
         maxAge: 1000 * 60 * 60 * 24 * 15, // 15 days
       }}
     >

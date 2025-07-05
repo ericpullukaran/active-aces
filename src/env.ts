@@ -5,6 +5,7 @@ export const env = createEnv({
   shared: {
     VERCEL_ENV: z.enum(["development", "production"]).optional(),
     VERCEL_URL: z.string().optional(),
+    VERCEL_GIT_COMMIT_SHA: z.string().default("development"),
   },
 
   server: {
@@ -26,6 +27,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     VERCEL_ENV: process.env.VERCEL_ENV,
     VERCEL_URL: process.env.VERCEL_URL,
+    VERCEL_GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA,
     NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL:
       process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL,
     NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL:
