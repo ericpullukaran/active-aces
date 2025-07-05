@@ -1,0 +1,289 @@
+[
+  {
+    "name": "Bench Press (Barbell)",
+    "description": "Compound exercise lying on a flat bench, pushing a barbell from chest to full arm extension.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Shoulders", "Triceps"]
+  },
+  {
+    "name": "Incline Bench Press (Dumbbell)",
+    "description": "Bench press variation on an inclined bench using dumbbells, targeting upper chest.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Shoulders", "Triceps"]
+  },
+  {
+    "name": "Incline Bench Press (Barbell)",
+    "description": "Bench press variation on an inclined bench using a barbell, targeting upper chest.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Shoulders", "Triceps"]
+  },
+  {
+    "name": "Incline Bench Press (Smith Machine)",
+    "description": "Guided incline press using Smith machine, targeting upper chest.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Shoulders", "Triceps"]
+  },
+  {
+    "name": "Decline Bench Press (Machine)",
+    "description": "Machine press from a declined position, targeting lower chest.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Shoulders", "Triceps"]
+  },
+  {
+    "name": "Pec Deck (Machine)",
+    "description": "Isolation exercise bringing arms together in an arc motion.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Shoulders"]
+  },
+  {
+    "name": "Chest Dips",
+    "description": "Bodyweight exercise lowering and raising body between parallel bars.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "reps",
+    "accessoryMuscleGroups": ["Triceps", "Shoulders"]
+  },
+  {
+    "name": "Cable Fly Crossover",
+    "description": "Standing chest fly bringing cable handles together in front.",
+    "primaryMuscleGroup": "Chest",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Shoulders"]
+  },
+  {
+    "name": "Squat (Barbell)",
+    "description": "Compound exercise bending knees and hips with barbell on upper back.",
+    "primaryMuscleGroup": "Quadriceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Glutes", "Hamstrings", "Lower Back", "Calves"]
+  },
+  {
+    "name": "Single Leg Squat",
+    "description": "Squat performed on one leg, can be weighted or assisted.",
+    "primaryMuscleGroup": "Quadriceps",
+    "measurementType": "reps",
+    "accessoryMuscleGroups": ["Glutes", "Hamstrings", "Calves"]
+  },
+  {
+    "name": "Single Leg Extension",
+    "description": "Unilateral knee extension exercise targeting one quad at a time.",
+    "primaryMuscleGroup": "Quadriceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": []
+  },
+  {
+    "name": "Leg Extension (Machine)",
+    "description": "Isolation exercise extending knees against resistance.",
+    "primaryMuscleGroup": "Quadriceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": []
+  },
+  {
+    "name": "Leg Press (Machine)",
+    "description": "Pushing weight away using legs while seated.",
+    "primaryMuscleGroup": "Quadriceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Glutes", "Hamstrings", "Calves"]
+  },
+  {
+    "name": "Deadlift (Dumbbell)",
+    "description": "Hip-hinge movement lifting dumbbells from floor.",
+    "primaryMuscleGroup": "Lower Back",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Glutes", "Hamstrings", "Traps", "Forearms"]
+  },
+  {
+    "name": "Deadlift (Barbell)",
+    "description": "Hip-hinge movement lifting barbell from floor.",
+    "primaryMuscleGroup": "Lower Back",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Glutes", "Hamstrings", "Traps", "Forearms"]
+  },
+  {
+    "name": "Seated Leg Curl (Machine)",
+    "description": "Isolation exercise curling legs from seated position.",
+    "primaryMuscleGroup": "Hamstrings",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Calves"]
+  },
+  {
+    "name": "Single Leg Seated Curl",
+    "description": "Unilateral seated leg curl targeting one hamstring.",
+    "primaryMuscleGroup": "Hamstrings",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Calves"]
+  },
+  {
+    "name": "Hip Adduction (Machine)",
+    "description": "Machine exercise bringing thighs together.",
+    "primaryMuscleGroup": "Adductors",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": []
+  },
+  {
+    "name": "Hip Abduction (Machine)",
+    "description": "Machine exercise spreading thighs apart.",
+    "primaryMuscleGroup": "Abductors",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Glutes"]
+  },
+  {
+    "name": "Pull Ups",
+    "description": "Bodyweight exercise pulling chin over bar from hang.",
+    "primaryMuscleGroup": "Lats",
+    "measurementType": "reps",
+    "accessoryMuscleGroups": ["Biceps", "Rhomboids", "Traps"]
+  },
+  {
+    "name": "Lat Pulldown (Machine)",
+    "description": "Pulling bar down to upper chest while seated.",
+    "primaryMuscleGroup": "Lats",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Biceps", "Rhomboids"]
+  },
+  {
+    "name": "Rear Delt Fly (Machine)",
+    "description": "Isolation exercise targeting rear shoulder muscles.",
+    "primaryMuscleGroup": "Shoulders",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Traps", "Rhomboids"]
+  },
+  {
+    "name": "Cable Low Row",
+    "description": "Seated row using low cable attachment.",
+    "primaryMuscleGroup": "Lats",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Biceps", "Rhomboids", "Traps"]
+  },
+  {
+    "name": "Seated Row (Machine)",
+    "description": "Machine-guided horizontal pulling movement.",
+    "primaryMuscleGroup": "Lats",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Biceps", "Rhomboids", "Traps"]
+  },
+  {
+    "name": "Single Arm Cross Body Pulldown",
+    "description": "Unilateral diagonal pulldown movement.",
+    "primaryMuscleGroup": "Lats",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Biceps"]
+  },
+  {
+    "name": "Lat Pullover",
+    "description": "Arc motion exercise targeting lat spread.",
+    "primaryMuscleGroup": "Lats",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Triceps", "Chest"]
+  },
+  {
+    "name": "Bicep Curl (EZ Bar)",
+    "description": "Standing curl using curved EZ bar.",
+    "primaryMuscleGroup": "Biceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Forearms"]
+  },
+  {
+    "name": "Hammer Curl",
+    "description": "Bicep curl with neutral grip using dumbbells.",
+    "primaryMuscleGroup": "Biceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Forearms"]
+  },
+  {
+    "name": "Incline Curl (Dumbbell)",
+    "description": "Bicep curl performed on an incline bench.",
+    "primaryMuscleGroup": "Biceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Forearms"]
+  },
+  {
+    "name": "Cable Curl",
+    "description": "Standing bicep curl using cable machine.",
+    "primaryMuscleGroup": "Biceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Forearms"]
+  },
+  {
+    "name": "Rope Cable Curl",
+    "description": "Bicep curl using rope attachment.",
+    "primaryMuscleGroup": "Biceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Forearms"]
+  },
+  {
+    "name": "Close Grip Bench Press",
+    "description": "Narrow grip bench press targeting triceps.",
+    "primaryMuscleGroup": "Triceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Chest", "Shoulders"]
+  },
+  {
+    "name": "Tricep Pushdown",
+    "description": "Standing tricep extension using cable machine.",
+    "primaryMuscleGroup": "Triceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": []
+  },
+  {
+    "name": "Single Arm Tricep Pushdown",
+    "description": "Unilateral tricep pushdown.",
+    "primaryMuscleGroup": "Triceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": []
+  },
+  {
+    "name": "Cable Overhead Extension",
+    "description": "Overhead tricep extension using cable.",
+    "primaryMuscleGroup": "Triceps",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": []
+  },
+  {
+    "name": "Military Press",
+    "description": "Overhead press targeting shoulders.",
+    "primaryMuscleGroup": "Shoulders",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Triceps", "Traps"]
+  },
+  {
+    "name": "Lateral Raise (Dumbbell)",
+    "description": "Side shoulder raise with dumbbells.",
+    "primaryMuscleGroup": "Shoulders",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Traps"]
+  },
+  {
+    "name": "Cable Lateral Raise",
+    "description": "Side shoulder raise using cable.",
+    "primaryMuscleGroup": "Shoulders",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Traps"]
+  },
+  {
+    "name": "Face Pull",
+    "description": "Pull toward face targeting rear delts and rotator cuff.",
+    "primaryMuscleGroup": "Shoulders",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Rotator Cuff", "Traps", "Rhomboids"]
+  },
+  {
+    "name": "Back Extension",
+    "description": "Extension exercise targeting lower back muscles.",
+    "primaryMuscleGroup": "Lower Back",
+    "measurementType": "weight-reps",
+    "accessoryMuscleGroups": ["Glutes", "Hamstrings"]
+  },
+  {
+    "name": "Leg Raise",
+    "description": "Raising legs while hanging or lying to target abs.",
+    "primaryMuscleGroup": "Abdominals",
+    "measurementType": "reps",
+    "accessoryMuscleGroups": ["Hip Flexors"]
+  }
+]
