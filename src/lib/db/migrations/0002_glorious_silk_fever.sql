@@ -1,0 +1,1 @@
+ALTER TABLE `exercise_sets` ADD `assisted_reps` integer;
