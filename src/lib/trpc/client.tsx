@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
+import { PersistQueryClientProvider, removeOldestQuery } from "@tanstack/react-query-persist-client"
 import { httpBatchLink, createTRPCClient } from "@trpc/client"
 import SuperJSON from "superjson"
 import { createQueryClient } from "./query-client"
@@ -27,6 +27,7 @@ const persister =
         storage: window.localStorage,
         serialize: SuperJSON.stringify,
         deserialize: SuperJSON.parse,
+        retry: removeOldestQuery,
       })
     : undefined
 
