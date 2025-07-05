@@ -11,10 +11,10 @@ export const useWorkoutExercises = () => {
   return {
     isLoading,
     exercises:
-      isLoading || !exercises
+      isLoading || !exercises || !rawData
         ? []
         : exercises.map((e) => {
-            const dbExercise = rawData?.get(e.exerciseId)
+            const dbExercise = rawData.get(e.exerciseId)
             if (!dbExercise) {
               throw new Error(`Exercise ${e.exerciseId} not found`)
             }

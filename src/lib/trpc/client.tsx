@@ -79,7 +79,13 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
         maxAge: 1000 * 60 * 60 * 24 * 15, // 15 days
       }}
     >
+      {/*
+       * While restoring from persistent storage, we might want to block all rendering till this is loaded.
+       * To create a persist gate simply just use the `useIsRestoring` from react query, like below:
+       */}
+      {/* <PersistGate fallback={<div className="bg-background h-screen animate-pulse" />}> */}
       {children}
+      {/* </PersistGate> */}
     </PersistQueryClientProvider>
   ) : (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
