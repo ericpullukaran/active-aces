@@ -13,7 +13,8 @@ export function useInfiniteTemplates(
   })
 
   return {
-    ...query,
+    isLoading: query.isLoading,
+    isError: query.isError,
     templates: query.data?.pages.flatMap((page) => page.items) ?? [],
     totalCount: query.data?.pages.flatMap((page) => page.items).length ?? 0,
   }

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
 import { httpBatchLink, createTRPCClient } from "@trpc/client"
 import SuperJSON from "superjson"
 import { createQueryClient } from "./query-client"
@@ -9,6 +10,7 @@ import { env } from "~/env"
 import { type AppRouter } from "./root"
 import { createTRPCContext } from "@trpc/tanstack-react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister"
 
 const {
   TRPCProvider: TRPCProviderTanstack,
@@ -18,6 +20,15 @@ const {
   useTRPCClient,
 } = createTRPCContext<AppRouter>()
 export { useTRPC, useTRPCClient }
+
+const persister =
+  typeof window !== "undefined"
+    ? createAsyncStoragePersister({
+        storage: window.localStorage,
+        serialize: SuperJSON.stringify,
+        deserialize: SuperJSON.parse,
+      })
+    : undefined
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined
 const getQueryClient = () => {
@@ -48,13 +59,28 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
     }),
   )
 
-  return (
-    <QueryClientProvider client={queryClient}>
+  const children = useMemo(
+    () => (
       <TRPCProviderTanstack trpcClient={trpcClient} queryClient={queryClient}>
         {props.children}
         <ReactQueryDevtools initialIsOpen={false} />
       </TRPCProviderTanstack>
-    </QueryClientProvider>
+    ),
+    [trpcClient, queryClient, props.children],
+  )
+
+  return persister ? (
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: 1000 * 60 * 60 * 24 * 15, // 15 days
+      }}
+    >
+      {children}
+    </PersistQueryClientProvider>
+  ) : (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   )
 }
 

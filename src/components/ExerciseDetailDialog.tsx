@@ -4,7 +4,6 @@ import React, { useState, useMemo } from "react"
 import { type DbExercise } from "~/lib/types/workout"
 import { Button } from "./ui/button"
 import { useTRPC } from "~/lib/trpc/client"
-import { useQuery } from "@tanstack/react-query"
 import { ChevronLeft, ChevronRight, Dumbbell, Clock, Trash, Menu } from "lucide-react"
 import { getChartConfigForSets } from "~/lib/utils/chartConfigs"
 import SlideTransition from "./ui/SlideTransition"
@@ -35,6 +34,7 @@ import {
   tabTransition,
   type TabItem,
 } from "~/lib/utils/useTabAnimations"
+import { useExerciseHistory } from "~/lib/utils/useExerciseHistory"
 
 type TabId = "details" | "history"
 
@@ -60,15 +60,9 @@ export default function ExerciseDetailDialog({
   const queryClient = useQueryClient()
   const [currentWorkoutIndex, setCurrentWorkoutIndex] = useState(0)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-
   const { activeTab, setActiveTab, direction } = useTabAnimation(tabs, initialTab)
 
-  const exerciseHistoryQuery = useQuery(
-    trpc.workouts.history.exercise.queryOptions({
-      exerciseId: exercise.id,
-      limit: 10,
-    }),
-  )
+  const exerciseHistoryQuery = useExerciseHistory({ exerciseId: exercise.id })
 
   const deleteExerciseMutation = useMutation(
     trpc.exercises.delete.mutationOptions({

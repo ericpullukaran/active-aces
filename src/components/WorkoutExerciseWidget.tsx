@@ -9,6 +9,7 @@ import { useSnapshot } from "valtio"
 import { useTRPC } from "~/lib/trpc/client"
 import { useQuery } from "@tanstack/react-query"
 import useMeasure from "react-use-measure"
+import { useExerciseHistory } from "~/lib/utils/useExerciseHistory"
 
 const MIN_SETS_TO_PREFILL = 6
 
@@ -25,6 +26,9 @@ export default function WorkoutExerciseWidget({
   const [elementRef, bounds] = useMeasure()
   const snap = useSnapshot(workoutStore)
   const trpc = useTRPC()
+
+  // Preload the exercise history
+  useExerciseHistory({ exerciseId: exercise.metadata.id })
 
   // We need to observer & re-calculate height for the widget when the height changes
   // i.e. when the user adds a set or removes a set

@@ -78,7 +78,7 @@ export default function RootLayout({
           "bg-background text-foreground flex flex-col font-sans antialiased",
           inter.variable,
         )}
-        data-new-gr-c-s-check-loaded="14.1232.0"
+        data-new-gr-c-s-check-loaded="14.1242.0"
         data-gr-ext-installed=""
         data-gr-ext-disabled="forever"
       >

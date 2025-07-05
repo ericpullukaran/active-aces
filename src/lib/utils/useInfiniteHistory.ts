@@ -13,7 +13,11 @@ export function useInfiniteHistory(
   })
 
   return {
-    ...query,
+    isLoading: query.isLoading,
+    isError: query.isError,
+    fetchNextPage: query.fetchNextPage,
+    hasNextPage: query.hasNextPage,
+    isFetchingNextPage: query.isFetchingNextPage,
     workouts: query.data?.pages.flatMap((page) => page.items) ?? [],
     totalCount: query.data?.pages.flatMap((page) => page.items).length ?? 0,
   }
