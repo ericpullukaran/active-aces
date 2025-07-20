@@ -54,6 +54,7 @@ const config = [
       "@typescript-eslint": tseslint,
       drizzle: drizzle,
     },
+    configs: ["plugin:drizzle/recommended"],
     rules: {
       // Turn off base rules that are handled by TypeScript
       "no-unused-vars": "off",
