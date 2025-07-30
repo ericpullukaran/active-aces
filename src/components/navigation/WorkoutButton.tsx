@@ -10,6 +10,7 @@ import { workoutActions } from "~/lib/stores/workoutStore"
 import { useSnapshot } from "valtio"
 import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
 import { useIsWorkoutActive } from "~/lib/utils/useIsWorkoutActive"
+import { trackWorkout } from "~/lib/utils/analytics"
 
 export const WorkoutButton = () => {
   const trpc = useTRPC()
@@ -31,6 +32,10 @@ export const WorkoutButton = () => {
     } else {
       navigationActions.setCurrentPage("workout")
       workoutActions.startWorkout()
+
+      trackWorkout.started({
+        timestamp: new Date(),
+      })
     }
   }
 

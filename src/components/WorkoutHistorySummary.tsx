@@ -23,6 +23,7 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import ReplaceWorkoutConfirmation from "./ReplaceWorkoutConfirmation"
 import { workoutActions } from "~/lib/stores/workoutStore"
+import { trackWorkout } from "~/lib/utils/analytics"
 
 type WorkoutSummaryProps = {
   workout: WorkoutHistoryExercise
@@ -38,6 +39,12 @@ export default function WorkoutHistorySummary({ workout, children }: WorkoutSumm
   const deleteWorkoutMutation = useMutation(
     trpc.workouts.delete.mutationOptions({
       onSuccess: () => {
+        trackWorkout.deleted({
+          workout_id: workout.id,
+          workout_name: workout.name,
+          exercise_count: workout.workoutExercises.length,
+        })
+
         queryClient.invalidateQueries({
           queryKey: trpc.workouts.history.pathKey(),
           refetchType: "all",

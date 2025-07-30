@@ -15,6 +15,7 @@ import { navigationActions } from "./navigationStore"
 import SuperJSON from "superjson"
 import { devtools } from "valtio/utils"
 import { type Doc } from "../db"
+import { trackExercise } from "../utils/analytics"
 
 const WORKOUT_STORAGE_KEY = "current_workout"
 const loadWorkoutFromStorage = (): PutWorkout | null => {
@@ -106,11 +107,31 @@ export const workoutActions = {
 
   addExercise: (exercise: WorkoutExercise) => {
     if (!workoutStore.currentWorkout) return
+
+    trackExercise.addedToWorkout({
+      exercise_id: exercise.exerciseId,
+      workout_id: workoutStore.currentWorkout.name,
+      set_count: exercise.sets.length,
+    })
+
     workoutStore.currentWorkout.exercises.push(exercise)
   },
 
   deleteExercise: (stableExerciseId: string) => {
     if (!workoutStore.currentWorkout) return
+
+    const exerciseToDelete = workoutStore.currentWorkout.exercises.find(
+      (ex) => ex.stableExerciseId === stableExerciseId,
+    )
+
+    if (exerciseToDelete) {
+      trackExercise.removedFromWorkout({
+        exercise_id: exerciseToDelete.exerciseId,
+        workout_id: workoutStore.currentWorkout.name,
+        set_count: exerciseToDelete.sets.length,
+      })
+    }
+
     workoutStore.currentWorkout.exercises = workoutStore.currentWorkout.exercises.filter(
       (ex) => ex.stableExerciseId !== stableExerciseId,
     )

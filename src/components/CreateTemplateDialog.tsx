@@ -14,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type PutWorkout } from "~/lib/types/workout"
 import { CheckCircleIcon } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
+import { trackTemplate } from "~/lib/utils/analytics"
 
 interface CreateTemplateDialogProps {
   open: boolean
@@ -53,7 +54,12 @@ export default function CreateTemplateDialog({
         },
       },
       {
-        onSuccess: () => {
+        onSuccess: (result) => {
+          trackTemplate.created({
+            template_name: templateName || "Untitled Template",
+            exercise_count: workout?.exercises.length,
+            template_id: result?.id,
+          })
           setShowSuccessOverlay(true)
           // Close after 2 seconds
           setTimeout(() => {

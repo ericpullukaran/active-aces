@@ -1,8 +1,11 @@
 "use client"
 
-import { AlertTriangle, RefreshCw, Home, Bug, Trash } from "lucide-react"
+import { AlertTriangle, RefreshCw, Bug, Trash } from "lucide-react"
+import posthog from "posthog-js"
 import { Button } from "~/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card"
+import { track } from "~/lib/utils/analytics"
+import { useEffect } from "react"
 
 export default function GlobalError({
   error,
@@ -11,10 +14,12 @@ export default function GlobalError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  console.error("Global error:", error.message, error.digest)
+  useEffect(() => {
+    posthog.captureException(error)
+  }, [error])
 
   const handleReportError = () => {
-    // You can implement error reporting here (e.g., send to analytics service)
+    track("report_error")
     const errorInfo = {
       message: error.message,
       digest: error.digest,
@@ -22,23 +27,15 @@ export default function GlobalError({
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "",
       url: typeof window !== "undefined" ? window.location.href : "",
     }
-    console.log("Error report:", errorInfo)
-    // Example: Send to your error tracking service
-    // analytics.track('error_reported', errorInfo)
   }
 
   const hardReset = () => {
+    track("hard_reset")
     localStorage.clear()
-    reset()
   }
 
   return (
     <html>
-      <head>
-        <title>Something went wrong - Active Aces</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script src="https://cdn.tailwindcss.com"></script>
-      </head>
       <body className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 p-4">
         <Card className="w-full max-w-md border-zinc-800 bg-zinc-900/90 text-center backdrop-blur-sm">
           <CardHeader>
@@ -47,8 +44,8 @@ export default function GlobalError({
             </div>
             <CardTitle className="text-2xl text-zinc-100">Oops! Something went wrong</CardTitle>
             <CardDescription className="text-zinc-300">
-              We encountered an unexpected error while loading the application. Don't worry, our
-              team has been notified and we're working to fix this.
+              We encountered an unexpected error while loading the application. Don&apos;t worry,
+              our team has been notified and we&apos;re working to fix this.
             </CardDescription>
           </CardHeader>
 
@@ -76,7 +73,7 @@ export default function GlobalError({
               <div className="flex gap-3">
                 <Button onClick={hardReset} variant="destructive" className="flex-1">
                   <Trash className="mr-2 h-4 w-4" />
-                  Hard Reset
+                  Hard Reload
                 </Button>
 
                 <Button onClick={handleReportError} variant="outline" className="flex-1">

@@ -23,6 +23,7 @@ import { TimeInput } from "./ui/time-input"
 import { workoutActions, workoutStore } from "~/lib/stores/workoutStore"
 import { navigationActions } from "~/lib/stores/navigationStore"
 import { useIsWorkoutActive } from "~/lib/utils/useIsWorkoutActive"
+import { trackWorkout } from "~/lib/utils/analytics"
 
 export default function EndWorkoutDialog({
   children,
@@ -69,6 +70,12 @@ export default function EndWorkoutDialog({
 
   const deleteWorkout = (closeDialog: () => void) => {
     if (isWorkoutActive) {
+      trackWorkout.deleted({
+        workout_name: workoutStore.currentWorkout?.name,
+        exercise_count: workoutStore.currentWorkout?.exercises.length,
+        duration_seconds: calculateCurrentDuration(),
+      })
+
       workoutActions.removeCurrentWorkout()
       navigationActions.setCurrentPage("home")
     }
@@ -92,6 +99,14 @@ export default function EndWorkoutDialog({
         },
         {
           onSuccess: () => {
+            console.warn("Tracking workout ended")
+            trackWorkout.ended({
+              workout_name: workoutStore.currentWorkout?.name || title,
+              exercise_count: workoutStore.currentWorkout?.exercises.length,
+              duration_seconds: durationSeconds,
+              is_template: false,
+            })
+
             setTitle("")
             setNote("")
             closeDialog()

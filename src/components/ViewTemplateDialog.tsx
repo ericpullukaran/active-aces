@@ -25,6 +25,7 @@ import { useTRPC } from "~/lib/trpc/client"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import ReplaceWorkoutConfirmation from "./ReplaceWorkoutConfirmation"
 import { workoutActions } from "~/lib/stores/workoutStore"
+import { trackTemplate } from "~/lib/utils/analytics"
 
 interface ViewTemplateDialogProps {
   template: WorkoutHistoryExercise
@@ -55,6 +56,12 @@ export default function ViewTemplateDialog({ template, children }: ViewTemplateD
       { id: template.id },
       {
         onSuccess: () => {
+          trackTemplate.deleted({
+            template_id: template.id,
+            template_name: template.name,
+            exercise_count: template.workoutExercises.length,
+          })
+
           setShowDeleteDialog(false)
           setIsOpen(false)
         },
@@ -151,6 +158,11 @@ export default function ViewTemplateDialog({ template, children }: ViewTemplateD
               variant="default"
               onClick={() => {
                 if (workoutActions.maybeCopyWorkout(template)) {
+                  trackTemplate.used({
+                    template_id: template.id,
+                    template_name: template.name,
+                    exercise_count: template.workoutExercises.length,
+                  })
                   closeDialog()
                 } else {
                   setShowUseTemplateConfirmation(true)

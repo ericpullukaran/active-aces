@@ -4,6 +4,7 @@ import { DialogTitle } from "./ui/dialog"
 import { DialogDescription } from "./ui/dialog"
 import { type WorkoutHistoryExercise } from "~/lib/types/workout"
 import { workoutActions } from "~/lib/stores/workoutStore"
+import { trackTemplate } from "~/lib/utils/analytics"
 
 export default function ReplaceWorkoutConfirmation({
   open,
@@ -28,7 +29,19 @@ export default function ReplaceWorkoutConfirmation({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={() => workoutActions.forceCopyWorkout(workout)}>
+          <Button
+            variant="destructive"
+            onClick={() => {
+              trackTemplate.used({
+                template_id: workout.id,
+                template_name: workout.name,
+                exercise_count: workout.workoutExercises.length,
+              })
+
+              workoutActions.forceCopyWorkout(workout)
+              onOpenChange(false)
+            }}
+          >
             Replace Workout
           </Button>
         </DialogFooter>
