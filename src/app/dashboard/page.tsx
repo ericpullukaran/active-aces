@@ -21,6 +21,6 @@ export default function DashboardPage() {
     case "exercises":
       return <ExercisesScreen />
     default:
-      throw new UnreachableError(currentPage)
+      return <HomeScreen />
   }
 }
