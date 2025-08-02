@@ -25,12 +25,12 @@ const nextConfig: NextConfig = {
 }
 
 export default withPostHogConfig(nextConfig, {
-  personalApiKey: env.POSTHOG_API_KEY, // Personal API Key
+  personalApiKey: env.POSTHOG_PERSONAL_API_KEY!, // Personal API Key
   envId: env.POSTHOG_ENV_ID, // Environment ID
   host: env.NEXT_PUBLIC_POSTHOG_HOST, // (optional), defaults to https://us.posthog.com
-  sourcemaps: {
-    enabled: true,
-    project: "Active Aces",
-    deleteAfterUpload: true,
-  },
+  // sourcemaps: {
+  //   enabled: true,
+  //   project: "Active Aces",
+  //   deleteAfterUpload: true,
+  // },
 })
