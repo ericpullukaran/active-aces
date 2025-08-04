@@ -9,7 +9,12 @@ export function useInfiniteHistory(
 
   const query = useInfiniteQuery({
     ...trpc.workouts.history.infinite.infiniteQueryOptions(opts),
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage || !allPages || allPages.length === 0) {
+        return undefined
+      }
+      return lastPage.nextCursor
+    },
   })
 
   return {
