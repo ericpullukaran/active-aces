@@ -85,6 +85,8 @@ export default function EndWorkoutDialog({
 
   const endWorkout = (closeDialog: () => void) => {
     if (workoutStore.currentWorkout) {
+      const exerciseCount = workoutStore.currentWorkout.exercises.length
+      const workoutName = workoutStore.currentWorkout.name
       const finalEndTime = new Date(
         workoutStore.currentWorkout.startTime.getTime() + durationSeconds * 1000,
       )
@@ -101,8 +103,8 @@ export default function EndWorkoutDialog({
           onSuccess: () => {
             console.warn("Tracking workout ended")
             trackWorkout.ended({
-              workout_name: workoutStore.currentWorkout?.name || title,
-              exercise_count: workoutStore.currentWorkout?.exercises.length,
+              workout_name: workoutName || title,
+              exercise_count: exerciseCount,
               duration_seconds: durationSeconds,
               is_template: false,
             })
