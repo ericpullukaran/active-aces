@@ -2,15 +2,15 @@
 import React from "react"
 import { motion, LayoutGroup, type Transition } from "motion/react"
 import { Home, Clock } from "lucide-react"
-import AuthButton from "../AuthButton"
 import { cn } from "~/lib/utils"
 import { WorkoutButton } from "./WorkoutButton"
 import { ExercisesButton } from "./ExercisesButton"
 import { TimerOverlay } from "../TimerOverlay"
 import { useSnapshot } from "valtio"
 import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
+import { UserMenuButton } from "./UserMenuButton"
 
-export type AppPage = "home" | "history" | "workout" | "exercises"
+export type AppPage = "home" | "history" | "workout" | "exercises" | "settings"
 
 const activeIndicatorTransition: Transition = {
   type: "spring",
@@ -49,14 +49,8 @@ export default function BottomNavigation() {
           {/* Exercises/Add Exercise Button */}
           <ExercisesButton />
 
-          {/* Profile Button */}
-          <motion.button
-            layout
-            style={{ originY: "top" }}
-            className="relative flex h-14 w-10 flex-col items-center justify-center p-2"
-          >
-            <AuthButton />
-          </motion.button>
+          {/* Profile/Settings Popover */}
+          <UserMenuButton />
         </LayoutGroup>
       </motion.div>
     </div>

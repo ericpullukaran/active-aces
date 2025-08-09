@@ -3,6 +3,14 @@ import { env } from "~/env"
 import { withPostHogConfig } from "@posthog/nextjs-config"
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+      },
+    ],
+  },
   transpilePackages: ["@t3-oss/env-nextjs", "@t3-oss/env-core"],
   async rewrites() {
     return [

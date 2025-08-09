@@ -4,6 +4,7 @@ import { HomeScreen } from "~/components/dashboard-screen/HomeScreen"
 import WorkoutScreen from "~/components/dashboard-screen/WorkoutScreen"
 import ExercisesScreen from "~/components/dashboard-screen/ExercisesScreen"
 import HistoryScreen from "~/components/dashboard-screen/HistoryScreen"
+import SettingsScreen from "~/components/dashboard-screen/SettingsScreen"
 import { navigationStore } from "~/lib/stores/navigationStore"
 import { useSnapshot } from "valtio"
 
@@ -19,6 +20,8 @@ export default function DashboardPage() {
       return <WorkoutScreen />
     case "exercises":
       return <ExercisesScreen />
+    case "settings":
+      return <SettingsScreen />
     default:
       return <HomeScreen />
   }
