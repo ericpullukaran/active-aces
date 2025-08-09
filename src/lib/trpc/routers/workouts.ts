@@ -34,4 +34,17 @@ export const workoutsRouter = createTRPCRouter({
         userId: ctx.auth.userId,
       })
     }),
+
+  importCsv: protectedProcedure
+    .input(
+      z.object({
+        csv: z.string().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await workoutService.importUserWorkoutsFromCsv(ctx.db, {
+        userId: ctx.auth.userId,
+        csv: input.csv,
+      })
+    }),
 })

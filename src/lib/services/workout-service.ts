@@ -74,6 +74,130 @@ const getWorkoutHistoryWithExercises = async (
 }
 
 /**
+ * Build a CSV string containing all workout data (workouts → exercises → sets) for a user.
+ * Columns are designed to be stable so we can build an importer later.
+ */
+const exportUserWorkoutsAsCsv = async (
+  db: DB,
+  {
+    userId,
+    includeTemplates = false,
+  }: {
+    userId: string
+    /** If true, will include templates as well; by default only completed workouts are exported */
+    includeTemplates?: boolean
+  },
+) => {
+  const allWorkouts = await db.query.workouts.findMany({
+    where: (workout) =>
+      and(
+        eq(workout.userId, userId),
+        includeTemplates
+          ? eq(workout.isTemplate, workout.isTemplate)
+          : eq(workout.isTemplate, false),
+      ),
+    orderBy: [desc(workouts.startTime)],
+    with: {
+      workoutExercises: {
+        orderBy: [workoutExercises.order],
+        with: {
+          exercise: true,
+          sets: { orderBy: [exerciseSets.order] },
+        },
+      },
+    },
+  })
+
+  const headers = [
+    "title",
+    "start_time",
+    "end_time",
+    "notes",
+    ...(includeTemplates ? ["is_template"] : []),
+    "exercise_title",
+    "measurement_type",
+    "exercise_order",
+    "rest_time_ms",
+    "exercise_notes",
+    "set_index",
+    "weight_kg",
+    "reps",
+    "assisted_reps",
+    "distance_m",
+    "duration_ms",
+    "completed",
+    "completed_at",
+  ]
+
+  const escapeCsv = (value: unknown): string => {
+    if (value === null || value === undefined) return ""
+    const str = String(value)
+    if (str.includes('"') || str.includes(",") || str.includes("\n")) {
+      return `"${str.replace(/\"/g, '""')}"`
+    }
+    return str
+  }
+
+  const rows: string[] = []
+  rows.push(headers.join(","))
+
+  for (const workout of allWorkouts) {
+    const base = [
+      workout.name,
+      workout.startTime.toISOString(),
+      workout.endTime?.toISOString() ?? "",
+      workout.notes ?? "",
+      ...(includeTemplates ? [workout.isTemplate ? 1 : 0] : []),
+    ]
+
+    for (const workoutExercise of workout.workoutExercises) {
+      const ex = workoutExercise.exercise
+      const exerciseBase = [
+        ex?.name ?? "",
+        ex?.measurementType ?? "",
+        workoutExercise.order,
+        workoutExercise.restTime ?? "",
+        workoutExercise.notes ?? "",
+      ]
+
+      for (let idx = 0; idx < workoutExercise.sets.length; idx++) {
+        const set = workoutExercise.sets[idx]
+        const setCols = [
+          idx,
+          set.weight ?? "",
+          set.reps ?? "",
+          set.assistedReps ?? "",
+          set.distance ?? "",
+          set.time ?? "",
+          set.completed ? 1 : 0,
+          set.completedAt?.toISOString() ?? "",
+        ]
+
+        const line = [...base, ...exerciseBase, ...setCols].map(escapeCsv).join(",")
+        rows.push(line)
+      }
+    }
+  }
+
+  return rows.join("\n")
+}
+
+/**
+ * Import workouts from a CSV previously exported by this system.
+ * - Accepts CSV text, parses rows, groups into workouts/exercises/sets
+ * - Creates exercises when missing (matching by exact exercise name)
+ */
+const importUserWorkoutsFromCsv = async (
+  db: DB,
+  opts: {
+    userId: string
+    csv: string
+  },
+) => {
+  throw new Error("Not implemented")
+}
+
+/**
  * Gets the previous set metrics for a specific exercise, looking back through workout history
  * to find the most recent data for each set position
  */
@@ -316,6 +440,8 @@ export const workoutService = {
   getWorkoutHistoryWithExercises,
   getPreviousSetMetrics,
   getExerciseHistory,
+  exportUserWorkoutsAsCsv,
+  importUserWorkoutsFromCsv,
   putWorkout,
   deleteWorkout,
 }

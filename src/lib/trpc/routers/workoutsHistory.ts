@@ -63,6 +63,24 @@ export const workoutsHistoryRouter = createTRPCRouter({
         userId: ctx.auth.userId,
       })
     }),
+
+  exportCsv: protectedProcedure
+    .input(
+      z.object({
+        includeTemplates: z.boolean().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const csv = await workoutService.exportUserWorkoutsAsCsv(ctx.db, {
+        userId: ctx.auth.userId,
+        includeTemplates: input.includeTemplates ?? false,
+      })
+      return {
+        filename: `active-aces-workouts-${new Date().toISOString().slice(0, 10)}.csv`,
+        mimeType: "text/csv",
+        data: csv,
+      }
+    }),
 })
 
 async function getInfiniteWorkouts(
