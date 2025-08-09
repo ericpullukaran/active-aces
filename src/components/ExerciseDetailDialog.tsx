@@ -5,10 +5,11 @@ import { type DbExercise } from "~/lib/types/workout"
 import { Button } from "./ui/button"
 import { useTRPC } from "~/lib/trpc/client"
 import { ChevronLeft, ChevronRight, Dumbbell, Clock, Trash, Menu } from "lucide-react"
-import { getChartConfigForSets } from "~/lib/utils/chartConfigs"
+import { getChartConfigForSets, getWeightByWorkoutAggregateChart } from "~/lib/utils/chartConfigs"
 import SlideTransition from "./ui/SlideTransition"
 import MuscleGroupBadge from "./MuscleGroupBadge"
 import { MeasurementTypeLabels } from "~/lib/utils/measurement"
+import { MeasurementType } from "~/lib/db/types"
 import AnimatedTabs from "./ui/AnimatedTabs"
 import ResponsiveDialog from "./ui/ResponsiveDialog"
 import { cn } from "~/lib/utils"
@@ -95,6 +96,27 @@ export default function ExerciseDetailDialog({
 
     return { currentWorkout: workout, chartResult }
   }, [exerciseHistoryQuery.data, currentWorkoutIndex])
+
+  const [aggregateMode, setAggregateMode] = useState<"max" | "min">("max")
+
+  const workoutAggregateChart = useMemo(() => {
+    if (!exerciseHistoryQuery.data || exerciseHistoryQuery.data.length === 0) return null
+    if (exercise.measurementType !== MeasurementType.WEIGHT_REPS) return null
+
+    const result = getWeightByWorkoutAggregateChart(
+      exerciseHistoryQuery.data.map((w) => ({
+        name: w.name,
+        startTime: w.startTime,
+        workoutExercise: {
+          sets: w.workoutExercise.sets,
+        },
+      })),
+      { mode: aggregateMode },
+    )
+
+    if (!result.chartData || result.chartData.length === 0) return null
+    return result
+  }, [exerciseHistoryQuery.data, exercise.measurementType, aggregateMode])
 
   const navigateWorkout = (direction: "prev" | "next") => {
     if (!exerciseHistoryQuery.data) return
@@ -236,6 +258,25 @@ export default function ExerciseDetailDialog({
           <h4 className="font-medium">Performance by Set</h4>
           {renderChart()}
         </div>
+
+        {/* Max Weight per Workout */}
+        {workoutAggregateChart && (
+          <div>
+            <div className="mb-1 flex items-center justify-between">
+              <h4 className="font-medium">
+                {aggregateMode === "max" ? "Max" : "Min"} Weight per Workout
+              </h4>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setAggregateMode((m) => (m === "max" ? "min" : "max"))}
+              >
+                {aggregateMode === "max" ? "Min" : "Max"}
+              </Button>
+            </div>
+            {workoutAggregateChart.renderChart()}
+          </div>
+        )}
 
         {/* Notes */}
         {currentWorkout?.workoutExercise.notes && (

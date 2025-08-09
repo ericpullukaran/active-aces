@@ -1,6 +1,6 @@
 import { type MeasurementMetric, MeasurementType } from "~/lib/db/types"
 import { type ChartConfig } from "~/components/ui/chart"
-import { Line, LineChart, CartesianGrid, XAxis, LabelList } from "recharts"
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, LabelList } from "recharts"
 import { ChartContainer, ChartTooltip } from "~/components/ui/chart"
 import { type Doc } from "../db"
 import { getFieldKeys, MEASUREMENT_FIELDS } from "./measurement"
@@ -275,5 +275,128 @@ export function getChartConfigForSets(
     chartData,
     chartConfig,
     renderChart: () => config.renderChart(chartData, chartConfig, fieldKeys),
+  }
+}
+
+// =========================
+// Workout-level aggregates
+// =========================
+
+type WeightAggregateMode = "max" | "min"
+
+interface WorkoutHistoryEntryForAggregates {
+  name: string
+  startTime: Date
+  workoutExercise: {
+    sets: Doc<"exerciseSets">[]
+  }
+}
+
+function transformWorkoutsToWeightAggregateData(
+  workouts: WorkoutHistoryEntryForAggregates[],
+  mode: WeightAggregateMode,
+): ChartDataPoint[] {
+  if (!workouts || workouts.length === 0) return []
+
+  return [...workouts].reverse().map((workout, index) => {
+    const weights = (workout.workoutExercise.sets || [])
+      .filter((s) => typeof s.weight === "number")
+      .map((set) => set.weight)
+      .filter((w) => w != null)
+
+    const aggregate =
+      weights.length > 0 ? (mode === "max" ? Math.max(...weights) : Math.min(...weights)) : 0
+
+    return {
+      setLabel: `Session ${index + 1}`,
+      setNumber: index + 1,
+      weight: aggregate,
+    }
+  })
+}
+
+const weightPerWorkoutConfig: ChartTypeConfig = {
+  renderChart: (data) => (
+    <ChartContainer
+      config={{
+        weight: {
+          label: MEASUREMENT_FIELDS.weight.label,
+          color: CHART_COLORS.weight,
+        },
+      }}
+      className="min-h-[250px] w-full"
+    >
+      <LineChart
+        accessibilityLayer
+        data={data}
+        margin={{ left: 24, right: 24, top: 30, bottom: 12 }}
+      >
+        <CartesianGrid vertical={false} />
+        <YAxis hide domain={["dataMin - 5", "dataMax + 5"]} />
+        <XAxis dataKey="setNumber" tickLine={false} axisLine={false} tickMargin={8} />
+        <ChartTooltip
+          cursor={false}
+          content={({ active, payload }) => {
+            if (!active || !payload || payload.length === 0) return null
+            const point: ChartDataPoint = payload[0].payload
+            return (
+              <div className="bg-background rounded-lg border p-3 shadow-lg">
+                <p className="mb-2 font-medium">{point.setLabel}</p>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2" style={{ backgroundColor: CHART_COLORS.weight }} />
+                  <span className="text-muted-foreground">Weight:</span>
+                  <span className="font-medium">{Number(point["weight"])}kg</span>
+                </div>
+              </div>
+            )
+          }}
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+        <Line
+          dataKey="weight"
+          type="linear"
+          stroke={CHART_COLORS.weight}
+          strokeWidth={2}
+          dot={{ fill: CHART_COLORS.weight, strokeWidth: 2, r: 4 }}
+          animationDuration={300}
+          animationEasing="ease-out"
+        >
+          <LabelList
+            dataKey="weight"
+            position="top"
+            offset={12}
+            className="fill-foreground"
+            formatter={(value: number) => `${value}kg`}
+          />
+        </Line>
+      </LineChart>
+    </ChartContainer>
+  ),
+
+  renderTooltip: () => null,
+}
+
+export interface WorkoutAggregateChartResult {
+  chartData: ChartDataPoint[]
+  renderChart: () => React.ReactNode
+}
+
+export function getWeightByWorkoutAggregateChart(
+  workouts: WorkoutHistoryEntryForAggregates[],
+  options?: { mode?: WeightAggregateMode },
+): WorkoutAggregateChartResult {
+  const mode = options?.mode ?? "max"
+  const chartData = transformWorkoutsToWeightAggregateData(workouts, mode)
+
+  return {
+    chartData,
+    renderChart: () =>
+      weightPerWorkoutConfig.renderChart(
+        chartData,
+        {
+          weight: { label: MEASUREMENT_FIELDS.weight.label, color: CHART_COLORS.weight },
+        },
+        ["weight"],
+      ),
   }
 }
