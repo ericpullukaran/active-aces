@@ -183,6 +183,27 @@ const exportUserWorkoutsAsCsv = async (
 }
 
 /**
+ * Deletes all workouts for a user. By default, excludes templates.
+ */
+const deleteAllUserWorkouts = async (
+  db: DB,
+  {
+    userId,
+    includeTemplates = false,
+  }: {
+    userId: string
+    includeTemplates?: boolean
+  },
+) => {
+  if (includeTemplates) {
+    return await db.delete(workouts).where(eq(workouts.userId, userId))
+  }
+  return await db
+    .delete(workouts)
+    .where(and(eq(workouts.userId, userId), eq(workouts.isTemplate, false)))
+}
+
+/**
  * Import workouts from a CSV previously exported by this system.
  * - Accepts CSV text, parses rows, groups into workouts/exercises/sets
  * - Creates exercises when missing (matching by exact exercise name)
@@ -444,4 +465,5 @@ export const workoutService = {
   importUserWorkoutsFromCsv,
   putWorkout,
   deleteWorkout,
+  deleteAllUserWorkouts,
 }

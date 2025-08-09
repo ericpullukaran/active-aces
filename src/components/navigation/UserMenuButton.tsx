@@ -3,7 +3,7 @@
 import React from "react"
 import Image from "next/image"
 import { motion, type Transition } from "motion/react"
-import { Settings as SettingsIcon, User2 } from "lucide-react"
+import { Settings as SettingsIcon, User2, LogOut } from "lucide-react"
 import { useSnapshot } from "valtio"
 import { navigationActions, navigationStore } from "~/lib/stores/navigationStore"
 import {
@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "../ui/dropdown-menu"
 import { SignedIn, SignedOut, SignInButton, useClerk, useUser } from "@clerk/nextjs"
 
@@ -23,7 +24,7 @@ const activeIndicatorTransition: Transition = {
 
 export function UserMenuButton() {
   const { user } = useUser()
-  const { openUserProfile } = useClerk()
+  const { openUserProfile, signOut } = useClerk()
   const currentPage = useSnapshot(navigationStore).currentPage
 
   return (
@@ -80,6 +81,20 @@ export function UserMenuButton() {
           <SettingsIcon className="mr-2 h-4 w-4" />
           Settings
         </DropdownMenuItem>
+        <SignedIn>
+          <div className="bg-popover sticky bottom-0 -m-1 p-1">
+            <DropdownMenuSeparator className="mb-1" />
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => {
+                void signOut()
+              }}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Log out
+            </DropdownMenuItem>
+          </div>
+        </SignedIn>
       </DropdownMenuContent>
     </DropdownMenu>
   )

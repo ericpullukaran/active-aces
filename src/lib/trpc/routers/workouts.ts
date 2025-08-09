@@ -47,4 +47,18 @@ export const workoutsRouter = createTRPCRouter({
         csv: input.csv,
       })
     }),
+
+  deleteAll: protectedProcedure
+    .input(
+      z.object({
+        includeTemplates: z.boolean().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await workoutService.deleteAllUserWorkouts(ctx.db, {
+        userId: ctx.auth.userId,
+        includeTemplates: input.includeTemplates ?? false,
+      })
+      return { ok: true }
+    }),
 })
